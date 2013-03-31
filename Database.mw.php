@@ -28,7 +28,7 @@
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
 
-if ( !defined( 'WIKIBASE_DATAMODEL_VERSION' ) ) {
+if ( !defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
 	die( 'Not an entry point.' );
 }
 
