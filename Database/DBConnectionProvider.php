@@ -1,7 +1,12 @@
 <?php
 
+// TODO: fix NS
+namespace Wikibase\Repo;
+
+use DatabaseBase;
+
 /**
- * Class registration file for the Database component of Wikibase.
+ * Interface for database connection providers.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,38 +23,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  * http://www.gnu.org/copyleft/gpl.html
  *
- * @since 0.1
+ * @since 0.4
  *
  * @file
- * @ingroup WikibaseDatabase
+ * @ingroup WikibaseRepo
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-return call_user_func( function() {
+interface DBConnectionProvider {
 
-	$classes = array(
-		'Wikibase\Database\MWDB\ExtendedAbstraction',
-		'Wikibase\Database\MWDB\ExtendedMySQLAbstraction',
+	/**
+	 * Returns the database connection.
+	 * Initialization of this connection is done if it was not already initialized.
+	 *
+	 * @since 0.4
+	 *
+	 * @return DatabaseBase
+	 */
+	public function getConnection();
 
-		'Wikibase\Database\FieldDefinition',
-		'Wikibase\Database\MediaWikiQueryInterface',
-		'Wikibase\Database\QueryInterface',
-		'Wikibase\Database\TableBuilder',
-		'Wikibase\Database\TableDefinition',
-	);
+	/**
+	 * Releases the connection if doing so makes any sense resource wise.
+	 *
+	 * @since 0.4
+	 */
+	public function releaseConnection();
 
-	$paths = array();
-
-	foreach ( $classes as $class ) {
-		$path = str_replace( '\\', '/', substr( $class, 9 ) ) . '.php';
-
-		$paths[$class] = $path;
-	}
-
-	$paths['Wikibase\Repo\DBConnectionProvider'] = 'Database/DBConnectionProvider.php';
-	$paths['Wikibase\Repo\LazyDBConnectionProvider'] = 'Database/LazyDBConnectionProvider.php';
-
-	return $paths;
-
-} );
+}
