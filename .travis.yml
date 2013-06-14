@@ -1,0 +1,43 @@
+language: php
+
+php:
+  - 5.3
+  - 5.5
+
+env:
+  - DBTYPE=mysql STANDALONE=yeah
+  - DBTYPE=sqlite STANDALONE=yeah
+  - DBTYPE=postgres STANDALONE=yeah
+  - DBTYPE=mysql STANDALONE=no
+  - DBTYPE=sqlite STANDALONE=no
+  - DBTYPE=postgres STANDALONE=no
+
+matrix:
+  allow_failures:
+    - env: DBTYPE=postgres STANDALONE=no
+    - env: DBTYPE=mysql STANDALONE=yeah
+    - env: DBTYPE=sqlite STANDALONE=yeah
+    - env: DBTYPE=postgres STANDALONE=yeah
+  exclude:
+    - php: 5.3
+      env: DBTYPE=postgres STANDALONE=yeah
+    - php: 5.3
+      env: DBTYPE=postgres STANDALONE=no
+
+
+before_script:
+  - bash .travis.sh $STANDALONE
+
+script: true
+
+notifications:
+  email:
+    recipients:
+      - jeroendedauw@gmail.com
+    on_success: change
+    on_failure: always
+  irc:
+    channels:
+      - "chat.freenode.net#wikimedia-wikidata"
+    on_success: change
+    on_failure: always
