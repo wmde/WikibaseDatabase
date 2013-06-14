@@ -27,6 +27,11 @@
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
 
+if ( defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
+	// Do not initialize more then once.
+	return;
+}
+
 define( 'WIKIBASE_DATABASE_VERSION', '0.1 alpha' );
 
 spl_autoload_register( function ( $className ) {
