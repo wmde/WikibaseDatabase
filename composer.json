@@ -28,7 +28,7 @@
 	},
 	"autoload": {
 		"files" : [
-			"Database.php"
+			"WikibaseDatabase.php"
 		]
 	}
 }
