@@ -45,7 +45,7 @@ $wgExtensionCredits['wikibase'][] = array(
 	'descriptionmsg' => 'wikibasedatabase-desc'
 );
 
-$wgExtensionMessagesFiles['WikibaseDatabase'] = __DIR__ . '/Database.i18n.php';
+$wgExtensionMessagesFiles['WikibaseDatabase'] = __DIR__ . '/WikibaseDatabase.i18n.php';
 
 if ( defined( 'MW_PHPUNIT_TEST' ) ) {
 	require_once __DIR__ . '/tests/testLoader.php';
