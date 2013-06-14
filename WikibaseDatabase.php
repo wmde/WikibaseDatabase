@@ -65,7 +65,7 @@ spl_autoload_register( function ( $className ) {
 // @codeCoverageIgnoreStart
 if ( defined( 'MEDIAWIKI' ) ) {
 	call_user_func( function() {
-		require_once __DIR__ . '/Database.mw.php';
+		require_once __DIR__ . '/WikibaseDatabase.mw.php';
 	} );
 }
 // @codeCoverageIgnoreEnd
