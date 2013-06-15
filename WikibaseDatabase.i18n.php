@@ -42,3 +42,24 @@ $messages['en'] = array(
 $messages['qqq'] = array(
 	'wikibasedatabase-desc' => '{{desc|name=Wikibase Database|url=http://www.mediawiki.org/wiki/Extension:Wikibase}}',
 );
+
+/** German (Deutsch)
+ * @author Metalhead64
+ */
+$messages['de'] = array(
+	'wikibasedatabase-desc' => 'Komponente, die eine einfache Datenbank-Abstraktionsschicht beinhaltet',
+);
+
+/** Hebrew (עברית)
+ * @author Amire80
+ */
+$messages['he'] = array(
+	'wikibasedatabase-desc' => 'רכיב שמכיל שכבת אבסטרקציה שוטה למסדי נתונים',
+);
+
+/** Japanese (日本語)
+ * @author Shirayuki
+ */
+$messages['ja'] = array(
+	'wikibasedatabase-desc' => 'シンプルなデータベース抽象層を含むコンポーネント',
+);
