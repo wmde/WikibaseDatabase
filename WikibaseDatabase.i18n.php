@@ -43,6 +43,13 @@ $messages['qqq'] = array(
 	'wikibasedatabase-desc' => '{{desc|name=Wikibase Database|url=http://www.mediawiki.org/wiki/Extension:Wikibase}}',
 );
 
+/** Asturian (asturianu)
+ * @author Xuacu
+ */
+$messages['ast'] = array(
+	'wikibasedatabase-desc' => "Componente que contien una simple capa d'astracción de base de datos",
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
@@ -62,4 +69,18 @@ $messages['he'] = array(
  */
 $messages['ja'] = array(
 	'wikibasedatabase-desc' => 'シンプルなデータベース抽象層を含むコンポーネント',
+);
+
+/** Macedonian (македонски)
+ * @author Bjankuloski06
+ */
+$messages['mk'] = array(
+	'wikibasedatabase-desc' => 'Комппонтента што содржи прост слој за извадоци од базата',
+);
+
+/** Vietnamese (Tiếng Việt)
+ * @author Minh Nguyen
+ */
+$messages['vi'] = array(
+	'wikibasedatabase-desc' => 'Bộ phận chứa lớp trừu tượng cơ sở dữ liệu đơn giản',
 );
