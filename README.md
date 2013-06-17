@@ -1,11 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase.png?branch=master)](http://travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase)
 
-These is the readme file for the Wikibase Database component.
-
-[Extension page on mediawiki.org](https://www.mediawiki.org/wiki/Extension:Wikibase_Database)
-
-[Latest version of the readme file](https://gerrit.wikimedia.org/r/gitweb?p=mediawiki/extensions/WikibaseDatabase.git;a=blob;f=README.md)
-
 About
 =====
 
@@ -31,3 +25,10 @@ $db->createTable( new TableDefinition(
     )
 ) );
 ```
+
+Links
+-----
+
+[Extension page on mediawiki.org](https://www.mediawiki.org/wiki/Extension:Wikibase_Database)
+
+[Latest version of the readme file](https://gerrit.wikimedia.org/r/gitweb?p=mediawiki/extensions/WikibaseDatabase.git;a=blob;f=README.md)
