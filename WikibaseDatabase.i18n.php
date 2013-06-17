@@ -57,11 +57,32 @@ $messages['de'] = array(
 	'wikibasedatabase-desc' => 'Komponente, die eine einfache Datenbank-Abstraktionsschicht beinhaltet',
 );
 
+/** French (français)
+ * @author Gomoko
+ */
+$messages['fr'] = array(
+	'wikibasedatabase-desc' => 'Composant contenant une couche d’abstraction de base de données simple',
+);
+
+/** Galician (galego)
+ * @author Toliño
+ */
+$messages['gl'] = array(
+	'wikibasedatabase-desc' => 'Compoñente que contén unha capa de abstracción de base de datos simple',
+);
+
 /** Hebrew (עברית)
  * @author Amire80
  */
 $messages['he'] = array(
 	'wikibasedatabase-desc' => 'רכיב שמכיל שכבת אבסטרקציה שוטה למסדי נתונים',
+);
+
+/** Italian (italiano)
+ * @author Beta16
+ */
+$messages['it'] = array(
+	'wikibasedatabase-desc' => 'Componente contenente un semplice livello di astrazione del database',
 );
 
 /** Japanese (日本語)
@@ -78,9 +99,23 @@ $messages['mk'] = array(
 	'wikibasedatabase-desc' => 'Комппонтента што содржи прост слој за извадоци од базата',
 );
 
+/** tarandíne (tarandíne)
+ * @author Joetaras
+ */
+$messages['roa-tara'] = array(
+	'wikibasedatabase-desc' => "Combonende ca tène 'nu strate de astrazione d'u database semblice",
+);
+
 /** Vietnamese (Tiếng Việt)
  * @author Minh Nguyen
  */
 $messages['vi'] = array(
 	'wikibasedatabase-desc' => 'Bộ phận chứa lớp trừu tượng cơ sở dữ liệu đơn giản',
+);
+
+/** Traditional Chinese (中文（繁體）‎)
+ * @author Justincheng12345
+ */
+$messages['zh-hant'] = array(
+	'wikibasedatabase-desc' => '簡單資料庫抽象層的元件',
 );
