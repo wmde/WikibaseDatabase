@@ -12,18 +12,22 @@ About
 Wikibase Database is a simple database abstraction layer. It is inspired by the MediaWiki database
 abstraction layer and both improves and extends on it.
 
-`$db->select(
+```php
+$db->select(
     array( 'field_one', 'field_two' ),
     array(
         'foo' => 'bar',
         'awesome > 9000'
     )
-);`
+);
+```
 
-`$db->createTable( new TableDefinition(
+```php
+$db->createTable( new TableDefinition(
     'table_name',
     array(
         new FieldDefinition( ... ),
         ...
     )
-) );`
+) );
+```
