@@ -16,7 +16,6 @@ matrix:
   allow_failures:
     - env: DBTYPE=postgres STANDALONE=no
     - env: DBTYPE=postgres STANDALONE=yeah
-    - php: 5.5
   exclude:
     - php: 5.3
       env: DBTYPE=postgres STANDALONE=yeah
