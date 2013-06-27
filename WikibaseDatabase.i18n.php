@@ -113,6 +113,13 @@ $messages['vi'] = array(
 	'wikibasedatabase-desc' => 'Bộ phận chứa lớp trừu tượng cơ sở dữ liệu đơn giản',
 );
 
+/** Yiddish (ייִדיש)
+ * @author פוילישער
+ */
+$messages['yi'] = array(
+	'wikibasedatabase-desc' => 'קאמפאנענעט וואס אנטהאלט אן איינפאכע דאטנבאזע אבסטראקציע שיכטע',
+);
+
 /** Traditional Chinese (中文（繁體）‎)
  * @author Justincheng12345
  */
