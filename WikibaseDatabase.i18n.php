@@ -92,6 +92,13 @@ $messages['ja'] = array(
 	'wikibasedatabase-desc' => 'シンプルなデータベース抽象層を含むコンポーネント',
 );
 
+/** Korean (한국어)
+ * @author 아라
+ */
+$messages['ko'] = array(
+	'wikibasedatabase-desc' => '간단한 데이터베이스 추상화 계층을 포함하는 구성 요서',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
