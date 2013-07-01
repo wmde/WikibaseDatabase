@@ -93,10 +93,11 @@ $messages['ja'] = array(
 );
 
 /** Korean (한국어)
+ * @author Kwj2772
  * @author 아라
  */
 $messages['ko'] = array(
-	'wikibasedatabase-desc' => '간단한 데이터베이스 추상화 계층을 포함하는 구성 요서',
+	'wikibasedatabase-desc' => '간단한 데이터베이스 추상화 계층을 포함하는 구성 요소',
 );
 
 /** Macedonian (македонски)
