@@ -78,6 +78,13 @@ $messages['he'] = array(
 	'wikibasedatabase-desc' => 'רכיב שמכיל שכבת אבסטרקציה שוטה למסדי נתונים',
 );
 
+/** Indonesian (Bahasa Indonesia)
+ * @author Iwan Novirion
+ */
+$messages['id'] = array(
+	'wikibasedatabase-desc' => 'Komponen yang mengandung lapisan abstraksi basis data sederhana',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
