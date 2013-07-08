@@ -121,6 +121,13 @@ $messages['roa-tara'] = array(
 	'wikibasedatabase-desc' => "Combonende ca tène 'nu strate de astrazione d'u database semblice",
 );
 
+/** Serbian (Cyrillic script) (српски (ћирилица)‎)
+ * @author Милан Јелисавчић
+ */
+$messages['sr-ec'] = array(
+	'wikibasedatabase-desc' => 'Компонента која садржи једноставан апстрактни слој базе података',
+);
+
 /** Vietnamese (Tiếng Việt)
  * @author Minh Nguyen
  */
