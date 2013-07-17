@@ -62,7 +62,7 @@ spl_autoload_register( function ( $className ) {
 			array_shift( $pathParts );
 			$fileName = implode( '/', $pathParts );
 
-			require_once __DIR__ . '/includes/' . $fileName;
+			require_once __DIR__ . '/src/' . $fileName;
 		}
 	}
 } );
