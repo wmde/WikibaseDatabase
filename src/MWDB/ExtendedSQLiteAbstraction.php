@@ -7,7 +7,7 @@ use Wikibase\Database\FieldDefinition;
 use RuntimeException;
 
 /**
- * MySQL implementation of ExtendedAbstraction.
+ * SQLite implementation of ExtendedAbstraction.
  *
  * @since 0.1
  *
@@ -17,7 +17,7 @@ use RuntimeException;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class ExtendedMySQLAbstraction extends ExtendedAbstraction {
+class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 
 	/**
 	 * @see ExtendedAbstraction::getType
@@ -27,7 +27,7 @@ class ExtendedMySQLAbstraction extends ExtendedAbstraction {
 	 * @return string
 	 */
 	protected function getType() {
-		return 'mysql';
+		return 'sqlite';
 	}
 
 	/**
@@ -44,7 +44,7 @@ class ExtendedMySQLAbstraction extends ExtendedAbstraction {
 
 		// TODO: Escape table name?
 		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
-		$sql = 'CREATE TABLE `' . $db->getDBname() . '`.' . $GLOBALS['wgDBprefix'] . $table->getName() . ' (';
+		$sql = 'CREATE TABLE ' . $GLOBALS['wgDBprefix'] . $table->getName() . ' (';
 
 		$fields = array();
 
@@ -55,7 +55,7 @@ class ExtendedMySQLAbstraction extends ExtendedAbstraction {
 		$sql .= implode( ',', $fields );
 
 		// TODO: table options
-		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
+		$sql .= ');';
 
 		$success = $db->query( $sql, __METHOD__ );
 
