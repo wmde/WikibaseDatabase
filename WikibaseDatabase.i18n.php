@@ -106,6 +106,13 @@ $messages['roa-tara'] = array(
 	'wikibasedatabase-desc' => "Combonende ca tène 'nu strate de astrazione d'u database semblice",
 );
 
+/** Russian (русский)
+ * @author Kaganer
+ */
+$messages['ru'] = array(
+	'wikibasedatabase-desc' => 'Компонент, содержащий простой уровень абстракции базы данных (simple database abstraction layer)',
+);
+
 /** Serbian (Cyrillic script) (српски (ћирилица)‎)
  * @author Милан Јелисавчић
  */
