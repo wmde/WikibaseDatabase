@@ -14,8 +14,8 @@ env:
 
 matrix:
   allow_failures:
-    - env: DBTYPE=postgres TESTSUITEMediaWiki
-    - env: DBTYPE=postgres TESTSUITEStandalone
+    - env: DBTYPE=postgres TESTSUITE=MediaWiki
+    - env: DBTYPE=postgres TESTSUITE=Standalone
   exclude:
     - php: 5.3
       env: DBTYPE=postgres TESTSUITE=Standalone
