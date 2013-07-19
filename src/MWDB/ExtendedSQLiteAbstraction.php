@@ -79,7 +79,9 @@ class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 
 		// TODO: add all field stuff relevant here
 
-		$sql .= $field->allowsNull() ? ' NULL' : ' NOT NULL';
+		$sql .= ' ' . $field->allowsNull() ? 'NULL' : 'NOT NULL';
+
+		$sql .= ' ' . $this->getIndexString( $field->getIndex() );
 
 		return $sql;
 	}
@@ -105,6 +107,17 @@ class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
 		}
+	}
+
+	protected function getIndexString( $indexType ) {
+		switch ( $indexType ) {
+			case FieldDefinition::INDEX_PRIMARY:
+				return 'INTEGER PRIMARY KEY';
+		}
+
+		// TODO: handle other index types
+
+		return '';
 	}
 
 }
