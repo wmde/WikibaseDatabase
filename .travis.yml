@@ -25,7 +25,12 @@ matrix:
 
 before_script: bash .travis.sh $TESTSUITE
 
-script: cd ../phase3/extensions/WikibaseDatabase ; phpunit --testsuite=WikibaseDatabase$TESTSUITE
+script:
+  - cd ../phase3/extensions/WikibaseDatabase
+  - phpunit --testsuite=WikibaseDatabase$TESTSUITE --coverage-clover build/logs/clover.xml
+
+after_script:
+  - php vendor/bin/coveralls -v
 
 notifications:
   email:

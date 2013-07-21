@@ -8,6 +8,10 @@
 !.travis.yml
 !.travis.sh
 
+!.coveralls.yml
+
 composer.phar
 composer.lock
+
 vendor/
+build/

@@ -3,6 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/wikibase/database/version.png)](https://packagist.org/packages/wikibase/database)
 [![Latest Stable Version](https://poser.pugx.org/wikibase/database/d/total.png)](https://packagist.org/packages/wikibase/database)
 [![Build Status](https://secure.travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase.png?branch=master)](http://travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase)
+[![Coverage Status](https://coveralls.io/repos/wikimedia/mediawiki-extensions-WikibaseDatabase/badge.png?branch=master)](https://coveralls.io/r/wikimedia/mediawiki-extensions-WikibaseDatabase?branch=master)
 
 Wikibase Database is a simple database abstraction layer. It is inspired by the MediaWiki database
 abstraction layer and both improves and extends on it.
