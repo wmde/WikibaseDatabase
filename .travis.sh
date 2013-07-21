@@ -2,8 +2,10 @@
 
 set -x
 
-if [ "$1" != "Standalone" ]
+if [ "$1" == "Standalone" ]
 then
+	composer install
+else
 	cd ..
 
 	git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git phase3 --depth 1
