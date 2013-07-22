@@ -45,7 +45,7 @@ interface QueryInterface {
 	 *
 	 * @param string $tableName
 	 *
-	 * @return boolean Success indicator
+	 * @throws TableCreationFailedException
 	 */
 	public function dropTable( $tableName );
 
