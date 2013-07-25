@@ -1,16 +1,15 @@
 <?php
 
-namespace Wikibase\Database\Tests;
+namespace Wikibase\Database\Tests\MediaWiki;
 
 use DatabaseBase;
 use Wikibase\Database\DBConnectionProvider;
-use Wikibase\Database\MediaWikiQueryInterface;
-use Wikibase\Database\QueryInterface;
-use Wikibase\Database\TableDefinition;
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\MediaWiki\MediaWikiQueryInterface;
+use Wikibase\Database\TableDefinition;
 
 /**
- * @covers Wikibase\Database\MediaWikiQueryInterface
+ * @covers Wikibase\Database\MediaWiki\MediaWikiQueryInterface
  *
  * @file
  * @since 0.1
@@ -26,32 +25,17 @@ use Wikibase\Database\FieldDefinition;
 class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
 	/**
-	 * @return QueryInterface
-	 */
-	protected function newInstance() {
-		$connection = $this->getMock( 'DatabaseMysql' );
-
-		$connectionProvider = new DirectConnectionProvider( $connection );
-
-		return new MediaWikiQueryInterface(
-			$connectionProvider,
-			$this->getMock( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-		);
-	}
-
-	/**
 	 * @dataProvider tableNameProvider
 	 *
 	 * @param string $tableName
 	 */
 	public function testTableExists( $tableName ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -79,18 +63,22 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testCreateTable( TableDefinition $table ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
+
+		$tableSqlBuilder->expects( $this->once() )
+			->method( 'getCreateTableSql' )
+			->with( $this->equalTo( $table ) )
+			->will( $this->returnValue( 'foo bar baz' ) );
+
+		$connection->expects( $this->once() )
+			->method( 'query' )
+			->with( $this->equalTo( 'foo bar baz' ) )
+			->will( $this->returnValue( true ) );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
-
-		$extendedAbstraction->expects( $this->once() )
-			->method( 'createTable' )
-			->with( $this->equalTo( $table ) )
-			->will( $this->returnValue( true ) );
 
 		$queryInterface->createTable( $table );
 	}
@@ -102,16 +90,15 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testCreateTableFailure( TableDefinition $table ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
-		$extendedAbstraction->expects( $this->once() )
-			->method( 'createTable' )
+		$connection->expects( $this->once() )
+			->method( 'query' )
 			->will( $this->returnValue( false ) );
 
 		$this->setExpectedException( 'Wikibase\Database\TableCreationFailedException' );
@@ -126,12 +113,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testDropTable( TableDefinition $table ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -174,12 +160,12 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testInsert( $tableName, array $fieldValues ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
+		$tableSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\TableSqlBuilder' )
 			->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -201,12 +187,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testInsertFailure( $tableName, array $fieldValues ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -243,12 +228,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testUpdate( $tableName, array $newValues, array $conditions ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -272,12 +256,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testUpdateFailure( $tableName, array $newValues, array $conditions ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -337,12 +320,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testDelete( $tableName, array $conditions ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -361,12 +343,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testDeleteFailure( $tableName, array $conditions ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -397,12 +378,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetInsertId() {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$connection->expects( $this->once() )
@@ -417,12 +397,11 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testSelect( $tableName, array $fields, array $conditions ) {
 		$connection = $this->getMock( 'DatabaseMysql' );
-		$extendedAbstraction = $this->getMockBuilder( '\Wikibase\Database\MWDB\ExtendedMySQLAbstraction' )
-			->disableOriginalConstructor()->getMock();
+		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\TableSqlBuilder' );
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection ),
-			$extendedAbstraction
+			$tableSqlBuilder
 		);
 
 		$resultWrapper = $this->getMockBuilder( 'ResultWrapper' )

@@ -1,9 +1,17 @@
 <?php
 
-namespace Wikibase\Database;
+namespace Wikibase\Database\MediaWiki;
 
+use Wikibase\Database\DBConnectionProvider;
+use Wikibase\Database\DeleteFailedException;
+use Wikibase\Database\InsertFailedException;
+use Wikibase\Database\QueryInterface;
+use Wikibase\Database\ResultIterator;
+use Wikibase\Database\SelectFailedException;
+use Wikibase\Database\TableCreationFailedException;
 use Wikibase\Database\TableDefinition;
-use Wikibase\Database\MWDB\ExtendedAbstraction;
+use Wikibase\Database\TableSqlBuilder;
+use Wikibase\Database\UpdateFailedException;
 
 /**
  * Implementation of the QueryInterface interface using the MediaWiki
@@ -25,19 +33,19 @@ class MediaWikiQueryInterface implements QueryInterface {
 	private $connectionProvider;
 
 	/**
-	 * @var ExtendedAbstraction
+	 * @var TableSqlBuilder
 	 */
-	private $extendedAbstraction;
+	private $tableSqlBuilder;
 
 	/**
 	 * @since 0.1
 	 *
 	 * @param DBConnectionProvider $connectionProvider
-	 * @param ExtendedAbstraction $extendedAbstraction
+	 * @param TableSqlBuilder $tableSqlBuilder
 	 */
-	public function __construct( DBConnectionProvider $connectionProvider, ExtendedAbstraction $extendedAbstraction ) {
+	public function __construct( DBConnectionProvider $connectionProvider, TableSqlBuilder $tableSqlBuilder ) {
 		$this->connectionProvider = $connectionProvider;
-		$this->extendedAbstraction = $extendedAbstraction;
+		$this->tableSqlBuilder = $tableSqlBuilder;
 	}
 
 	/**
@@ -70,10 +78,12 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws TableCreationFailedException
 	 */
 	public function createTable( TableDefinition $table ) {
-		$success = $this->extendedAbstraction->createTable( $table );
+		$sql = $this->tableSqlBuilder->getCreateTableSql( $table );
 
-		if ( $success !== true ) {
-			throw new TableCreationFailedException( $table );
+		$success = $this->getDB()->query( $sql );
+
+		if ( $success === false ) {
+			throw new TableCreationFailedException( $table, $this->getDB()->lastQuery() );
 		}
 	}
 

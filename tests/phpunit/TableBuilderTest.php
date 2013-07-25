@@ -2,8 +2,8 @@
 
 namespace Wikibase\Database\Tests;
 
-use Wikibase\Database\TableBuilder;
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\TableBuilder;
 use Wikibase\Database\TableDefinition;
 
 /**

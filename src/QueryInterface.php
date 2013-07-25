@@ -33,7 +33,6 @@ interface QueryInterface {
 	 *
 	 * @param TableDefinition $table
 	 *
-	 * @return boolean Success indicator
 	 * @throws TableCreationFailedException
 	 */
 	public function createTable( TableDefinition $table );

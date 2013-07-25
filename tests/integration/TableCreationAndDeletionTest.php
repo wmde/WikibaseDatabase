@@ -1,28 +1,25 @@
 <?php
 
-namespace Wikibase\Database\Tests\MWDB;
+namespace Wikibase\Database\Tests;
 
-use Wikibase\Database\MWDB\ExtendedAbstraction;
-use Wikibase\Database\TableDefinition;
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\LazyDBConnectionProvider;
+use Wikibase\Database\MediaWiki\MWQueryInterfaceBuilder;
+use Wikibase\Database\TableDefinition;
 
 /**
- * Base class with tests for the Wikibase\Database\MWDB\ExtendedAbstraction deriving classes.
- *
  * @file
  * @since 0.1
  *
  * @ingroup WikibaseDatabaseTest
  *
+ * @group Wikibase
+ * @group WikibaseDatabase
+ *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-abstract class ExtendedAbstractionTest extends \PHPUnit_Framework_TestCase {
-
-	/**
-	 * @return ExtendedAbstraction
-	 */
-	protected abstract function newInstance();
+class TableCreationAndDeletionTest extends \PHPUnit_Framework_TestCase {
 
 	protected function tearDown() {
 		parent::tearDown();
@@ -31,30 +28,37 @@ abstract class ExtendedAbstractionTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function dropTablesIfStillThere() {
-		$queryInterface = $this->newInstance();
+		$queryInterface = $this->newQueryInterface();
 
-		foreach ( array( 'differentfieldtypes', 'defaultfieldvalues', 'notnullfields' ) as $tableName ) {
-			if ( $queryInterface->getDB()->tableExists( $tableName ) ) {
-				$queryInterface->getDB()->dropTable( $tableName );
+		foreach ( array( 'different_field_types', 'default_field_values', 'not_null_fields' ) as $tableName ) {
+			if ( $queryInterface->tableExists( $tableName ) ) {
+				$queryInterface->dropTable( $tableName );
 			}
 		}
+	}
+
+	protected function newQueryInterface() {
+		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
+
+		$qiBuilder = new MWQueryInterfaceBuilder();
+		return $qiBuilder->setConnection( $connectionProvider )->getQueryInterface();
 	}
 
 	public function tableProvider() {
 		$tables = array();
 
-		$tables[] = new TableDefinition( 'differentfieldtypes', array(
+		$tables[] = new TableDefinition( 'different_field_types', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
 			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
 			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
 			new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
 		) );
 
-		$tables[] = new TableDefinition( 'defaultfieldvalues', array(
+		$tables[] = new TableDefinition( 'default_field_values', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, true, 42 ),
 		) );
 
-		$tables[] = new TableDefinition( 'notnullfields', array(
+		$tables[] = new TableDefinition( 'not_null_fields', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
 			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
 		) );
@@ -74,32 +78,27 @@ abstract class ExtendedAbstractionTest extends \PHPUnit_Framework_TestCase {
 	 * @param TableDefinition $table
 	 */
 	public function testCreateAndDropTable( TableDefinition $table ) {
-		$extendedAbstraction = $this->newInstance();
+		$queryInterface = $this->newQueryInterface();
 
 		$this->assertFalse(
-			$extendedAbstraction->getDB()->tableExists( $table->getName() ),
+			$queryInterface->tableExists( $table->getName() ),
 			'Table should not exist before creation'
 		);
 
-		$success = $extendedAbstraction->createTable( $table );
+		$queryInterface->createTable( $table );
 
 		$this->assertTrue(
-			$success,
-			'Creation function returned success'
-		);
-
-		$this->assertTrue(
-			$extendedAbstraction->getDB()->tableExists( $table->getName() ),
+			$queryInterface->tableExists( $table->getName() ),
 			'Table "' . $table->getName() . '" exists after creation'
 		);
 
 		$this->assertTrue(
-			$extendedAbstraction->getDB()->dropTable( $table->getName() ) !== false,
+			$queryInterface->dropTable( $table->getName() ),
 			'Table removal worked'
 		);
 
 		$this->assertFalse(
-			$extendedAbstraction->getDB()->tableExists( $table->getName() ),
+			$queryInterface->tableExists( $table->getName() ),
 			'Table should not exist after deletion'
 		);
 	}

@@ -48,19 +48,15 @@ if ( defined( 'MW_PHPUNIT_TEST' ) ) {
  */
 $wgHooks['UnitTestsList'][]	= function( array &$files ) {
 	// @codeCoverageIgnoreStart
-	$testFiles = array(
-		'MWDB/ExtendedMySQLAbstraction',
+	$directoryIterator = new RecursiveDirectoryIterator( __DIR__ . '/tests' );
 
-		'FieldDefinition',
-		'MediaWikiQueryInterface',
-		'ResultIterator',
-		'TableBuilder',
-		'TableDefinition',
-		'TableCreationFailedException',
-	);
-
-	foreach ( $testFiles as $file ) {
-		$files[] = __DIR__ . '/tests/phpunit/' . $file . 'Test.php';
+	/**
+	 * @var SplFileInfo $fileInfo
+	 */
+	foreach ( new RecursiveIteratorIterator( $directoryIterator ) as $fileInfo ) {
+		if ( substr( $fileInfo->getFilename(), -8 ) === 'Test.php' ) {
+			$files[] = $fileInfo->getPathname();
+		}
 	}
 
 	return true;
