@@ -73,15 +73,28 @@ class ExtendedMySQLAbstraction extends ExtendedAbstraction {
 	protected function getFieldSQL( FieldDefinition $field ) {
 		$sql = $this->getFieldType( $field->getType() );
 
-		if ( $field->getDefault() !== null ) {
-			$sql .= ' DEFAULT ' . $this->getDB()->addQuotes( $field->getDefault() );
-		}
+		$sql .= ' ' . $this->getDefault( $field->getDefault() );
+
+		$sql .= ' ' . $this->getNull( $field->allowsNull() );
+
+		if($field->getIndex()==FieldDefinition::INDEX_PRIMARY && $field->getName()!=='id') {q($field);}
+		$sql .= ' ' . $this->getIndexString( $field->getIndex() );
 
 		// TODO: add all field stuff relevant here
 
-		$sql .= $field->allowsNull() ? ' NULL' : ' NOT NULL';
-
 		return $sql;
+	}
+
+	protected function getDefault( $default ) {
+		if ( $default !== null ) {
+			return 'DEFAULT ' . $this->getDB()->addQuotes( $default );
+		}
+
+		return '';
+	}
+
+	protected function getNull( $allowsNull ) {
+		return $allowsNull ? 'NULL' : 'NOT NULL';
 	}
 
 	/**
@@ -105,6 +118,17 @@ class ExtendedMySQLAbstraction extends ExtendedAbstraction {
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
 		}
+	}
+
+	protected function getIndexString( $indexType ) {
+		switch ( $indexType ) {
+			case FieldDefinition::INDEX_PRIMARY:
+				return 'PRIMARY KEY AUTO_INCREMENT';
+		}
+
+		// TODO: handle other index types
+
+		return '';
 	}
 
 }
