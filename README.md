@@ -11,7 +11,18 @@ abstraction layer and both improves and extends on it.
 ## Requirements
 
 * PHP 5.3 or later
-* MediaWiki 1.21 or later, only when using MediaWikiQueryInterface
+* When using MediaWikiQueryInterface: MediaWiki 1.21 or later
+
+## Supported databases
+
+This component currently only comes with one concrete implementation, which is
+MediaWikiQueryInterface. This implementation depends on MediaWiki and currently
+only has support for MySQL and SQLite.
+
+The core of this component has no database specific things in it. You can thus
+create your own implementation of the interfaces as you see fit, and are generally
+encouraged to keep these either in your consuming component, or in a dedicated one
+in case you have multiple consumers.
 
 ## Installation
 
@@ -39,7 +50,7 @@ You can find a list of the dependencies in the "require" section of the composer
 Load all dependencies and the load the Wikibase Database library by including its entry point:
 WikibaseDatabase.php.
 
-## Usage
+## Using the abstraction layer
 
 ```php
 $db->select(
@@ -55,11 +66,32 @@ $db->select(
 $db->createTable( new TableDefinition(
     'table_name',
     array(
-        new FieldDefinition( ... ),
-        ...
+        new FieldDefinition( /* ... */ ),
+        /* ... */
     )
 ) );
 ```
+
+## Abstraction layer structure
+
+All classes of this component reside in the Wikibase\Database namespace, which is PSR-0 mapped
+onto the src/ directory.
+
+The main interface of this component is QueryInterface. It defines methods for interacting with
+a database. These methods include tableExists, createTable, insert, update and select. When using
+this component, you will likely be passing around an instance of an implementation of this interface.
+
+Classes and interfaces in sub namespaces are generally considered package private and should thus
+not be used in any way outside of the package. The exception to this are the implementations of
+the QueryInterface interface, and the dependencies those require.
+
+### MediaWiki implementation
+
+Currently only one implementation of QueryInterface is bundled together with the abstract part
+of this component. This implementation is the MediaWikiQueryInterface class in the
+Wikibase\Database\MediaWiki namespace. All MediaWiki specific code contained by this package
+resides in this namespace. (Currently with the exception of DBConnectionProvider and
+LazyDBConnectionProvider.)
 
 ## Tests
 

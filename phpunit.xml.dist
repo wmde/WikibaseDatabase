@@ -15,12 +15,10 @@
     <testsuites>
         <testsuite name="WikibaseDatabaseStandalone">
             <directory>tests/phpunit</directory>
-            <exclude>tests/phpunit/MWDB</exclude>
-            <exclude>tests/phpunit/MediaWikiQueryInterfaceTest.php</exclude>
+            <exclude>tests/phpunit/MediaWiki</exclude>
         </testsuite>
         <testsuite name="WikibaseDatabaseMediaWiki">
-            <directory>tests/phpunit/MWDB</directory>
-            <file>tests/phpunit/MediaWikiQueryInterfaceTest.php</file>
+            <directory>tests/phpunit/MediaWiki</directory>
         </testsuite>
     </testsuites>
 </phpunit>

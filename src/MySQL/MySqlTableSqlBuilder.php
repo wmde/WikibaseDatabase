@@ -1,13 +1,15 @@
 <?php
 
-namespace Wikibase\Database\MWDB;
+namespace Wikibase\Database\MySQL;
 
-use Wikibase\Database\TableDefinition;
-use Wikibase\Database\FieldDefinition;
 use RuntimeException;
+use Wikibase\Database\Escaper;
+use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\TableDefinition;
+use Wikibase\Database\TableSqlBuilder;
 
 /**
- * SQLite implementation of ExtendedAbstraction.
+ * MySQL implementation of TableSqlBuilder.
  *
  * @since 0.1
  *
@@ -17,17 +19,21 @@ use RuntimeException;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
+class MySqlTableSqlBuilder extends TableSqlBuilder {
+
+	protected $dbName;
+	protected $tablePrefix;
+	protected $escaper;
 
 	/**
-	 * @see ExtendedAbstraction::getType
-	 *
-	 * @since 0.1
-	 *
-	 * @return string
+	 * @param string $dbName
+	 * @param string $tablePrefix
+	 * @param Escaper $fieldValueEscaper
 	 */
-	protected function getType() {
-		return 'sqlite';
+	public function __construct( $dbName, $tablePrefix, Escaper $fieldValueEscaper ) {
+		$this->dbName = $dbName;
+		$this->tablePrefix = $tablePrefix;
+		$this->escaper = $fieldValueEscaper;
 	}
 
 	/**
@@ -37,14 +43,12 @@ class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 	 *
 	 * @param TableDefinition $table
 	 *
-	 * @return boolean Success indicator
+	 * @return string
 	 */
-	public function createTable( TableDefinition $table ) {
-		$db = $this->getDB();
-
+	public function getCreateTableSql( TableDefinition $table ) {
 		// TODO: Escape table name?
 		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
-		$sql = 'CREATE TABLE ' . $GLOBALS['wgDBprefix'] . $table->getName() . ' (';
+		$sql = 'CREATE TABLE `' . $this->dbName . '`.' . $this->tablePrefix . $table->getName() . ' (';
 
 		$fields = array();
 
@@ -52,14 +56,12 @@ class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 			$fields[] = $field->getName() . ' ' . $this->getFieldSQL( $field );
 		}
 
-		$sql .= implode( ',', $fields );
+		$sql .= implode( ', ', $fields );
 
 		// TODO: table options
-		$sql .= ');';
+		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
 
-		$success = $db->query( $sql, __METHOD__ );
-
-		return $success !== false;
+		return $sql;
 	}
 
 	/**
@@ -73,17 +75,27 @@ class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 	protected function getFieldSQL( FieldDefinition $field ) {
 		$sql = $this->getFieldType( $field->getType() );
 
-		if ( $field->getDefault() !== null ) {
-			$sql .= ' DEFAULT ' . $this->getDB()->addQuotes( $field->getDefault() );
-		}
+		$sql .= $this->getDefault( $field->getDefault() );
+
+		$sql .= $this->getNull( $field->allowsNull() );
+
+		$sql .= $this->getIndexString( $field->getIndex() );
 
 		// TODO: add all field stuff relevant here
 
-		$sql .= ' ' . $field->allowsNull() ? 'NULL' : 'NOT NULL';
-
-		$sql .= ' ' . $this->getIndexString( $field->getIndex() );
-
 		return $sql;
+	}
+
+	protected function getDefault( $default ) {
+		if ( $default !== null ) {
+			return ' DEFAULT ' . $this->escaper->getEscapedValue( $default );
+		}
+
+		return '';
+	}
+
+	protected function getNull( $allowsNull ) {
+		return $allowsNull ? ' NULL' : ' NOT NULL';
 	}
 
 	/**
@@ -112,7 +124,7 @@ class ExtendedSQLiteAbstraction extends ExtendedAbstraction {
 	protected function getIndexString( $indexType ) {
 		switch ( $indexType ) {
 			case FieldDefinition::INDEX_PRIMARY:
-				return 'INTEGER PRIMARY KEY';
+				return ' PRIMARY KEY AUTO_INCREMENT';
 		}
 
 		// TODO: handle other index types
