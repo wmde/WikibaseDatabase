@@ -3,6 +3,7 @@
 namespace Wikibase\Database\Tests;
 
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\IndexDefinition;
 use Wikibase\Database\TableDefinition;
 
 /**
@@ -36,7 +37,31 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition( 'o', FieldDefinition::TYPE_TEXT ),
 				new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
-				new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, false, 42 ),
+				new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+			)
+		);
+
+		$instances[] = new TableDefinition(
+			'spam',
+			array(
+				new FieldDefinition( 'o', FieldDefinition::TYPE_TEXT ),
+				new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
+				new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+			),
+			array(
+				new IndexDefinition( 'o', array( 'o' => 0 ) ),
+			)
+		);
+
+		$instances[] = new TableDefinition(
+			'spam',
+			array(
+				new FieldDefinition( 'o', FieldDefinition::TYPE_TEXT ),
+			),
+			array(
+				new IndexDefinition( 'o', array( 'o' => 0 ) ),
+				new IndexDefinition( 'h', array( 'h' => 42 ) ),
+				new IndexDefinition( 'foo', array( 'bar' => 5, 'baz' => 0 ) ),
 			)
 		);
 
@@ -144,6 +169,67 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals( $fields, array_values( $newTable->getFields() ) );
 		$this->assertEquals( $table->getName(), $newTable->getName() );
+	}
+
+	/**
+	 * @dataProvider instanceProvider
+	 *
+	 * @param TableDefinition $table
+	 */
+	public function testReturnTypeOfGetIndexes( TableDefinition $table ) {
+		$this->assertInternalType( 'array', $table->getIndexes() );
+		$this->assertContainsOnlyInstancesOf( 'Wikibase\Database\IndexDefinition', $table->getIndexes() );
+
+		$newTable = new TableDefinition( $table->getName(), $table->getFields(), $table->getIndexes() );
+
+		$this->assertEquals(
+			$table->getIndexes(),
+			$newTable->getIndexes(),
+			'The TableDefinition indexes are set and obtained correctly'
+		);
+	}
+
+	/**
+	 * @dataProvider invalidIndexesProvider
+	 */
+	public function testCannotConstructWithInvalidIndexList( array $invalidIndexList ) {
+		$this->setExpectedException( 'InvalidArgumentException' );
+
+		new TableDefinition(
+			'foo',
+			array( new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ) ),
+			$invalidIndexList
+		);
+	}
+
+	public function invalidIndexesProvider() {
+		$mockIndexDefinition = $this->getMockBuilder( 'Wikibase\Database\IndexDefinition' )
+			->disableOriginalConstructor()->getMock();
+
+		$argLists = array();
+
+		$argLists[] = array( array(
+			null
+		) );
+
+		$argLists[] = array( array(
+			'foo bar'
+		) );
+
+		$argLists[] = array( array(
+			$mockIndexDefinition,
+			array()
+		) );
+
+		$argLists[] = array( array(
+			$mockIndexDefinition,
+			$mockIndexDefinition,
+			4.2,
+			$mockIndexDefinition,
+			$mockIndexDefinition
+		) );
+
+		return $argLists;
 	}
 
 }

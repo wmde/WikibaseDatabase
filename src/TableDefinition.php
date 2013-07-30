@@ -34,21 +34,42 @@ class TableDefinition {
 	/**
 	 * @since 0.1
 	 *
+	 * @var IndexDefinition[]
+	 */
+	private $indexes;
+
+	/**
+	 * @since 0.1
+	 *
 	 * @param string $name
 	 * @param FieldDefinition[] $fields
+	 * @param IndexDefinition[] $indexes
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $name, array $fields ) {
+	public function __construct( $name, array $fields, array $indexes = array() ) {
+		$this->setName( $name );
+		$this->setFields( $fields );
+		$this->setIndexes( $indexes );
+	}
+
+	protected function setName( $name ) {
 		if ( !is_string( $name ) ) {
 			throw new InvalidArgumentException( 'The table $name needs to be a string' );
 		}
 
+		$this->name = $name;
+	}
+
+	/**
+	 * @param FieldDefinition[] $fields
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	protected function setFields( array $fields ) {
 		if ( empty( $fields ) ) {
 			throw new InvalidArgumentException( 'The table $fields list cannot be empty' );
 		}
-
-		$this->name = $name;
 
 		$this->fields = array();
 
@@ -62,6 +83,23 @@ class TableDefinition {
 			}
 
 			$this->fields[$field->getName()] = $field;
+		}
+	}
+
+	/**
+	 * @param IndexDefinition[] $indexes
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	protected function setIndexes( array $indexes ) {
+		$this->indexes = array();
+
+		foreach ( $indexes as $index ) {
+			if ( !( $index instanceof IndexDefinition ) ) {
+				throw new InvalidArgumentException( 'All table indexes should be of type IndexDefinition' );
+			}
+
+			$this->indexes[$index->getName()] = $index;
 		}
 	}
 
@@ -90,6 +128,19 @@ class TableDefinition {
 	}
 
 	/**
+	 * Returns the indexes that this table has.
+	 * The array keys in the returned array correspond to the names
+	 * of the indexes defined by the value they point to.
+	 *
+	 * @since 0.1
+	 *
+	 * @return IndexDefinition[]
+	 */
+	public function getIndexes() {
+		return $this->indexes;
+	}
+
+	/**
 	 * Returns if the table has a field with the provided name.
 	 *
 	 * @since 0.1
@@ -112,7 +163,7 @@ class TableDefinition {
 	 * @return TableDefinition
 	 */
 	public function mutateName( $cloneName ) {
-		return new self( $cloneName, $this->fields );
+		return new self( $cloneName, $this->fields, $this->indexes );
 	}
 
 	/**
@@ -125,9 +176,7 @@ class TableDefinition {
 	 * @return TableDefinition
 	 */
 	public function mutateFields( array $fields ) {
-		return new self( $this->name, $fields );
+		return new self( $this->name, $fields, $this->indexes );
 	}
-
-	// TODO: multiple field indices
 
 }
