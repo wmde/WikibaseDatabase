@@ -55,13 +55,6 @@ class FieldDefinition {
 	/**
 	 * @since 0.1
 	 *
-	 * @var string|null
-	 */
-	private $index;
-
-	/**
-	 * @since 0.1
-	 *
 	 * @var boolean
 	 */
 	private $autoIncrement;
@@ -80,15 +73,8 @@ class FieldDefinition {
 	const ATTRIB_BINARY = 'binary';
 	const ATTRIB_UNSIGNED = 'unsigned';
 
-	const NO_INDEX = null;
-	const INDEX = 'index';
-	const INDEX_UNIQUE = 'unique';
-	const INDEX_FULLTEXT = 'fulltext';
-	const INDEX_PRIMARY = 'primary';
-
 	const AUTOINCREMENT = true;
 	const NO_AUTOINCREMENT = false;
-
 
 	/**
 	 * @since 0.1
@@ -98,12 +84,11 @@ class FieldDefinition {
 	 * @param boolean $null
 	 * @param mixed $default
 	 * @param string|null $attributes
-	 * @param string|null $index
 	 * @param boolean $autoIncrement
 	 *
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
-	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = null, $index = null, $autoIncrement = false ) {
+	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = null, $autoIncrement = false ) {
 		if ( !is_string( $name ) ) {
 			throw new InvalidArgumentException( 'The field $name needs to be a string' );
 		}
@@ -116,10 +101,6 @@ class FieldDefinition {
 			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
 		}
 
-		if ( !is_null( $index ) && !is_string( $index ) ) {
-			throw new InvalidArgumentException( 'The $index parameter needs to be a string' );
-		}
-
 		if ( !is_bool( $autoIncrement ) ) {
 			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
 		}
@@ -129,7 +110,6 @@ class FieldDefinition {
 		$this->default = $default;
 		$this->attributes = $attributes;
 		$this->null = $null;
-		$this->index = $index;
 		$this->autoIncrement = $autoIncrement;
 	}
 
@@ -191,17 +171,6 @@ class FieldDefinition {
 		return $this->null;
 	}
 
-	/**
-	 * Returns the index type of the field.
-	 * This is one of the INDEX_ constants or null.
-	 *
-	 * @since 0.1
-	 *
-	 * @return string|null
-	 */
-	public function getIndex() {
-		return $this->index;
-	}
 
 	/**
 	 * Returns if the field has auto increment.

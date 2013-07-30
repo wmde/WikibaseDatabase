@@ -61,6 +61,8 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 		// TODO: table options
 		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
 
+		// TODO: indexes
+
 		return $sql;
 	}
 
@@ -78,8 +80,6 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 		$sql .= $this->getDefault( $field->getDefault() );
 
 		$sql .= $this->getNull( $field->allowsNull() );
-
-		$sql .= $this->getIndexString( $field->getIndex() );
 
 		// TODO: add all field stuff relevant here
 
@@ -119,17 +119,6 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
 		}
-	}
-
-	protected function getIndexString( $indexType ) {
-		switch ( $indexType ) {
-			case FieldDefinition::INDEX_PRIMARY:
-				return ' PRIMARY KEY AUTO_INCREMENT';
-		}
-
-		// TODO: handle other index types
-
-		return '';
 	}
 
 }

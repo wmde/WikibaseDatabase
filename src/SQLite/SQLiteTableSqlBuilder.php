@@ -58,6 +58,8 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		// TODO: table options
 		$sql .= ');';
 
+		// TODO: indexes
+
 		return $sql;
 	}
 
@@ -75,8 +77,6 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$sql .= $this->getDefault( $field->getDefault() );
 
 		$sql .= $this->getNull( $field->allowsNull() );
-
-		$sql .= $this->getIndexString( $field->getIndex() );
 
 		return $sql;
 	}
@@ -114,17 +114,6 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
 		}
-	}
-
-	protected function getIndexString( $indexType ) {
-		switch ( $indexType ) {
-			case FieldDefinition::INDEX_PRIMARY:
-				return ' INTEGER PRIMARY KEY';
-		}
-
-		// TODO: handle other index types
-
-		return '';
 	}
 
 }

@@ -67,26 +67,17 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'tableName',
 				array(
 					new FieldDefinition(
-						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
-						FieldDefinition::NOT_NULL,
-						FieldDefinition::NO_DEFAULT,
-						FieldDefinition::NO_ATTRIB,
-						FieldDefinition::INDEX_PRIMARY
+						'primaryField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::NO_ATTRIB
 					),
 					new FieldDefinition(
-						'textField',
-						FieldDefinition::TYPE_TEXT
+						'textField', FieldDefinition::TYPE_TEXT
 					),
 					new FieldDefinition(
-						'intField',
-						FieldDefinition::TYPE_INTEGER,
-						FieldDefinition::NOT_NULL,
-						42
+						'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42
 					),
 				)
 			),
-			'CREATE TABLE dbNametableName (primaryField INT NOT NULL INTEGER PRIMARY KEY, textField BLOB NULL, intField INT DEFAULT  NOT NULL);'
+			'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT  NOT NULL);'
 		);
 
 		return $argLists;

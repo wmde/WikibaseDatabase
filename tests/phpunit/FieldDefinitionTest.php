@@ -24,39 +24,23 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		$instances = array();
 
 		$instances[] = new FieldDefinition(
-			'names',
-			FieldDefinition::TYPE_TEXT
+			'names', FieldDefinition::TYPE_TEXT
 		);
 
 		$instances[] = new FieldDefinition(
-			'numbers',
-			FieldDefinition::TYPE_FLOAT
+			'numbers', FieldDefinition::TYPE_FLOAT
 		);
 
 		$instances[] = new FieldDefinition(
-			'stuffs',
-			FieldDefinition::TYPE_INTEGER,
-			false,
-			42,
-			FieldDefinition::ATTRIB_UNSIGNED
+			'stuffs', FieldDefinition::TYPE_INTEGER, false, 42, FieldDefinition::ATTRIB_UNSIGNED
 		);
 
 		$instances[] = new FieldDefinition(
-			'stuffs',
-			FieldDefinition::TYPE_INTEGER,
-			true,
-			null,
-			null
+			'stuffs', FieldDefinition::TYPE_INTEGER, true, null, null
 		);
 
 		$instances[] = new FieldDefinition(
-			'stuffs',
-			FieldDefinition::TYPE_INTEGER,
-			true,
-			null,
-			null,
-			null,
-			true
+			'stuffs', FieldDefinition::TYPE_INTEGER, true, null, null, true
 		);
 
 		$argLists = array();
