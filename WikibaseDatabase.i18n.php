@@ -35,6 +35,13 @@ $messages['ast'] = array(
 	'wikibasedatabase-desc' => "Componente que contien una simple capa d'astracción de base de datos",
 );
 
+/** Danish (dansk)
+ * @author Christian List
+ */
+$messages['da'] = array(
+	'wikibasedatabase-desc' => 'Komponent, der indeholder et simpelt databaseabstraktionslag',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
