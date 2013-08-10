@@ -127,6 +127,13 @@ $messages['sr-ec'] = array(
 	'wikibasedatabase-desc' => 'Компонента која садржи једноставан апстрактни слој базе података',
 );
 
+/** Ukrainian (українська)
+ * @author Andriykopanytsia
+ */
+$messages['uk'] = array(
+	'wikibasedatabase-desc' => 'Компонент, що містить простий шар абстрагування бази даних',
+);
+
 /** Vietnamese (Tiếng Việt)
  * @author Minh Nguyen
  */
