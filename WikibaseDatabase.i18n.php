@@ -99,6 +99,13 @@ $messages['ko'] = array(
 	'wikibasedatabase-desc' => '간단한 데이터베이스 추상화 계층을 포함하는 구성 요소',
 );
 
+/** Latvian (latviešu)
+ * @author Papuass
+ */
+$messages['lv'] = array(
+	'wikibasedatabase-desc' => 'Komponents, kas satur vienkāršu datubāzes abstrakcijas slāni',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
