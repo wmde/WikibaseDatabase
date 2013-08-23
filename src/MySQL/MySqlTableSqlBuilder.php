@@ -5,6 +5,7 @@ namespace Wikibase\Database\MySQL;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\IndexDefinition;
 use Wikibase\Database\TableDefinition;
 use Wikibase\Database\TableSqlBuilder;
 
@@ -18,6 +19,7 @@ use Wikibase\Database\TableSqlBuilder;
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class MySqlTableSqlBuilder extends TableSqlBuilder {
 
@@ -50,18 +52,20 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
 		$sql = 'CREATE TABLE `' . $this->dbName . '`.' . $this->tablePrefix . $table->getName() . ' (';
 
-		$fields = array();
+		$queryParts = array();
 
 		foreach ( $table->getFields() as $field ) {
-			$fields[] = $field->getName() . ' ' . $this->getFieldSQL( $field );
+			$queryParts[] = $field->getName() . ' ' . $this->getFieldSQL( $field );
 		}
 
-		$sql .= implode( ', ', $fields );
+		foreach ( $table->getIndexes() as $index ){
+			$queryParts[] = $this->getIndexSQL( $index );
+		}
+
+		$sql .= implode( ', ', $queryParts );
 
 		// TODO: table options
 		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
-
-		// TODO: indexes
 
 		return $sql;
 	}
@@ -72,7 +76,6 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 	 * @param FieldDefinition $field
 	 *
 	 * @return string
-	 * @throws RuntimeException
 	 */
 	protected function getFieldSQL( FieldDefinition $field ) {
 		$sql = $this->getFieldType( $field->getType() );
@@ -82,6 +85,30 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 		$sql .= $this->getNull( $field->allowsNull() );
 
 		// TODO: add all field stuff relevant here
+
+		return $sql;
+	}
+
+	/**
+	 * @since 0.1
+	 *
+	 * @param IndexDefinition $index
+	 *
+	 * @return string
+	 */
+	protected function getIndexSQL( IndexDefinition $index ) {
+		$sql = $this->getIndexType( $index->getType() );
+
+		if( $index->getType() !== IndexDefinition::TYPE_PRIMARY ){
+			$sql .= ' `'.$index->getName().'`';
+		}
+
+		$columnNames = array();
+		foreach( $index->getColumns() as $columnName => $intSize ){
+			$columnNames[] = $columnName;
+		}
+
+		$sql .= ' (`'.implode( '`,`', $columnNames ).'`)';
 
 		return $sql;
 	}
@@ -118,6 +145,31 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 				return 'TINYINT';
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
+		}
+	}
+
+	/**
+	 * Returns the MySQL field type for a given IndexDefinition type constant.
+	 *
+	 * @param string $indexType
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	protected function getIndexType( $indexType ) {
+		switch ( $indexType ) {
+			case IndexDefinition::TYPE_PRIMARY:
+				return 'PRIMARY KEY';
+			case IndexDefinition::TYPE_INDEX:
+				return 'INDEX';
+			case IndexDefinition::TYPE_UNIQUE:
+				return 'UNIQUE INDEX';
+			case IndexDefinition::TYPE_SPATIAL:
+				return 'SPATIAL INDEX';
+			case IndexDefinition::TYPE_FULLTEXT:
+				return 'FULLTEXT INDEX';
+			default:
+				throw new RuntimeException( __CLASS__ . ' does not support db indexes of type ' . $indexType );
 		}
 	}
 
