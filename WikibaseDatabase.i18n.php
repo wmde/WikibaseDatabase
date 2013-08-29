@@ -113,6 +113,13 @@ $messages['mk'] = array(
 	'wikibasedatabase-desc' => 'Комппонтента што содржи прост слој за извадоци од базата',
 );
 
+/** Occitan (occitan)
+ * @author Cedric31
+ */
+$messages['oc'] = array(
+	'wikibasedatabase-desc' => 'Component que conten un jaç d’abstraccion de banca de donadas simpla',
+);
+
 /** tarandíne (tarandíne)
  * @author Joetaras
  */
