@@ -32,10 +32,14 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newInstance() {
+
+		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+		$mockEscaper->expects( $this->any() )->method( 'getEscapedValue' )->will( $this->returnArgument(0) );
+
 		return new MySqlTableSqlBuilder(
 			self::DB_NAME,
 			self::TABLE_PREFIX,
-			$this->getMock( 'Wikibase\Database\Escaper' )
+			$mockEscaper
 		);
 	}
 
@@ -78,7 +82,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.prefix_tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT  NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.prefix_tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
 		);
 
 		return $argLists;
