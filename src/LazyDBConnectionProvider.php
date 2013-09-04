@@ -8,6 +8,8 @@ use DatabaseBase;
  * Lazy database connection provider.
  * The connection is fetched when needed using the id provided in the constructor.
  *
+ * TODO: implement connection handling requirements
+ *
  * @since 0.1
  *
  * @file

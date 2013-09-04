@@ -7,6 +7,8 @@ use DatabaseBase;
 /**
  * Interface for database connection providers.
  *
+ * TODO: specify connection handling requirements
+ *
  * @since 0.1
  *
  * @file
