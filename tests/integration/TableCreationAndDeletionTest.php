@@ -3,6 +3,7 @@
 namespace Wikibase\Database\Tests;
 
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\IndexDefinition;
 use Wikibase\Database\LazyDBConnectionProvider;
 use Wikibase\Database\MediaWiki\MWQueryInterfaceBuilder;
 use Wikibase\Database\TableDefinition;
@@ -62,6 +63,19 @@ class TableCreationAndDeletionTest extends \PHPUnit_Framework_TestCase {
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
 			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
 		) );
+
+		$tables[] = new TableDefinition( 'not_null_fields', array(
+			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
+			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
+		) );
+
+		$tables[] = new TableDefinition( 'default_field_values', array(
+			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
+			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, false ),
+			new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, false ),
+			),
+			array( new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) ) )
+		);
 
 		$argLists = array();
 
