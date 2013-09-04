@@ -5,6 +5,7 @@ namespace Wikibase\Database\SQLite;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\IndexDefinition;
 use Wikibase\Database\TableDefinition;
 use Wikibase\Database\TableSqlBuilder;
 
@@ -18,6 +19,7 @@ use Wikibase\Database\TableSqlBuilder;
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
@@ -58,7 +60,9 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		// TODO: table options
 		$sql .= ');';
 
-		// TODO: indexes
+		foreach ( $table->getIndexes() as $index ){
+			$sql .= $this->getIndexSQL( $index, $table );
+		}
 
 		return $sql;
 	}
@@ -77,6 +81,30 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$sql .= $this->getDefault( $field->getDefault() );
 
 		$sql .= $this->getNull( $field->allowsNull() );
+
+		return $sql;
+	}
+
+	/**
+	 * @since 0.1
+	 *
+	 * @param IndexDefinition $index
+	 * @param TableDefinition $table
+	 *
+	 * @return string
+	 */
+	protected function getIndexSQL( IndexDefinition $index, TableDefinition $table ) {
+		$sql = 'CREATE ';
+		$sql .= $this->getIndexType( $index->getType() ) . ' ';
+		$sql .= $index->getName() . ' ';
+		$sql .= 'ON '.$this->tablePrefix . $table->getName();
+
+		$columnNames = array();
+		foreach( $index->getColumns() as $columnName => $intSize ){
+			$columnNames[] = $columnName;
+		}
+
+		$sql .= ' ('.implode( ',', $columnNames ).');';
 
 		return $sql;
 	}
@@ -113,6 +141,25 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 				return 'TINYINT';
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
+		}
+	}
+
+	/**
+	 * Returns the SQL field type for a given IndexDefinition type constant.
+	 *
+	 * @param string $indexType
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	protected function getIndexType( $indexType ) {
+		switch ( $indexType ) {
+			case IndexDefinition::TYPE_INDEX:
+				return 'INDEX';
+			case IndexDefinition::TYPE_UNIQUE:
+				return 'UNIQUE INDEX';
+			default:
+				throw new RuntimeException( __CLASS__ . ' does not support db indexes of type ' . $indexType );
 		}
 	}
 

@@ -3,6 +3,7 @@
 namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\FieldDefinition;
+use Wikibase\Database\IndexDefinition;
 use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
 use Wikibase\Database\TableDefinition;
 
@@ -20,6 +21,7 @@ use Wikibase\Database\TableDefinition;
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
@@ -91,6 +93,38 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				)
 			),
 			'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);'
+		);
+
+		$argLists[] = array(
+			new TableDefinition(
+				'tableName',
+				array(
+					new FieldDefinition(
+						'primaryField',
+						FieldDefinition::TYPE_INTEGER,
+						FieldDefinition::NOT_NULL,
+						FieldDefinition::NO_DEFAULT,
+						FieldDefinition::NO_ATTRIB
+					),
+					new FieldDefinition(
+						'textField',
+						FieldDefinition::TYPE_TEXT
+					),
+					new FieldDefinition(
+						'intField',
+						FieldDefinition::TYPE_INTEGER,
+						FieldDefinition::NOT_NULL, 42
+					),
+				),
+				array(
+					new IndexDefinition(
+						'indexName',
+						array( 'intField' => 0, 'textField' => 0 ),
+						IndexDefinition::TYPE_INDEX
+					),
+				)
+			),
+			'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX indexName ON dbNametableName (intField,textField);'
 		);
 
 		return $argLists;
