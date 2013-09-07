@@ -99,6 +99,13 @@ $messages['ko'] = array(
 	'wikibasedatabase-desc' => '간단한 데이터베이스 추상화 계층을 포함하는 구성 요소',
 );
 
+/** Colognian (Ripoarisch)
+ * @author Purodha
+ */
+$messages['ksh'] = array(
+	'wikibasedatabase-desc' => 'Ene Projrammzohsaz med en einfaache Scheesch för Zosaameärebeit met de Daatebangke ze veralljemeinere.',
+);
+
 /** Latvian (latviešu)
  * @author Papuass
  */
