@@ -7,6 +7,7 @@ use Wikibase\Database\Escaper;
 use Wikibase\Database\FieldDefinition;
 use Wikibase\Database\IndexDefinition;
 use Wikibase\Database\TableDefinition;
+use Wikibase\Database\TableNameFormatter;
 use Wikibase\Database\TableSqlBuilder;
 
 /**
@@ -25,14 +26,17 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 	protected $escaper;
 	protected $tablePrefix;
+	protected $tableNameFormatter;
 
 	/**
 	 * @param string $tablePrefix
 	 * @param Escaper $fieldValueEscaper
+	 * @param TableNameFormatter $tableNameFormatter
 	 */
-	public function __construct( $tablePrefix, Escaper $fieldValueEscaper ) {
+	public function __construct( $tablePrefix, Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
 		$this->tablePrefix = $tablePrefix;
 		$this->escaper = $fieldValueEscaper;
+		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
 	/**
@@ -45,9 +49,9 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	 * @return string
 	 */
 	public function getCreateTableSql( TableDefinition $table ) {
-		// TODO: Escape table name?
 		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
-		$sql = 'CREATE TABLE ' . $this->tablePrefix . $table->getName() . ' (';
+		$sql = 'CREATE TABLE ' .
+			$this->tableNameFormatter->formatTableName( $this->tablePrefix . $table->getName() ) . ' (';
 
 		$fields = array();
 

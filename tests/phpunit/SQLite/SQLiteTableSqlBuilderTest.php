@@ -40,9 +40,15 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getEscapedValue' )
 			->will( $this->returnArgument(0) );
 
+		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
+		$mockTableNameFormatter->expects( $this->any() )
+			->method( 'formatTableName' )
+			->will( $this->returnArgument(0) );
+
 		return new SQLiteTableSqlBuilder(
 			self::DB_NAME,
-			$mockEscaper
+			$mockEscaper,
+			$mockTableNameFormatter
 		);
 	}
 

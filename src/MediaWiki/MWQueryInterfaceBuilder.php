@@ -68,19 +68,25 @@ class MWQueryInterfaceBuilder {
 		return new MySqlTableSqlBuilder(
 			$this->connectionProvider->getConnection()->getDBname(),
 			$this->connectionProvider->getConnection()->tablePrefix(),
-			$this->newEscaper()
+			$this->newEscaper(),
+			$this->newTableNameFormatter()
 		);
 	}
 
 	protected function newSQLiteTableSqlBuilder() {
 		return new SQLiteTableSqlBuilder(
 			$this->connectionProvider->getConnection()->tablePrefix(),
-			$this->newEscaper()
+			$this->newEscaper(),
+			$this->newTableNameFormatter()
 		);
 	}
 
 	protected function newEscaper() {
 		return new MediaWikiEscaper( $this->connectionProvider->getConnection() );
+	}
+
+	private function newTableNameFormatter() {
+		return new MediaWikiTableNameFormatter( $this->connectionProvider  );
 	}
 
 }

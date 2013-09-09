@@ -36,12 +36,20 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	protected function newInstance() {
 
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
-		$mockEscaper->expects( $this->any() )->method( 'getEscapedValue' )->will( $this->returnArgument(0) );
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedValue' )
+			->will( $this->returnArgument(0) );
+
+		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
+		$mockTableNameFormatter->expects( $this->any() )
+			->method( 'formatTableName' )
+			->will( $this->returnArgument(0) );
 
 		return new MySqlTableSqlBuilder(
 			self::DB_NAME,
 			self::TABLE_PREFIX,
-			$mockEscaper
+			$mockEscaper,
+			$mockTableNameFormatter
 		);
 	}
 
