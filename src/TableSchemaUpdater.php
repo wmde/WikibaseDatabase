@@ -15,7 +15,7 @@ interface TableSchemaUpdater {
 	 * @param TableDefinition $originalTable
 	 * @param TableDefinition $newTable
 	 *
-	 * TODO: define exception
+	 * @throws SchemaUpdateFailedException
 	 */
 	public function updateTable( TableDefinition $originalTable, TableDefinition $newTable );
 
