@@ -2,18 +2,13 @@
 
 namespace Wikibase\Database\Tests\MySQL;
 
-use Wikibase\Database\FieldDefinition;
-use Wikibase\Database\IndexDefinition;
+use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\MySQL\MySqlTableSqlBuilder;
-use Wikibase\Database\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLTableSqlBuilder
- *
- * @file
- * @since 0.1
- *
- * @ingroup WikibaseDatabaseTest
  *
  * @group Wikibase
  * @group WikibaseDatabase

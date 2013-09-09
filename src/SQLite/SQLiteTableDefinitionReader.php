@@ -2,10 +2,9 @@
 
 namespace Wikibase\Database\SQLite;
 
-use Wikibase\Database\FieldDefinition;
-use Wikibase\Database\QueryInterface;
-use Wikibase\Database\TableDefinition;
-use Wikibase\Database\TableDefinitionReader;
+use Wikibase\Database\QueryInterface\QueryInterface;
+use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\TableDefinitionReader;
 
 /**
  * @since 0.1

@@ -2,26 +2,20 @@
 
 namespace Wikibase\Database\MediaWiki;
 
+use DatabaseBase;
 use Wikibase\Database\DBConnectionProvider;
-use Wikibase\Database\DeleteFailedException;
-use Wikibase\Database\InsertFailedException;
-use Wikibase\Database\QueryInterface;
-use Wikibase\Database\ResultIterator;
-use Wikibase\Database\SelectFailedException;
-use Wikibase\Database\TableCreationFailedException;
-use Wikibase\Database\TableDefinition;
-use Wikibase\Database\TableSqlBuilder;
-use Wikibase\Database\UpdateFailedException;
+use Wikibase\Database\QueryInterface\DeleteFailedException;
+use Wikibase\Database\QueryInterface\InsertFailedException;
+use Wikibase\Database\QueryInterface\QueryInterface;
+use Wikibase\Database\QueryInterface\ResultIterator;
+use Wikibase\Database\QueryInterface\SelectFailedException;
+use Wikibase\Database\QueryInterface\UpdateFailedException;
 
 /**
  * Implementation of the QueryInterface interface using the MediaWiki
  * database abstraction layer where possible.
  *
  * @since 0.1
- *
- * @file
- * @ingroup WikibaseDatabase
- *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
@@ -33,23 +27,16 @@ class MediaWikiQueryInterface implements QueryInterface {
 	private $connectionProvider;
 
 	/**
-	 * @var TableSqlBuilder
-	 */
-	private $tableSqlBuilder;
-
-	/**
 	 * @since 0.1
 	 *
 	 * @param DBConnectionProvider $connectionProvider
-	 * @param TableSqlBuilder $tableSqlBuilder
 	 */
-	public function __construct( DBConnectionProvider $connectionProvider, TableSqlBuilder $tableSqlBuilder ) {
+	public function __construct( DBConnectionProvider $connectionProvider ) {
 		$this->connectionProvider = $connectionProvider;
-		$this->tableSqlBuilder = $tableSqlBuilder;
 	}
 
 	/**
-	 * @return \DatabaseBase
+	 * @return DatabaseBase
 	 */
 	private function getDB() {
 		return $this->connectionProvider->getConnection();
@@ -66,38 +53,6 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 */
 	public function tableExists( $tableName ) {
 		return $this->getDB()->tableExists( $tableName, __METHOD__ );
-	}
-
-	/**
-	 * @see QueryInterface::createTable
-	 *
-	 * @since 0.1
-	 *
-	 * @param TableDefinition $table
-	 *
-	 * @throws TableCreationFailedException
-	 */
-	public function createTable( TableDefinition $table ) {
-		$sql = $this->tableSqlBuilder->getCreateTableSql( $table );
-
-		$success = $this->getDB()->query( $sql );
-
-		if ( $success === false ) {
-			throw new TableCreationFailedException( $table, $this->getDB()->lastQuery() );
-		}
-	}
-
-	/**
-	 * @see QueryInterface::dropTable
-	 *
-	 * @since 0.1
-	 *
-	 * @param string $tableName
-	 *
-	 * @return boolean Success indicator
-	 */
-	public function dropTable( $tableName ) {
-		return $this->getDB()->dropTable( $tableName, __METHOD__ ) !== false;
 	}
 
 	/**

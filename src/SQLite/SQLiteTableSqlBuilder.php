@@ -4,20 +4,16 @@ namespace Wikibase\Database\SQLite;
 
 use RuntimeException;
 use Wikibase\Database\Escaper;
-use Wikibase\Database\FieldDefinition;
-use Wikibase\Database\IndexDefinition;
-use Wikibase\Database\TableDefinition;
+use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
+use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\TableNameFormatter;
-use Wikibase\Database\TableSqlBuilder;
+use Wikibase\Database\Schema\TableSqlBuilder;
 
 /**
  * SQLite implementation of TableSqlBuilder.
  *
  * @since 0.1
- *
- * @file
- * @ingroup WikibaseDatabase
- *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Adam Shorland

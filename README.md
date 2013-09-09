@@ -1,9 +1,11 @@
 # Wikibase Database
 
-[![Latest Stable Version](https://poser.pugx.org/wikibase/database/version.png)](https://packagist.org/packages/wikibase/database)
-[![Latest Stable Version](https://poser.pugx.org/wikibase/database/d/total.png)](https://packagist.org/packages/wikibase/database)
 [![Build Status](https://secure.travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase.png?branch=master)](http://travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase)
 [![Coverage Status](https://coveralls.io/repos/wikimedia/mediawiki-extensions-WikibaseDatabase/badge.png?branch=master)](https://coveralls.io/r/wikimedia/mediawiki-extensions-WikibaseDatabase?branch=master)
+
+On Packagist:
+[![Latest Stable Version](https://poser.pugx.org/wikibase/database/version.png)](https://packagist.org/packages/wikibase/database)
+[![Download count](https://poser.pugx.org/wikibase/database/d/total.png)](https://packagist.org/packages/wikibase/database)
 
 Wikibase Database is a simple database abstraction layer. It is inspired by the MediaWiki database
 abstraction layer and both improves and extends on it.
@@ -11,7 +13,9 @@ abstraction layer and both improves and extends on it.
 ## Requirements
 
 * PHP 5.3 or later
-* When using MediaWikiQueryInterface: MediaWiki 1.21 or later
+* When using the MediaWiki plugin: MediaWiki 1.21 or later
+* When using the MySQL plugin: MySql 5 or later
+* When using the SQLite plugin: SQLite 3 or later
 
 ## Supported databases
 
@@ -62,36 +66,53 @@ $db->select(
 );
 ```
 
-```php
-$db->createTable( new TableDefinition(
-    'table_name',
-    array(
-        new FieldDefinition( /* ... */ ),
-        /* ... */
-    )
-) );
-```
-
 ## Abstraction layer structure
 
 All classes of this component reside in the Wikibase\Database namespace, which is PSR-0 mapped
-onto the src/ directory.
+onto the src/ directory. The component has several sub packages:
+
+### QueryInterface
 
 The main interface of this component is QueryInterface. It defines methods for interacting with
 a database. These methods include tableExists, createTable, insert, update and select. When using
 this component, you will likely be passing around an instance of an implementation of this interface.
 
-Classes and interfaces in sub namespaces are generally considered package private and should thus
-not be used in any way outside of the package. The exception to this are the implementations of
-the QueryInterface interface, and the dependencies those require.
+This package is mostly abstract, fully public and has no dependencies outside of its own namespace.
 
-### MediaWiki implementation
+### Schema
+
+Contains various services that deal with the database schema in some way.
+
+This package defines both interfaces and implementations, is fully public, and has dependencies on
+other parts of Wikibase Database.
+
+### Schema/Definitions
+
+Consists of classes that define parts of a database schema, such as a table.
+
+This package is concrete, fully public and has no dependencies outside of its own namespace.
+
+### Plugins
+
+Plugins depend on Wikibase Database. NOTHING in Wikibase Database depends on them.
+
+Plugins are typically both concrete and public.
+
+#### Plugin: MediaWiki
 
 Currently only one implementation of QueryInterface is bundled together with the abstract part
 of this component. This implementation is the MediaWikiQueryInterface class in the
 Wikibase\Database\MediaWiki namespace. All MediaWiki specific code contained by this package
 resides in this namespace. (Currently with the exception of DBConnectionProvider and
 LazyDBConnectionProvider.)
+
+#### Plugin: MySQL
+
+MySQL implementations of various interfaces.
+
+#### Plugin: SQLite
+
+SQLite implementations of various interfaces.
 
 ## Tests
 

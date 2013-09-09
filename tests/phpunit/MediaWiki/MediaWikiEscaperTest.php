@@ -7,11 +7,6 @@ use Wikibase\Database\MediaWiki\MediaWikiEscaper;
 /**
  * @covers Wikibase\Database\MediaWiki\MediaWikiEscaper
  *
- * @file
- * @since 0.1
- *
- * @ingroup WikibaseDatabaseTest
- *
  * @group Wikibase
  * @group WikibaseDatabase
  *
