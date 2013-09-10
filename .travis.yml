@@ -27,7 +27,8 @@ before_script: bash .travis.sh $TESTSUITE
 
 script:
   - if [ "$TESTSUITE" == "MediaWiki" ] ; then cd ../phase3/extensions/WikibaseDatabase ; fi
-  - phpunit --testsuite=WikibaseDatabase$TESTSUITE --coverage-clover build/logs/clover.xml
+  - phpunit --testsuite=WikibaseDatabase$TESTSUITE
+  - if [ "$TESTSUITE" == "MediaWiki" ] ; then phpunit --coverage-clover build/logs/clover.xml ; fi
 
 after_script:
   - php vendor/bin/coveralls -v
