@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\Tests\Schema\Definition;
 
+use ReflectionClass;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 
 /**
@@ -16,19 +17,19 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
 class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 	public function instanceProvider() {
-		$instances = array();
+		$constructorArgs = array();
 
-		$instances[] = new FieldDefinition(
+		$constructorArgs[] = array(
 			'names',
 			FieldDefinition::TYPE_TEXT
 		);
 
-		$instances[] = new FieldDefinition(
+		$constructorArgs[] = array(
 			'numbers',
 			FieldDefinition::TYPE_FLOAT
 		);
 
-		$instances[] = new FieldDefinition(
+		$constructorArgs[] = array(
 			'stuffs',
 			FieldDefinition::TYPE_INTEGER,
 			FieldDefinition::NOT_NULL,
@@ -36,7 +37,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 			FieldDefinition::ATTRIB_UNSIGNED
 		);
 
-		$instances[] = new FieldDefinition(
+		$constructorArgs[] = array(
 			'stuffs',
 			FieldDefinition::TYPE_INTEGER,
 			FieldDefinition::NULL,
@@ -44,7 +45,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 			FieldDefinition::NO_ATTRIB
 		);
 
-		$instances[] = new FieldDefinition(
+		$constructorArgs[] = array(
 			'stuffs',
 			FieldDefinition::TYPE_INTEGER,
 			FieldDefinition::NULL,
@@ -55,8 +56,8 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 		$argLists = array();
 
-		foreach ( $instances as $instance ) {
-			$argLists[] = array( $instance );
+		foreach ( $constructorArgs as $constructorArgList ) {
+			$argLists[] = array( $constructorArgList );
 		}
 
 		return $argLists;
@@ -64,35 +65,45 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * @dataProvider instanceProvider
-	 *
-	 * @param FieldDefinition $field
 	 */
-	public function testReturnValueOfGetName( FieldDefinition $field ) {
-		$this->assertInternalType( 'string', $field->getName() );
-
-		$newField = new FieldDefinition( $field->getName(), $field->getType() );
+	public function testConstructorSetsValues( array $constructorArgs ) {
+		$class = new ReflectionClass( 'Wikibase\Database\Schema\Definitions\FieldDefinition' );
+		$field = $class->newInstanceArgs( $constructorArgs );
 
 		$this->assertEquals(
+			$constructorArgs[0],
 			$field->getName(),
-			$newField->getName(),
 			'The FieldDefinition name is set and obtained correctly'
 		);
-	}
-
-	/**
-	 * @dataProvider instanceProvider
-	 *
-	 * @param FieldDefinition $field
-	 */
-	public function testReturnValueOfGetType( FieldDefinition $field ) {
-		$this->assertInternalType( 'string', $field->getType() );
-
-		$newField = new FieldDefinition( $field->getName(), $field->getType() );
 
 		$this->assertEquals(
+			$constructorArgs[1],
 			$field->getType(),
-			$newField->getType(),
 			'The FieldDefinition type is set and obtained correctly'
+		);
+
+		$this->assertEquals(
+			array_key_exists( 2, $constructorArgs ) ? $constructorArgs[2] : FieldDefinition::NULL,
+			$field->allowsNull(),
+			'The FieldDefinition allowsNull is set and obtained correctly'
+		);
+
+		$this->assertEquals(
+			array_key_exists( 3, $constructorArgs ) ? $constructorArgs[3] : FieldDefinition::NO_DEFAULT,
+			$field->getDefault(),
+			'The FieldDefinition default is set and obtained correctly'
+		);
+
+		$this->assertEquals(
+			array_key_exists( 4, $constructorArgs ) ? $constructorArgs[4] : FieldDefinition::NO_ATTRIB,
+			$field->getAttributes(),
+			'The FieldDefinition attributes are set and obtained correctly'
+		);
+
+		$this->assertEquals(
+			array_key_exists( 5, $constructorArgs ) ? $constructorArgs[5] : FieldDefinition::NO_AUTOINCREMENT,
+			$field->hasAutoIncrement(),
+			'The FieldDefinition autoIncrement is set and obtained correctly'
 		);
 	}
 
