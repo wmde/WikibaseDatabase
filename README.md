@@ -56,14 +56,73 @@ WikibaseDatabase.php.
 
 ## Using the abstraction layer
 
+This section serves to give you a quick idea. For more detailed documentation,
+see the definitions of the individual interfaces.
+
+QueryInterface:
+
 ```php
 $db->select(
+    'tableName'
     array( 'field_one', 'field_two' ),
     array(
-        'foo' => 'bar',
+        'condition' => 'value',
         'awesome > 9000'
     )
 );
+```
+
+```php
+$db->delete(
+    'tableName',
+    array(
+        'condition' => 'value',
+        'awesome > 9000'
+    )
+);
+```
+
+```php
+$db->update(
+    'tableName',
+    array(
+        'field_one' => 'new value',
+        'field_two' => '~=[,,_,,]:3',
+    ).
+    array(
+        'condition' => 'value',
+        'awesome > 9000'
+    )
+);
+```
+
+```php
+$db->insert(
+    'tableName',
+    array(
+        'field_one' => 'value',
+        'field_two' => '~=[,,_,,]:3',
+    )
+);
+```
+
+```php
+$db->getInsertId();
+```
+
+TableBuilder:
+
+```php
+$tableDefinition = new TableDefinition( /* ... */ );
+$builder->createTable( $tableDefinition );
+```
+
+```php
+$builder->dropTable( $tableName );
+```
+
+```php
+$builder->tableExists( $tableName );
 ```
 
 ## Abstraction layer structure
