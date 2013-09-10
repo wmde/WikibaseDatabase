@@ -61,9 +61,9 @@ class MWTableBuilderBuilder {
 	}
 
 	protected function newMySqlTableSqlBuilder() {
+
 		return new MySqlTableSqlBuilder(
 			$this->connectionProvider->getConnection()->getDBname(),
-			$this->connectionProvider->getConnection()->tablePrefix(),
 			$this->newEscaper(),
 			$this->newTableNameFormatter()
 		);
@@ -71,7 +71,6 @@ class MWTableBuilderBuilder {
 
 	protected function newSQLiteTableSqlBuilder() {
 		return new SQLiteTableSqlBuilder(
-			$this->connectionProvider->getConnection()->tablePrefix(),
 			$this->newEscaper(),
 			$this->newTableNameFormatter()
 		);
@@ -82,7 +81,7 @@ class MWTableBuilderBuilder {
 	}
 
 	private function newTableNameFormatter() {
-		return new MediaWikiTableNameFormatter( $this->connectionProvider  );
+		return new MediaWikiTableNameFormatter( $this->connectionProvider );
 	}
 
 }

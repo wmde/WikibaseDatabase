@@ -39,10 +39,6 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getDBname' )
 			->will( $this->returnValue( 'dbName' ) );
 
-		$connection->expects( $this->once() )
-			->method( 'tablePrefix' )
-			->will( $this->returnValue( 'prefix_' ) );
-
 		$connectionProvider = $this->getMock( 'Wikibase\Database\DBConnectionProvider' );
 
 		$connectionProvider->expects( $this->atLeastOnce() )

@@ -20,9 +20,6 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
  */
 class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	const DB_NAME = 'dbName';
-
-
 	public function testCanConstruct() {
 		$this->newInstance();
 		$this->assertTrue( true );
@@ -41,7 +38,6 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->will( $this->returnArgument(0) );
 
 		return new SQLiteTableSqlBuilder(
-			self::DB_NAME,
 			$mockEscaper,
 			$mockTableNameFormatter
 		);
@@ -68,7 +64,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					new FieldDefinition( 'fieldName', FieldDefinition::TYPE_INTEGER )
 				)
 			),
-			'CREATE TABLE dbNametableName (fieldName INT NULL);'
+			'CREATE TABLE tableName (fieldName INT NULL);'
 		);
 
 		$argLists[] = array(
@@ -93,7 +89,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);'
+			'CREATE TABLE tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);'
 		);
 
 		$argLists[] = array(
@@ -125,7 +121,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX indexName ON dbNametableName (intField,textField);'
+			'CREATE TABLE tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX indexName ON tableName (intField,textField);'
 		);
 
 		return $argLists;

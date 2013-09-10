@@ -21,7 +21,6 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
 class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	const DB_NAME = 'dbName';
-	const TABLE_PREFIX = 'prefix_';
 
 	public function testCanConstruct() {
 		$this->newInstance();
@@ -42,7 +41,6 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		return new MySqlTableSqlBuilder(
 			self::DB_NAME,
-			self::TABLE_PREFIX,
 			$mockEscaper,
 			$mockTableNameFormatter
 		);
@@ -69,7 +67,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					new FieldDefinition( 'fieldName', FieldDefinition::TYPE_INTEGER )
 				)
 			),
-			'CREATE TABLE `dbName`.prefix_tableName (fieldName INT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (fieldName INT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
 		);
 
 		$argLists[] = array(
@@ -87,7 +85,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.prefix_tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
 		);
 
 
@@ -108,7 +106,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.prefix_tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, INDEX `indexName` (`textField`,`intField`)) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, INDEX `indexName` (`textField`,`intField`)) ENGINE=InnoDB, DEFAULT CHARSET=binary'
 		);
 
 		$argLists[] = array(
@@ -134,7 +132,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.prefix_tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, textField2 BLOB NULL, INDEX `indexName` (`intField`), UNIQUE INDEX `uniqueIndexName` (`textField2`)) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, textField2 BLOB NULL, INDEX `indexName` (`intField`), UNIQUE INDEX `uniqueIndexName` (`textField2`)) ENGINE=InnoDB, DEFAULT CHARSET=binary'
 		);
 
 		return $argLists;

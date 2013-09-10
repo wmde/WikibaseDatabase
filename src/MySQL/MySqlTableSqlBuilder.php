@@ -21,18 +21,15 @@ use Wikibase\Database\TableNameFormatter;
 class MySqlTableSqlBuilder extends TableSqlBuilder {
 
 	protected $dbName;
-	protected $tablePrefix;
 	protected $escaper;
 
 	/**
 	 * @param string $dbName
-	 * @param string $tablePrefix
 	 * @param Escaper $fieldValueEscaper
 	 * @param TableNameFormatter $tableNameFormatter
 	 */
-	public function __construct( $dbName, $tablePrefix, Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter  ) {
+	public function __construct( $dbName, Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter  ) {
 		$this->dbName = $dbName;
-		$this->tablePrefix = $tablePrefix;
 		$this->escaper = $fieldValueEscaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
@@ -49,7 +46,7 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 	public function getCreateTableSql( TableDefinition $table ) {
 		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
 		$sql = 'CREATE TABLE `' . $this->dbName . '`.' .
-			$this->tableNameFormatter->formatTableName( $this->tablePrefix . $table->getName() ) .' (';
+			$this->tableNameFormatter->formatTableName( $table->getName() ) .' (';
 
 		$queryParts = array();
 

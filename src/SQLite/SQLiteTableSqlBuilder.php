@@ -21,16 +21,13 @@ use Wikibase\Database\Schema\TableSqlBuilder;
 class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 	protected $escaper;
-	protected $tablePrefix;
 	protected $tableNameFormatter;
 
 	/**
-	 * @param string $tablePrefix
 	 * @param Escaper $fieldValueEscaper
 	 * @param TableNameFormatter $tableNameFormatter
 	 */
-	public function __construct( $tablePrefix, Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
-		$this->tablePrefix = $tablePrefix;
+	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
 		$this->escaper = $fieldValueEscaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
@@ -47,7 +44,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	public function getCreateTableSql( TableDefinition $table ) {
 		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
 		$sql = 'CREATE TABLE ' .
-			$this->tableNameFormatter->formatTableName( $this->tablePrefix . $table->getName() ) . ' (';
+			$this->formatTableName( $table->getName() ) . ' (';
 
 		$fields = array();
 
@@ -65,6 +62,10 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		}
 
 		return $sql;
+	}
+
+	protected function formatTableName( $name ) {
+		return $this->tableNameFormatter->formatTableName( $name );
 	}
 
 	/**
@@ -97,7 +98,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
 		$sql .= $index->getName() . ' ';
-		$sql .= 'ON '.$this->tablePrefix . $table->getName();
+		$sql .= 'ON ' . $this->formatTableName( $table->getName() );
 
 		$columnNames = array();
 		foreach( $index->getColumns() as $columnName => $intSize ){
