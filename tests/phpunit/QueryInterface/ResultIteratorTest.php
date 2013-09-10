@@ -5,7 +5,7 @@ namespace Wikibase\Database\Tests\QueryInterface;
 use Wikibase\Database\QueryInterface\ResultIterator;
 
 /**
- * @covers Wikibase\Database\QueryInterface\TableBuilder
+ * @covers Wikibase\Database\QueryInterface\ResultIterator
  *
  * @group Wikibase
  * @group WikibaseDatabase
