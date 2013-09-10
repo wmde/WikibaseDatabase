@@ -74,8 +74,8 @@ onto the src/ directory. The component has several sub packages:
 ### QueryInterface
 
 The main interface of this component is QueryInterface. It defines methods for interacting with
-a database. These methods include tableExists, createTable, insert, update and select. When using
-this component, you will likely be passing around an instance of an implementation of this interface.
+a database. These methods include insert, update, delete and select. When using this component,
+you will likely be passing around an instance of an implementation of this interface.
 
 This package is mostly abstract, fully public and has no dependencies outside of its own namespace.
 
