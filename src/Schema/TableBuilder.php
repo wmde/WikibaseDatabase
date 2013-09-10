@@ -25,7 +25,7 @@ interface TableBuilder {
 	 *
 	 * @param string $tableName
 	 *
-	 * TODO: document throws
+	 * @throws TableDeletionFailedException
 	 */
 	public function dropTable( $tableName );
 
