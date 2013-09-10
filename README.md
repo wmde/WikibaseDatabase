@@ -100,11 +100,8 @@ Plugins are typically both concrete and public.
 
 #### Plugin: MediaWiki
 
-Currently only one implementation of QueryInterface is bundled together with the abstract part
-of this component. This implementation is the MediaWikiQueryInterface class in the
-Wikibase\Database\MediaWiki namespace. All MediaWiki specific code contained by this package
-resides in this namespace. (Currently with the exception of DBConnectionProvider and
-LazyDBConnectionProvider.)
+MediaWiki implementations of various interfaces. Most of these are adapters for
+MediaWikis DatabseBase interface that abstract away the bad design this one contains.
 
 #### Plugin: MySQL
 
@@ -113,6 +110,15 @@ MySQL implementations of various interfaces.
 #### Plugin: SQLite
 
 SQLite implementations of various interfaces.
+
+### Top level namespace
+
+The top level namespace, Wikibase\Database, contains some interfaces that do not
+fit in any of the more specific packages.
+
+Currently it contains DBConnectionProvider and LazyDBConnectionProvider which both depend
+on MediaWiki. This is due to legacy reasons, and should not be relied upon, as these
+will be moved.
 
 ## Tests
 
