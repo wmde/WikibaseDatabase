@@ -30,10 +30,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 		$schema = $this->getMock( 'Wikibase\Database\Schema\SchemaModifier' );
 
 		$schema->expects( $this->never() )
-			->method( 'removeField' );
-
-		$schema->expects( $this->never() )
-			->method( 'addField' );
+			->method( $this->anything() );
 
 		$updater = new SimpleTableSchemaUpdater( $schema );
 
@@ -88,6 +85,50 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		return array_map( function( $definition ) { return array( $definition ); }, $definitions );
+	}
+
+	/**
+	 * @dataProvider tableDefinitionProvider
+	 */
+	public function testNewFieldsGetAdded( TableDefinition $tableDefinition ) {
+		$schema = $this->getMock( 'Wikibase\Database\Schema\SchemaModifier' );
+
+		$fields = $tableDefinition->getFields();
+
+		$schema->expects( $this->exactly( count( $fields ) - 1 ) )
+			->method( 'addField' );
+
+		$schema->expects( $this->never() )
+			->method( $this->logicalNot( $this->equalTo( 'addField' ) ) );
+
+		$updater = new SimpleTableSchemaUpdater( $schema );
+
+		$updater->updateTable(
+			$tableDefinition->mutateFields( array( reset( $fields ) ) ),
+			$tableDefinition
+		);
+	}
+
+	/**
+	 * @dataProvider tableDefinitionProvider
+	 */
+	public function testRemovedFieldsGetRemoved( TableDefinition $tableDefinition ) {
+		$schema = $this->getMock( 'Wikibase\Database\Schema\SchemaModifier' );
+
+		$fields = $tableDefinition->getFields();
+
+		$schema->expects( $this->exactly( count( $fields ) - 1 ) )
+			->method( 'removeField' );
+
+		$schema->expects( $this->never() )
+			->method( $this->logicalNot( $this->equalTo( 'removeField' ) ) );
+
+		$updater = new SimpleTableSchemaUpdater( $schema );
+
+		$updater->updateTable(
+			$tableDefinition,
+			$tableDefinition->mutateFields( array( reset( $fields ) ) )
+		);
 	}
 
 }
