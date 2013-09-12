@@ -127,6 +127,13 @@ $messages['oc'] = array(
 	'wikibasedatabase-desc' => 'Component que conten un jaç d’abstraccion de banca de donadas simpla',
 );
 
+/** Brazilian Portuguese (português do Brasil)
+ * @author Cainamarques
+ */
+$messages['pt-br'] = array(
+	'wikibasedatabase-desc' => 'Componente contendo uma simples camada de abstração de banco de dados',
+);
+
 /** tarandíne (tarandíne)
  * @author Joetaras
  */
