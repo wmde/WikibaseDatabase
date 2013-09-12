@@ -121,4 +121,21 @@ class MediaWikiTableBuilderTest extends \PHPUnit_Framework_TestCase {
 		$builder->dropTable( $table );
 	}
 
+	/**
+	 * @dataProvider tableProvider
+	 *
+	 * @param TableDefinition $table
+	 */
+	public function testDropTableFailure( TableDefinition $table ) {
+		list( $builder, $connection, $tableSqlBuilder ) = $this->getBuilderAndDependencies();
+
+		$connection->expects( $this->once() )
+			->method( 'dropTable' )
+			->will( $this->returnValue( false ) );
+
+		$this->setExpectedException( 'Wikibase\Database\Schema\TableDeletionFailedException' );
+
+		$builder->dropTable( $table );
+	}
+
 }

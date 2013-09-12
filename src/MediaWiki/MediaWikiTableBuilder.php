@@ -7,6 +7,7 @@ use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\TableBuilder;
 use Wikibase\Database\Schema\TableCreationFailedException;
+use Wikibase\Database\Schema\TableDeletionFailedException;
 use Wikibase\Database\Schema\TableSqlBuilder;
 
 /**
@@ -84,13 +85,13 @@ class MediaWikiTableBuilder implements TableBuilder {
 	 *
 	 * @param string $tableName
 	 *
-	 * TODO: document throws
+	 * @throws TableDeletionFailedException
 	 */
 	public function dropTable( $tableName ) {
 		$success = $this->getDB()->dropTable( $tableName, __METHOD__ );
 
 		if ( $success === false ) {
-			// TODO: throw
+			throw new TableDeletionFailedException( $tableName, $this->getDB()->lastQuery() );
 		}
 	}
 
