@@ -77,6 +77,13 @@ $messages['id'] = array(
 	'wikibasedatabase-desc' => 'Komponen yang mengandung lapisan abstraksi basis data sederhana',
 );
 
+/** Iloko (Ilokano)
+ * @author Lam-ang
+ */
+$messages['ilo'] = array(
+	'wikibasedatabase-desc' => 'Komponente nga aglaon ti nalaka a tuon ti abstraksion ti database',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
