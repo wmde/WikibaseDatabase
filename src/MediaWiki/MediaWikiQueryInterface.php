@@ -142,16 +142,18 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @param string $tableName
 	 * @param array $fields
 	 * @param array $conditions
+	 * @param array $options
 	 *
 	 * @return ResultIterator
 	 * @throws SelectFailedException
 	 */
-	public function select( $tableName, array $fields, array $conditions ) {
+	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
 		$selectionResult = $this->getDB()->select(
 			$tableName,
 			 $fields,
 			$conditions,
-			__METHOD__
+			__METHOD__,
+			$options
 		);
 
 		if ( $selectionResult instanceof \ResultWrapper ) {

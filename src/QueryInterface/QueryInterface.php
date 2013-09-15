@@ -67,18 +67,23 @@ interface QueryInterface {
 
 	/**
 	 * Selects the specified fields from the rows that match the provided conditions.
-	 * The conditions are provided as an associative array in
-	 * which the keys are the field names.
+	 *
+	 * The conditions are provided as an associative array in which the keys are the field names.
+	 *
+	 * The optional options are provided as an array.
+	 * Options are specified by using the key as the options and the value as the value
+	 * Boolean options are specified by including them in the array as a string value with a numeric key.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string $tableName
 	 * @param array $fields
 	 * @param array $conditions
+	 * @param array $options
 	 *
 	 * @return ResultIterator
 	 * @throws SelectFailedException
 	 */
-	public function select( $tableName, array $fields, array $conditions );
+	public function select( $tableName, array $fields, array $conditions, array $options = array() );
 
 }
