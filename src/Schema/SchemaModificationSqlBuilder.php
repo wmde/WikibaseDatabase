@@ -9,23 +9,23 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-interface SchemaModifier {
+interface SchemaModificationSqlBuilder {
 
 	/**
 	 * @param string $tableName
 	 * @param string $fieldName
 	 *
-	 * TODO: document throws
+	 * @return string
 	 */
-	public function removeField( $tableName, $fieldName );
+	public function getRemoveFieldSql( $tableName, $fieldName );
 
 	/**
 	 * @param string $tableName
 	 * @param FieldDefinition $field
 	 *
-	 * TODO: document throws
+	 * @return string
 	 */
-	public function addField( $tableName, FieldDefinition $field );
+	public function getAddFieldSql( $tableName, FieldDefinition $field );
 
 	// TODO: add other methods
 
