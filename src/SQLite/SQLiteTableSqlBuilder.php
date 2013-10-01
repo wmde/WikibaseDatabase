@@ -22,6 +22,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 	protected $escaper;
 	protected $tableNameFormatter;
+	protected $fieldSqlBuilder;
 
 	/**
 	 * @param Escaper $fieldValueEscaper
@@ -30,6 +31,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
 		$this->escaper = $fieldValueEscaper;
 		$this->tableNameFormatter = $tableNameFormatter;
+		$this->fieldSqlBuilder = new SQliteFieldSqlBuilder( $this->escaper );
 	}
 
 	/**
@@ -49,7 +51,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$fields = array();
 
 		foreach ( $table->getFields() as $field ) {
-			$fields[] = $field->getName() . ' ' . $this->getFieldSQL( $field );
+			$fields[] = $this->fieldSqlBuilder->getFieldSQL( $field );
 		}
 
 		$sql .= implode( ', ', $fields );
@@ -66,24 +68,6 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 	protected function formatTableName( $name ) {
 		return $this->tableNameFormatter->formatTableName( $name );
-	}
-
-	/**
-	 * @since 0.1
-	 *
-	 * @param FieldDefinition $field
-	 *
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getFieldSQL( FieldDefinition $field ) {
-		$sql = $this->getFieldType( $field->getType() );
-
-		$sql .= $this->getDefault( $field->getDefault() );
-
-		$sql .= $this->getNull( $field->allowsNull() );
-
-		return $sql;
 	}
 
 	/**
@@ -108,41 +92,6 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$sql .= ' ('.implode( ',', $columnNames ).');';
 
 		return $sql;
-	}
-
-	protected function getDefault( $default ) {
-		if ( $default !== null ) {
-			return ' DEFAULT ' . $this->escaper->getEscapedValue( $default );
-		}
-
-		return '';
-	}
-
-	protected function getNull( $allowsNull ) {
-		return $allowsNull ? ' NULL' : ' NOT NULL';
-	}
-
-	/**
-	 * Returns the MySQL field type for a given FieldDefinition type constant.
-	 *
-	 * @param string $fieldType
-	 *
-	 * @return string
-	 * @throws RuntimeException
-	 */
-	protected function getFieldType( $fieldType ) {
-		switch ( $fieldType ) {
-			case FieldDefinition::TYPE_INTEGER:
-				return 'INT';
-			case FieldDefinition::TYPE_FLOAT:
-				return 'FLOAT';
-			case FieldDefinition::TYPE_TEXT:
-				return 'BLOB';
-			case FieldDefinition::TYPE_BOOLEAN:
-				return 'TINYINT';
-			default:
-				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
-		}
 	}
 
 	/**
