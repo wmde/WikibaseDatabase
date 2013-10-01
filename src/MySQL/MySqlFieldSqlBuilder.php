@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\MySQL;
 
+use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\FieldSqlBuilder;
@@ -18,7 +19,7 @@ class MySqlFieldSqlBuilder extends FieldSqlBuilder {
 	/**
 	 * @param Escaper $escaper
 	 */
-	function __construct( $escaper ) {
+	public function __construct( Escaper $escaper ) {
 		$this->escaper = $escaper;
 	}
 

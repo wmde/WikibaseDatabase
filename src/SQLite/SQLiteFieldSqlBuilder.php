@@ -2,6 +2,8 @@
 
 namespace Wikibase\Database\SQLite;
 
+use RuntimeException;
+use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\FieldSqlBuilder;
 
@@ -10,14 +12,14 @@ use Wikibase\Database\Schema\FieldSqlBuilder;
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */
-class SQliteFieldSqlBuilder extends FieldSqlBuilder {
+class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 
 	protected $escaper;
 
 	/**
 	 * @param Escaper $escaper
 	 */
-	function __construct( $escaper ) {
+	public function __construct( Escaper $escaper ) {
 		$this->escaper = $escaper;
 	}
 

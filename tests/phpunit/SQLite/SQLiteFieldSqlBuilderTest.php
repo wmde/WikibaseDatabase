@@ -2,7 +2,7 @@
 
 namespace Wikibase\Database\Tests\MySQL;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
-use Wikibase\Database\SQLite\SQliteFieldSqlBuilder;
+use Wikibase\Database\SQLite\SQLiteFieldSqlBuilder;
 
 /**
  * @covers Wikibase\Database\SQLite\SQLiteFieldSqlBuilder
@@ -14,7 +14,7 @@ use Wikibase\Database\SQLite\SQliteFieldSqlBuilder;
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */
-class SQliteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
+class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	private function newInstance() {
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
@@ -22,7 +22,7 @@ class SQliteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getEscapedValue' )
 			->will( $this->returnArgument(0) );
 
-		return new SQliteFieldSqlBuilder( $mockEscaper );
+		return new SQLiteFieldSqlBuilder( $mockEscaper );
 	}
 
 	/**
