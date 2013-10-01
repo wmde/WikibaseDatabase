@@ -15,6 +15,15 @@ use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
  */
 class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
+	protected $fieldSqlBuilder;
+
+	/**
+	 * @param Escaper $fieldValueEscaper
+	 */
+	public function __construct( Escaper $fieldValueEscaper ) {
+		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $fieldValueEscaper );
+	}
+
 	/**
 	 * @param string $tableName
 	 * @param string $fieldName
@@ -22,7 +31,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
-		// TODO
+		// TODO this will need to create a new table with the new scheme and copy all data across
 	}
 
 	/**
@@ -32,7 +41,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
-		// TODO
+		//TODO add unittests
+		return "ALTER TABLE {$tableName} ADD COLUMN " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
 	// TODO: add other methods

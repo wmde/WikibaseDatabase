@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\MySQL;
 
+use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 
@@ -15,6 +16,15 @@ use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
  */
 class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
+	protected $fieldSqlBuilder;
+
+	/**
+	 * @param Escaper $fieldValueEscaper
+	 */
+	public function __construct( Escaper $fieldValueEscaper ) {
+		$this->fieldSqlBuilder = new MySqlFieldSqlBuilder( $fieldValueEscaper );
+	}
+
 	/**
 	 * @param string $tableName
 	 * @param string $fieldName
@@ -22,7 +32,8 @@ class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
-		// TODO
+		//TODO add unittests
+		return "ALTER TABLE {$tableName} DROP {$fieldName}";
 	}
 
 	/**
@@ -32,7 +43,8 @@ class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
-		// TODO
+		//TODO add unittests
+		return "ALTER TABLE {$tableName} ADD " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
 	// TODO: add other methods
