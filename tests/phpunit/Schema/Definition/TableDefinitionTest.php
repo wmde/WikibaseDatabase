@@ -227,4 +227,50 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
+	/**
+	 * @dataProvider mutateFieldAwayProvider
+	 */
+	public function testMutateFieldAway( $toRemove, TableDefinition $definition, TableDefinition $expected ){
+		$newDefinition = $definition->mutateFieldAway( $toRemove );
+		$this->assertEquals( $expected, $newDefinition );
+	}
+
+	public function mutateFieldAwayProvider() {
+		$args = array(
+			array( 'o',
+				new TableDefinition(
+					'spam',
+					array(
+						new FieldDefinition( 'o', FieldDefinition::TYPE_TEXT ),
+						new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
+						new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+					)
+				),
+				new TableDefinition(
+					'spam',
+					array(
+						new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
+						new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+					)
+				),
+			),
+			array( 'o',
+				new TableDefinition(
+					'spam',
+					array(
+						new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
+					)
+				),
+				new TableDefinition(
+					'spam',
+					array(
+						new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
+					)
+				),
+			),
+		);
+
+		return $args;
+	}
+
 }

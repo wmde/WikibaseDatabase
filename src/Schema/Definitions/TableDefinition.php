@@ -175,4 +175,23 @@ class TableDefinition {
 		return new self( $this->name, $fields, $this->indexes );
 	}
 
+	/**
+	 * Returns a clone of the table, though with the provided field removed.
+	 *
+	 * @since 0.1
+	 *
+	 * @param string $fieldName
+	 *
+	 * @return TableDefinition
+	 */
+	public function mutateFieldAway( $fieldName ){
+		$newFields = array();
+		foreach( $this->getFields() as $field ){
+			if( $field->getName() !== $fieldName ){
+				$newFields[] = $field;
+			}
+		}
+		return $this->mutateFields( $newFields );
+	}
+
 }

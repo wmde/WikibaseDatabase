@@ -43,11 +43,10 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 		$tmpTableName = $this->tableNameFormatter->formatTableName( $tableName . '_tmp' );
 		$sql = "ALTER TABLE {$tableName} RENAME TO {$tmpTableName};";
 
-		$fields = $this->removeFieldFromFields( $definition->getFields(), $fieldName );
-		$definition = $definition->mutateFields( $fields );
+		$definition = $definition->mutateFieldAway( $fieldName );
 		$sql .= $this->tableSqlBuilder->getCreateTableSql( $definition );
 
-		$fieldsSql = $this->getFieldsSql( $fields );
+		$fieldsSql = $this->getFieldsSql( $definition->getFields() );
 		$sql .= "INSERT INTO {$tableName}({$fieldsSql}) SELECT {$fieldsSql} FROM {$tmpTableName};";
 		$sql .= "DROP TABLE {$tmpTableName};";
 
@@ -64,21 +63,6 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 			$fieldNames[] = $field->getName();
 		}
 		return implode( ', ', $fieldNames );
-	}
-
-	/**
-	 * @param FieldDefinition[] $fields
-	 * @param string $fieldName field to remove
-	 * @return FieldDefinition[]
-	 * @todo tableDefinition->removeFieldWithName( $name )
-	 */
-	private function removeFieldFromFields( $fields, $fieldName ){
-		foreach( $fields as $key => $field ){
-			if( $field->getName() == $fieldName ){
-				unset ( $fields[$key] );
-			}
-		}
-		return $fields;
 	}
 
 	/**
