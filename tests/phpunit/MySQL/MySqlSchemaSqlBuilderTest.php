@@ -1,0 +1,42 @@
+<?php
+
+namespace Wikibase\Database\Tests\MySQL;
+
+use Wikibase\Database\MySQL\MySqlSchemaSqlBuilder;
+use Wikibase\Database\Schema\Definitions\FieldDefinition;
+
+/**
+ * @covers Wikibase\Database\MySQL\MySqlSchemaSqlBuilder
+ *
+ * @group Wikibase
+ * @group WikibaseDatabase
+ * @group Database
+ *
+ * @licence GNU GPL v2+
+ * @author Adam Shorland
+ */
+class MySqlSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
+
+	private function newInstance() {
+		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedValue' )
+			->will( $this->returnArgument(0) );
+
+		return new MySqlSchemaSqlBuilder( $mockEscaper );
+	}
+
+	public function testGetRemoveFieldSql(){
+		$instance = $this->newInstance();
+		$sql = $instance->getRemoveFieldSql( 'tableName', 'fieldName' );
+		$this->assertEquals( "ALTER TABLE tableName DROP fieldName", $sql );
+	}
+
+	public function testGetAddFieldSql(){
+		$instance = $this->newInstance();
+		$field = new FieldDefinition( 'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 );
+		$sql = $instance->getAddFieldSql( 'tableName', $field );
+		$this->assertEquals( 'ALTER TABLE tableName ADD intField INT DEFAULT 42 NOT NULL', $sql );
+	}
+
+}

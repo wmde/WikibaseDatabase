@@ -32,7 +32,6 @@ class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
-		//TODO add unittests
 		return "ALTER TABLE {$tableName} DROP {$fieldName}";
 	}
 
@@ -43,7 +42,6 @@ class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
-		//TODO add unittests
 		return "ALTER TABLE {$tableName} ADD " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
