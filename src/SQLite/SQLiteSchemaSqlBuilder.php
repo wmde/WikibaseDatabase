@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\SQLite;
 
+use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 
@@ -41,7 +42,6 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
-		//TODO add unittests
 		return "ALTER TABLE {$tableName} ADD COLUMN " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
