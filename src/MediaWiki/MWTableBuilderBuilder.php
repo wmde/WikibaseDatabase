@@ -5,7 +5,7 @@ namespace Wikibase\Database\MediaWiki;
 use DatabaseBase;
 use RuntimeException;
 use Wikibase\Database\DBConnectionProvider;
-use Wikibase\Database\MySQL\MySqlTableSqlBuilder;
+use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
 use Wikibase\Database\Schema\TableBuilder;
 use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
 
@@ -50,7 +50,7 @@ class MWTableBuilderBuilder {
 		$dbType = $this->connectionProvider->getConnection()->getType();
 
 		if ( $dbType === 'mysql' ) {
-			return $this->newMySqlTableSqlBuilder();
+			return $this->newMySQLTableSqlBuilder();
 		}
 
 		if ( $dbType === 'sqlite' ) {
@@ -60,9 +60,9 @@ class MWTableBuilderBuilder {
 		throw new RuntimeException( "Cannot build a MediaWikiQueryInterface for database type '$dbType'." );
 	}
 
-	protected function newMySqlTableSqlBuilder() {
+	protected function newMySQLTableSqlBuilder() {
 
-		return new MySqlTableSqlBuilder(
+		return new MySQLTableSqlBuilder(
 			$this->connectionProvider->getConnection()->getDBname(),
 			$this->newEscaper(),
 			$this->newTableNameFormatter()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wikibase\Database\MySQL;
+namespace Wikibase\Database\SQLite;
 
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;

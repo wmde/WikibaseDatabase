@@ -1,6 +1,6 @@
 <?php
 
-namespace Wikibase\Database\Tests;
+namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;

@@ -15,7 +15,7 @@ use Wikibase\Database\Schema\TableDefinitionReader;
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Adam Shorland
  */
-class MySqlTableDefinitionReader implements TableDefinitionReader {
+class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 	protected $queryInterface;
 

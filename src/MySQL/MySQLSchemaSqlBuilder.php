@@ -14,7 +14,7 @@ use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Adam Shorland
  */
-class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
+class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
 	protected $fieldSqlBuilder;
 
@@ -22,7 +22,7 @@ class MySqlSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @param Escaper $fieldValueEscaper
 	 */
 	public function __construct( Escaper $fieldValueEscaper ) {
-		$this->fieldSqlBuilder = new MySqlFieldSqlBuilder( $fieldValueEscaper );
+		$this->fieldSqlBuilder = new MySQLFieldSqlBuilder( $fieldValueEscaper );
 	}
 
 	/**

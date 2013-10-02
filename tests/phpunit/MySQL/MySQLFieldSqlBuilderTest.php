@@ -2,11 +2,11 @@
 
 namespace Wikibase\Database\Tests\MySQL;
 
-use Wikibase\Database\MySQL\MySqlFieldSqlBuilder;
+use Wikibase\Database\MySQL\MySQLFieldSqlBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 
 /**
- * @covers Wikibase\Database\MySql\MySqlFieldSqlBuilder
+ * @covers Wikibase\Database\MySQL\MySQLFieldSqlBuilder
  *
  * @group Wikibase
  * @group WikibaseDatabase
@@ -15,7 +15,7 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */
-class MySqlFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
+class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	private function newInstance() {
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
@@ -23,7 +23,7 @@ class MySqlFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getEscapedValue' )
 			->will( $this->returnArgument(0) );
 
-		return new MySqlFieldSqlBuilder( $mockEscaper );
+		return new MySQLFieldSqlBuilder( $mockEscaper );
 	}
 
 	/**

@@ -4,7 +4,7 @@ namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
-use Wikibase\Database\MySQL\MySqlTableSqlBuilder;
+use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
@@ -39,7 +39,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'formatTableName' )
 			->will( $this->returnArgument(0) );
 
-		return new MySqlTableSqlBuilder(
+		return new MySQLTableSqlBuilder(
 			self::DB_NAME,
 			$mockEscaper,
 			$mockTableNameFormatter

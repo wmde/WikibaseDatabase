@@ -18,7 +18,7 @@ use Wikibase\Database\TableNameFormatter;
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Adam Shorland
  */
-class MySqlTableSqlBuilder extends TableSqlBuilder {
+class MySQLTableSqlBuilder extends TableSqlBuilder {
 
 	protected $dbName;
 	protected $escaper;
@@ -34,7 +34,7 @@ class MySqlTableSqlBuilder extends TableSqlBuilder {
 		$this->dbName = $dbName;
 		$this->escaper = $fieldValueEscaper;
 		$this->tableNameFormatter = $tableNameFormatter;
-		$this->fieldSqlBuilder = new MySqlFieldSqlBuilder( $this->escaper );
+		$this->fieldSqlBuilder = new MySQLFieldSqlBuilder( $this->escaper );
 	}
 
 	/**

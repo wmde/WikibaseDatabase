@@ -1,8 +1,8 @@
 <?php
 
-namespace Wikibase\Database\Tests;
+namespace Wikibase\Database\Tests\MySQL;
 
-use Wikibase\Database\MySQL\MySqlTableDefinitionReader;
+use Wikibase\Database\MySQL\MySQLTableDefinitionReader;
 use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
@@ -36,7 +36,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				->will( $this->returnValue( new ResultIterator( $result ) ) );
 		}
 
-		return new MySqlTableDefinitionReader( $mockQueryInterface );
+		return new MySQLTableDefinitionReader( $mockQueryInterface );
 	}
 
 	/**

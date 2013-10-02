@@ -12,7 +12,7 @@ use Wikibase\Database\Schema\FieldSqlBuilder;
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */
-class MySqlFieldSqlBuilder extends FieldSqlBuilder {
+class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 
 	protected $escaper;
 
