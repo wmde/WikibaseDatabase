@@ -23,7 +23,12 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getEscapedValue' )
 			->will( $this->returnArgument(0) );
 
-		return new SQLiteSchemaSqlBuilder( $mockEscaper );
+		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
+		$mockTableNameFormatter->expects( $this->atLeastOnce() )
+			->method( 'formatTableName' )
+			->will( $this->returnArgument(0) );
+
+		return new SQLiteSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter );
 	}
 
 	public function testGetAddFieldSql(){

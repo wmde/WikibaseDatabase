@@ -5,6 +5,7 @@ namespace Wikibase\Database\SQLite;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
+use Wikibase\Database\TableNameFormatter;
 
 /**
  * SQLite implementation of SchemaModificationSqlBuilder.
@@ -17,12 +18,11 @@ use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
 	protected $fieldSqlBuilder;
+	protected $tableNameFormatter;
 
-	/**
-	 * @param Escaper $fieldValueEscaper
-	 */
-	public function __construct( Escaper $fieldValueEscaper ) {
+	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
 		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $fieldValueEscaper );
+		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
 	/**
@@ -42,6 +42,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
+		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
 		return "ALTER TABLE {$tableName} ADD COLUMN " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 

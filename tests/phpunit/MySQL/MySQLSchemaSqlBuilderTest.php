@@ -23,7 +23,12 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getEscapedValue' )
 			->will( $this->returnArgument(0) );
 
-		return new MySQLSchemaSqlBuilder( $mockEscaper );
+		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
+		$mockTableNameFormatter->expects( $this->atLeastOnce() )
+			->method( 'formatTableName' )
+			->will( $this->returnArgument(0) );
+
+		return new MySQLSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter );
 	}
 
 	public function testGetRemoveFieldSql(){
