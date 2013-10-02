@@ -3,6 +3,8 @@
 namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
+use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder;
 
 /**
@@ -17,7 +19,7 @@ use Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder;
  */
 class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	private function newInstance() {
+	private function newInstance( $existingDefinition ) {
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
 		$mockEscaper->expects( $this->any() )
 			->method( 'getEscapedValue' )
@@ -28,14 +30,44 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'formatTableName' )
 			->will( $this->returnArgument(0) );
 
-		return new SQLiteSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter );
+		$mockQueryInterface = $this
+			->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteTableDefinitionReader' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockQueryInterface->expects( $this->atLeastOnce() )
+			->method( 'readDefinition' )
+			->will( $this->returnValue( $existingDefinition ) );
+
+		return new SQLiteSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter, $mockQueryInterface );
 	}
 
 	public function testGetAddFieldSql(){
-		$instance = $this->newInstance();
-		$field = new FieldDefinition( 'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 );
-		$sql = $instance->getAddFieldSql( 'tableName', $field );
-		$this->assertEquals( 'ALTER TABLE tableName ADD COLUMN intField INT DEFAULT 42 NOT NULL', $sql );
+		$existingDefinition = new TableDefinition( 'tableName',
+			array(
+				new FieldDefinition( 'primaryField',
+					FieldDefinition::TYPE_INTEGER,
+					FieldDefinition::NOT_NULL,
+					FieldDefinition::NO_DEFAULT
+				),
+				new FieldDefinition( 'textField',
+					FieldDefinition::TYPE_TEXT
+				),
+				new FieldDefinition( 'intField',
+					FieldDefinition::TYPE_INTEGER,
+					FieldDefinition::NOT_NULL, 42
+				),
+			),
+			array(
+				new IndexDefinition( 'INDEX',
+					array( 'intField' => 0, 'primaryField' => 0 ),
+					IndexDefinition::TYPE_INDEX
+				),
+			)
+		);
+
+		$instance = $this->newInstance( $existingDefinition );
+		$sql = $instance->getRemoveFieldSql( 'tableName', 'textField' );
+		$this->assertEquals( 'ALTER TABLE tableName RENAME TO tableName_tmp;CREATE TABLE tableName (primaryField INT NOT NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX INDEX ON tableName (intField,primaryField);INSERT INTO tableName(primaryField, intField) SELECT primaryField, intField FROM tableName_tmp;DROP TABLE tableName_tmp;', $sql );
 	}
 
 }
