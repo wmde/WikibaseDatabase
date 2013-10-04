@@ -2,10 +2,10 @@
 
 namespace Wikibase\Database\Tests\Schema;
 
-use Wikibase\Database\Schema\SchemaUpdateFailedException;
+use Wikibase\Database\Schema\TableSchemaUpdateException;
 
 /**
- * @covers Wikibase\Database\Schema\SchemaUpdateFailedException
+ * @covers Wikibase\Database\Schema\TableSchemaUpdateException
  *
  * @group Wikibase
  * @group WikibaseDatabase
@@ -13,10 +13,10 @@ use Wikibase\Database\Schema\SchemaUpdateFailedException;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class SchemaUpdateFailedExceptionTest extends \PHPUnit_Framework_TestCase {
+class TableSchemaUpdateExceptionTest extends \PHPUnit_Framework_TestCase {
 
 	public function testConstructorWithOnlyRequiredArguments() {
-		$exception = new SchemaUpdateFailedException();
+		new TableSchemaUpdateException();
 		$this->assertTrue( true );
 	}
 
@@ -24,7 +24,7 @@ class SchemaUpdateFailedExceptionTest extends \PHPUnit_Framework_TestCase {
 		$message = 'NyanData all the way accross the sky!';
 		$previous = new \Exception( 'Onoez!' );
 
-		$exception = new SchemaUpdateFailedException( $message, $previous );
+		$exception = new TableSchemaUpdateException( $message, $previous );
 
 		$this->assertEquals( $message, $exception->getMessage() );
 		$this->assertEquals( $previous, $exception->getPrevious() );
