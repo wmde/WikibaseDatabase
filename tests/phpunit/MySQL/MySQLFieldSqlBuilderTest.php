@@ -17,20 +17,19 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
  */
 class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	private function newInstance() {
-		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
-		$mockEscaper->expects( $this->any() )
-			->method( 'getEscapedValue' )
-			->will( $this->returnArgument(0) );
-
-		return new MySQLFieldSqlBuilder( $mockEscaper );
-	}
-
 	/**
 	 * @dataProvider fieldAndSqlProvider
 	 */
 	public function testGetCreateTableSql( FieldDefinition $field, $expectedSQL ) {
-		$sqlBuilder = $this->newInstance();
+		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+
+		$mockEscaper->expects( $this->exactly( $field->getDefault() === null ? 0 : 1 ) )
+			->method( 'getEscapedValue' )
+			->will( $this->returnCallback( function( $value ) {
+				return '|' . $value . '|';
+			} ) );
+
+		$sqlBuilder = new MySQLFieldSqlBuilder( $mockEscaper );
 
 		$actualSQL = $sqlBuilder->getFieldSQL( $field );
 
@@ -41,18 +40,31 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists = array();
 
 		$argLists[] = array(
-			new FieldDefinition( 'fieldName', 'bool' ),
+			new FieldDefinition(
+				'fieldName',
+				FieldDefinition::TYPE_BOOLEAN
+			),
 			'fieldName TINYINT NULL'
 		);
 
 		$argLists[] = array(
-			new FieldDefinition( 'fieldName', 'float', false, '1' ),
-			'fieldName FLOAT DEFAULT 1 NOT NULL'
+			new FieldDefinition(
+				'fieldName',
+				FieldDefinition::TYPE_BOOLEAN,
+				FieldDefinition::NOT_NULL,
+				'1'
+			),
+			'fieldName TINYINT DEFAULT |1| NOT NULL'
 		);
 
 		$argLists[] = array(
-			new FieldDefinition( 'fieldName', 'str', false, 'foo' ),
-			'fieldName BLOB DEFAULT foo NOT NULL'
+			new FieldDefinition(
+				'fieldName',
+				FieldDefinition::TYPE_TEXT,
+				FieldDefinition::NOT_NULL,
+				'foo'
+			),
+			'fieldName BLOB DEFAULT |foo| NOT NULL'
 		);
 
 		return $argLists;
