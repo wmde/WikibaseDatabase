@@ -27,6 +27,4 @@ interface SchemaModificationSqlBuilder {
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field );
 
-	// TODO: add other methods
-
 }
