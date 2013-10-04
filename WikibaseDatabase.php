@@ -1,12 +1,7 @@
 <?php
 
 /**
- * Entry point for the Database component of Wikibase.
- *
- * @since 0.1
- *
- * @file
- * @ingroup WikibaseDatabase
+ * Entry point of the Wikibase Database component.
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >

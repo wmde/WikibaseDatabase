@@ -1,13 +1,8 @@
 <?php
 
 /**
- * MediaWiki setup for the Database component of Wikibase.
- * The component should be included via the main entry point, Database.php.
- *
- * @since 0.1
- *
- * @file
- * @ingroup WikibaseDatabase
+ * MediaWiki setup for the Wikibase Database component.
+ * The component should be included via its main entry point, Database.php.
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >

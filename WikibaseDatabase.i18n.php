@@ -1,12 +1,7 @@
 <?php
 
 /**
- * Internationalization file for the Wikibase Database component.
- *
- * @since 0.1
- *
- * @file
- * @ingroup WikibaseDatabase
+ * Internationalization file of the Wikibase Database component.
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
