@@ -27,6 +27,4 @@ interface SchemaModifier {
 	 */
 	public function addField( $tableName, FieldDefinition $field );
 
-	// TODO: add other methods
-
 }

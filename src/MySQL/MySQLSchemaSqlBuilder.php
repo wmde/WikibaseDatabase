@@ -48,6 +48,4 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 		return "ALTER TABLE {$tableName} ADD " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
-	// TODO: add other methods
-
 }

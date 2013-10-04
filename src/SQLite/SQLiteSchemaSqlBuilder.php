@@ -76,6 +76,4 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 		return "ALTER TABLE {$tableName} ADD COLUMN " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
-	// TODO: add other methods
-
 }
