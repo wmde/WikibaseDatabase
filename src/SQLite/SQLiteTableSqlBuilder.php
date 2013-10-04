@@ -44,7 +44,6 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	 * @return string
 	 */
 	public function getCreateTableSql( TableDefinition $table ) {
-		// TODO: get rid of global (DatabaseBase currently provides no access to its mTablePrefix field)
 		$sql = 'CREATE TABLE ' .
 			$this->formatTableName( $table->getName() ) . ' (';
 
