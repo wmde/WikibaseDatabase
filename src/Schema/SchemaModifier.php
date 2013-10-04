@@ -15,7 +15,7 @@ interface SchemaModifier {
 	 * @param string $tableName
 	 * @param string $fieldName
 	 *
-	 * TODO: document throws
+	 * @throws FieldRemovalFailedException
 	 */
 	public function removeField( $tableName, $fieldName );
 
@@ -23,7 +23,7 @@ interface SchemaModifier {
 	 * @param string $tableName
 	 * @param FieldDefinition $field
 	 *
-	 * TODO: document throws
+	 * @throws FieldAdditionFailedException
 	 */
 	public function addField( $tableName, FieldDefinition $field );
 

@@ -10,7 +10,7 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class TableCreationFailedException extends QueryInterfaceException {
+class TableCreationFailedException extends SchemaModificationException {
 
 	protected $table;
 
