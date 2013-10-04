@@ -2,6 +2,8 @@
 
 namespace Wikibase\Database\Schema;
 
+use Wikibase\Database\Schema\Definitions\TableDefinition;
+
 /**
  * @since 0.1
  * @licence GNU GPL v2+
@@ -9,10 +11,22 @@ namespace Wikibase\Database\Schema;
  */
 class TableSchemaUpdateException extends \Exception {
 
-	public function __construct( $message = '', \Exception $previous = null ) {
+	protected $currentTable;
+	protected $newTable;
+
+	public function __construct( TableDefinition $currentTable, TableDefinition $newTable, $message = '', \Exception $previous = null ) {
 		parent::__construct( $message, 0, $previous );
 
-		// TODO: define fields
+		$this->currentTable = $currentTable;
+		$this->newTable = $newTable;
+	}
+
+	public function getCurrentTable() {
+		return $this->currentTable;
+	}
+
+	public function getNewTable() {
+		return $this->newTable;
 	}
 
 }

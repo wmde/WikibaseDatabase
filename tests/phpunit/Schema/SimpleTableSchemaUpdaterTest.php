@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\Schema;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\FieldRemovalFailedException;
 use Wikibase\Database\Schema\SimpleTableSchemaUpdater;
 
 /**
@@ -128,6 +129,46 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 		$updater->updateTable(
 			$tableDefinition,
 			$tableDefinition->mutateFields( array( reset( $fields ) ) )
+		);
+	}
+
+	/**
+	 * @dataProvider tableDefinitionProvider
+	 */
+	public function testTablesWithDifferentNamesCauseException( TableDefinition $tableDefinition ) {
+		$schema = $this->getMock( 'Wikibase\Database\Schema\SchemaModifier' );
+
+		$updater = new SimpleTableSchemaUpdater( $schema );
+
+		$this->setExpectedException( 'Wikibase\Database\Schema\TableSchemaUpdateException' );
+
+		$updater->updateTable(
+			$tableDefinition,
+			$tableDefinition->mutateName( $tableDefinition->getName() . '_foo' )
+		);
+	}
+
+	/**
+	 * @dataProvider tableDefinitionProvider
+	 */
+	public function testSchemaModificationExceptionPropagatesCorrectly( TableDefinition $tableDefinition ) {
+		$schema = $this->getMock( 'Wikibase\Database\Schema\SchemaModifier' );
+
+		$schema->expects( $this->once() )
+			->method( 'removeField' )
+			->will( $this->throwException(
+				new FieldRemovalFailedException( $tableDefinition->getName(), 'bar' )
+			) );
+
+		$updater = new SimpleTableSchemaUpdater( $schema );
+
+		$field = new FieldDefinition( 'rewtwery', FieldDefinition::TYPE_TEXT );
+
+		$this->setExpectedException( 'Wikibase\Database\Schema\TableSchemaUpdateException' );
+
+		$updater->updateTable(
+			$tableDefinition,
+			$tableDefinition->mutateFields( array( $field ) )
 		);
 	}
 
