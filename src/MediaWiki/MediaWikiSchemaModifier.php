@@ -5,6 +5,8 @@ namespace Wikibase\Database\MediaWiki;
 use DatabaseBase;
 use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\FieldAdditionFailedException;
+use Wikibase\Database\Schema\FieldRemovalFailedException;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 use Wikibase\Database\Schema\SchemaModifier;
 
@@ -42,11 +44,21 @@ class MediaWikiSchemaModifier implements SchemaModifier {
 	 * @param string $tableName
 	 * @param string $fieldName
 	 *
-	 * TODO: document throws
+	 * @throws FieldRemovalFailedException
 	 */
 	public function removeField( $tableName, $fieldName ) {
-		// TODO
-		// $this->getDB()->query( $this->sqlBuilder->getRemoveFieldSql( $tableName, $fieldName ) );
+		$success = $this->getDB()->query(
+			$this->sqlBuilder->getRemoveFieldSql( $tableName, $fieldName ),
+			__METHOD__
+		);
+
+		if ( $success === false ) {
+			throw new FieldRemovalFailedException(
+				$tableName,
+				$fieldName,
+				$this->getDB()->lastQuery()
+			);
+		}
 	}
 
 	/**
@@ -55,12 +67,21 @@ class MediaWikiSchemaModifier implements SchemaModifier {
 	 * @param string $tableName
 	 * @param FieldDefinition $field
 	 *
-	 * TODO: document throws
+	 * @throws FieldAdditionFailedException
 	 */
 	public function addField( $tableName, FieldDefinition $field ) {
-		// TODO
+		$success = $this->getDB()->query(
+			$this->sqlBuilder->getAddFieldSql( $tableName, $field ),
+			__METHOD__
+		);
+
+		if ( $success === false ) {
+			throw new FieldAdditionFailedException(
+				$tableName,
+				$field,
+				$this->getDB()->lastQuery()
+			);
+		}
 	}
 
 }
-
-
