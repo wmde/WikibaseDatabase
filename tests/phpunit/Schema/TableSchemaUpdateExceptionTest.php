@@ -16,16 +16,29 @@ use Wikibase\Database\Schema\TableSchemaUpdateException;
 class TableSchemaUpdateExceptionTest extends \PHPUnit_Framework_TestCase {
 
 	public function testConstructorWithOnlyRequiredArguments() {
-		new TableSchemaUpdateException();
+		$currentTable = $this->newMockTable();
+		$newTable = $this->newMockTable();
+
+		new TableSchemaUpdateException( $currentTable, $newTable );
 		$this->assertTrue( true );
 	}
 
+	protected function newMockTable() {
+		return $this->getMockBuilder( 'Wikibase\Database\Schema\Definitions\TableDefinition' )
+			->disableOriginalConstructor()->getMock();
+	}
+
 	public function testConstructorWithAllArguments() {
+		$currentTable = $this->newMockTable();
+		$newTable = $this->newMockTable();
+
 		$message = 'NyanData all the way accross the sky!';
 		$previous = new \Exception( 'Onoez!' );
 
-		$exception = new TableSchemaUpdateException( $message, $previous );
+		$exception = new TableSchemaUpdateException( $currentTable, $newTable, $message, $previous );
 
+		$this->assertEquals( $currentTable, $exception->getCurrentTable() );
+		$this->assertEquals( $newTable, $exception->getNewTable() );
 		$this->assertEquals( $message, $exception->getMessage() );
 		$this->assertEquals( $previous, $exception->getPrevious() );
 	}

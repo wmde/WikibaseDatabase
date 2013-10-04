@@ -27,10 +27,27 @@ class SimpleTableSchemaUpdater implements TableSchemaUpdater {
 	 * @throws TableSchemaUpdateException
 	 */
 	public function updateTable( TableDefinition $currentTable, TableDefinition $newTable ) {
-		// TODO: assert same table
+		if ( $currentTable->getName() !== $newTable->getName() ) {
+			throw new TableSchemaUpdateException(
+				$currentTable,
+				$newTable,
+				'The tables need to have the same name'
+			);
+		}
 
 		$updater = new PrivateTableUpdate( $this->schemaModifier, $currentTable, $newTable );
-		$updater->updateTable();
+
+		try {
+			$updater->updateTable();
+		}
+		catch ( SchemaModificationException $ex ) {
+			throw new TableSchemaUpdateException(
+				$currentTable,
+				$newTable,
+				$ex->getMessage(),
+				$ex
+			);
+		}
 	}
 
 }
@@ -63,8 +80,6 @@ class PrivateTableUpdate {
 				$this->currentTable->getFields()
 			)
 		);
-
-		// TODO
 	}
 
 	/**
