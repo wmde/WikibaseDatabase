@@ -56,7 +56,6 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 		$sql .= implode( ', ', $fields );
 
-		// TODO: table options
 		$sql .= ');';
 
 		foreach ( $table->getIndexes() as $index ){
