@@ -54,5 +54,3 @@ if ( defined( 'MEDIAWIKI' ) ) {
 	} );
 }
 // @codeCoverageIgnoreEnd
-
-require_once __DIR__ . '/compatLoader.php';
