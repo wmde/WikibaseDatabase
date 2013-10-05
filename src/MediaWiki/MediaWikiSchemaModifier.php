@@ -5,6 +5,7 @@ namespace Wikibase\Database\MediaWiki;
 use DatabaseBase;
 use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\FieldAdditionFailedException;
 use Wikibase\Database\Schema\FieldRemovalFailedException;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
@@ -82,6 +83,30 @@ class MediaWikiSchemaModifier implements SchemaModifier {
 				$this->getDB()->lastQuery()
 			);
 		}
+	}
+
+	/**
+	 * @see SchemaModifier::removeIndex
+	 *
+	 * @param string $tableName
+	 * @param string $indexName
+	 *
+	 * TODO: document throws
+	 */
+	public function removeIndex( $tableName, $indexName ) {
+		// TODO
+	}
+
+	/**
+	 * @see SchemaModifier::addIndex
+	 *
+	 * @param string $tableName
+	 * @param IndexDefinition $index
+	 *
+	 * TODO: document throws
+	 */
+	public function addIndex( $tableName, IndexDefinition $index ) {
+		// TODO
 	}
 
 }
