@@ -22,6 +22,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
 	protected $fieldSqlBuilder;
 	protected $tableNameFormatter;
+	protected $tableDefinitionReader;
+	protected $tableSqlBuilder;
 
 	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter, TableDefinitionReader $definitionReader ) {
 		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $fieldValueEscaper );
