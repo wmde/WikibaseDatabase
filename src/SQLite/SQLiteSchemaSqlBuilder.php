@@ -6,6 +6,7 @@ use Exception;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
@@ -74,6 +75,26 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
 		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
 		return "ALTER TABLE {$tableName} ADD COLUMN " . $this->fieldSqlBuilder->getFieldSQL( $field );
+	}
+
+	/**
+	 * @param string $tableName
+	 * @param string $indexName
+	 *
+	 * @return string
+	 */
+	public function getRemoveIndexSql( $tableName, $indexName ){
+		//TODO
+	}
+
+	/**
+	 * @param string $tableName
+	 * @param IndexDefinition $field
+	 *
+	 * @return string
+	 */
+	public function getAddIndexSql( $tableName, IndexDefinition $field ){
+		//TODO
 	}
 
 }
