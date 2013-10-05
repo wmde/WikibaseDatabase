@@ -56,7 +56,8 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){
-		//TODO
+		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		return "DROP INDEX {$indexName} ON {$tableName}";
 	}
 
 	/**

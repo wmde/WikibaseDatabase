@@ -44,4 +44,10 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( 'ALTER TABLE tableName ADD intField INT DEFAULT 42 NOT NULL', $sql );
 	}
 
+	public function testGetRemoveIndexSql(){
+		$instance = $this->newInstance();
+		$sql = $instance->getRemoveIndexSql( 'tableName', 'indexName' );
+		$this->assertEquals( "DROP INDEX indexName ON tableName", $sql );
+	}
+
 }
