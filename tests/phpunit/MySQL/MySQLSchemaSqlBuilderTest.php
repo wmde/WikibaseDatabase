@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLSchemaSqlBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLSchemaSqlBuilder
@@ -52,6 +53,12 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$instance = $this->newInstance();
 		$sql = $instance->getRemoveIndexSql( 'tableName', 'indexName' );
 		$this->assertEquals( "DROP INDEX indexName ON ||tableName||", $sql );
+	}
+
+	public function testGetAddIndexSql(){
+		$instance = $this->newInstance();
+		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'name', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
+		$this->assertEquals( "CREATE INDEX `name` ON ||tableName|| (`a`,`b`)", $sql );
 	}
 
 }

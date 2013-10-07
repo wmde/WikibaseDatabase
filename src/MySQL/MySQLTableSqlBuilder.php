@@ -73,6 +73,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	 * @param IndexDefinition $index
 	 *
 	 * @return string
+	 * @todo use a MySQLIndexSqlBuilder (although this creates indexes in a seperate query)
 	 */
 	protected function getIndexSQL( IndexDefinition $index ) {
 		$sql = $this->getIndexType( $index->getType() );
@@ -98,6 +99,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	 *
 	 * @return string
 	 * @throws RuntimeException
+	 * @todo use a MySQLIndexSqlBuilder (although this creates indexes in a seperate query)
 	 */
 	protected function getIndexType( $indexType ) {
 		switch ( $indexType ) {

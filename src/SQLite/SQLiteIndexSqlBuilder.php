@@ -24,11 +24,11 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
-	public function getIndexSQL( IndexDefinition $index, TableDefinition $table ){
+	public function getIndexSQL( IndexDefinition $index, $tableName ){
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
 		$sql .= $index->getName() . ' ';
-		$sql .= 'ON ' . $this->tableNameFormatter->formatTableName( $table->getName() );
+		$sql .= 'ON ' . $this->tableNameFormatter->formatTableName( $tableName );
 
 		$columnNames = array();
 		foreach( $index->getColumns() as $columnName => $intSize ){

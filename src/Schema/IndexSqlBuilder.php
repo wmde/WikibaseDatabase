@@ -3,7 +3,6 @@
 namespace Wikibase\Database\Schema;
 
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
-use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
  * @since 0.1
@@ -16,10 +15,10 @@ abstract class IndexSqlBuilder {
 	 * @since 0.1
 	 *
 	 * @param IndexDefinition $index
-	 * @param TableDefinition $table
+	 * @param string $tableNameName
 	 *
 	 * @return string The SQL for creating the index
 	 */
-	public abstract function getIndexSQL( IndexDefinition $index, TableDefinition $table );
+	public abstract function getIndexSQL( IndexDefinition $index, $tableNameName );
 
 }

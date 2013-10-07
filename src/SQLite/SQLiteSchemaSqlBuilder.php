@@ -97,7 +97,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddIndexSql( $tableName, IndexDefinition $index ){
-		//TODO
+		$indexSqlBuilder = new SQLiteIndexSqlBuilder( $this->tableNameFormatter );
+		return $indexSqlBuilder->getIndexSQL( $index, $tableName );
 	}
 
 }

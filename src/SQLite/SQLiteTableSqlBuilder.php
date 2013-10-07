@@ -60,7 +60,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$sql .= ');';
 
 		foreach ( $table->getIndexes() as $index ){
-			$sql .= $this->indexSqlBuilder->getIndexSQL( $index, $table );
+			$sql .= $this->indexSqlBuilder->getIndexSQL( $index, $table->getName() );
 		}
 
 		return $sql;
