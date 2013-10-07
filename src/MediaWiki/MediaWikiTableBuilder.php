@@ -74,7 +74,7 @@ class MediaWikiTableBuilder implements TableBuilder {
 		$success = $this->getDB()->query( $sql );
 
 		if ( $success === false ) {
-			throw new TableCreationFailedException( $table, $this->getDB()->lastQuery() );
+			throw new TableCreationFailedException( $table, $this->getDB()->lastError() );
 		}
 	}
 
@@ -91,7 +91,7 @@ class MediaWikiTableBuilder implements TableBuilder {
 		$success = $this->getDB()->dropTable( $tableName, __METHOD__ );
 
 		if ( $success === false ) {
-			throw new TableDeletionFailedException( $tableName, $this->getDB()->lastQuery() );
+			throw new TableDeletionFailedException( $tableName, $this->getDB()->lastError() );
 		}
 	}
 
