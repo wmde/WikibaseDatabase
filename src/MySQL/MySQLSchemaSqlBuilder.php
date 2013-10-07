@@ -61,11 +61,11 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
 	/**
 	 * @param string $tableName
-	 * @param IndexDefinition $field
+	 * @param IndexDefinition $index
 	 *
 	 * @return string
 	 */
-	public function getAddIndexSql( $tableName, IndexDefinition $field ){
+	public function getAddIndexSql( $tableName, IndexDefinition $index ){
 		//TODO
 	}
 
