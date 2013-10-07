@@ -188,10 +188,10 @@ via TravisCI, as a TravisCI configuration file is also provided in the root dire
 ## Authors
 
 Wikibase Database has been written by [Jeroen De Dauw](https://www.mediawiki.org/wiki/User:Jeroen_De_Dauw)
-as [Wikimedia Germany](https://wikimedia.de) employee for the [Wikidata project](https://wikidata.org/).
+and Adam Shorland as [Wikimedia Germany](https://wikimedia.de) employees for the
+[Wikidata project](https://wikidata.org/).
 
-Contributions where also made by Adam Shorland, and
-[several others](https://www.ohloh.net/p/wikibasedatabase/contributors).
+Contributions where also made by [several others](https://www.ohloh.net/p/wikibasedatabase/contributors).
 
 ## Links
 
