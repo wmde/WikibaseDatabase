@@ -19,7 +19,7 @@ use Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder;
  */
 class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	private function newInstance( $existingDefinition ) {
+	private function newInstance( $existingDefinition = null ) {
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
 		$mockEscaper->expects( $this->any() )
 			->method( 'getEscapedValue' )
@@ -34,7 +34,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteTableDefinitionReader' )
 			->disableOriginalConstructor()
 			->getMock();
-		$mockQueryInterface->expects( $this->atLeastOnce() )
+		$mockQueryInterface->expects( $this->any() )
 			->method( 'readDefinition' )
 			->will( $this->returnValue( $existingDefinition ) );
 
@@ -68,6 +68,16 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$instance = $this->newInstance( $existingDefinition );
 		$sql = $instance->getRemoveFieldSql( 'tableName', 'textField' );
 		$this->assertEquals( 'ALTER TABLE tableName RENAME TO tableName_tmp;CREATE TABLE tableName (primaryField INT NOT NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX INDEX ON tableName (intField,primaryField);INSERT INTO tableName(primaryField, intField) SELECT primaryField, intField FROM tableName_tmp;DROP TABLE tableName_tmp;', $sql );
+	}
+
+	public function testGetRemoveFieldSql(){
+		$this->markTestIncomplete( 'testme!' ); //TODO complete the test!
+	}
+
+	public function testGetRemoveIndexSql(){
+		$instance = $this->newInstance( );
+		$sql = $instance->getRemoveIndexSql( 'tableName', 'textField' );
+		$this->assertEquals( "DROP INDEX IF EXISTS tableName.textField", $sql );
 	}
 
 }
