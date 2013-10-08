@@ -53,9 +53,9 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
 		$argLists[] = array(
 			array(
-				array( array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
-				array( array( 'sql' => 'CREATE INDEX indexName ON dbNametableName (intField,textField)' ) ),
-				array( array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
+				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
+				array( (object)array( 'sql' => 'CREATE INDEX indexName ON dbNametableName (intField,textField)' ) ),
+				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
 			),
 			new TableDefinition(
 				'dbNametableName',

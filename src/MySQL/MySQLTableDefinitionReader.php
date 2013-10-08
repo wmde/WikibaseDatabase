@@ -50,23 +50,23 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getFields( $tableName ) {
 		$results = $this->queryInterface->select(
-			'information_schema.COLUMNS',
+			'INFORMATION_SCHEMA.COLUMNS',
 			array(
 				'name' => 'COLUMN_NAME',
 				'cannull' => 'IS_NULLABLE',
 				'type' => 'DATA_TYPE',
-				'default' => 'COLUMN_DEFAULT' ),
-			array( 'TABLE_SCHEMA' => $tableName )
+				'defaultvalue' => 'COLUMN_DEFAULT', ),
+			array( 'TABLE_NAME' => $tableName )
 		);
 
 		$fields = array();
 		foreach( $results as $field ){
 
 			$fields[] = new FieldDefinition(
-				$field['name'],
-				$this->getDataType( $field['type'] ),
-				$this->getNullable( $field['cannull'] ),
-				$field['default'] );
+				$field->name,
+				$this->getDataType( $field->type ),
+				$this->getNullable( $field->cannull ),
+				$field->defaultvalue );
 		}
 
 		return $fields;
@@ -82,7 +82,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		$indexes = array();
 
 		$constraintsResult = $this->queryInterface->select(
-			'information_schema.table_constraints',
+			'INFORMATION_SCHEMA.TABLE_CONSTRAINTS',
 			array(
 				'name' => 'CONSTRAINT_NAME',
 				'type' => 'CONSTRAINT_TYPE',
@@ -90,40 +90,44 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 			array( 'TABLE_NAME' => $tableName )
 		);
 
+		//TODO FIXME the below check for constraints will never work as $constraint->columns is undefined...
+		//TODO check unit tests and write an integration test...
 		foreach( $constraintsResult as $constraint ) {
-			if( $constraint['type'] === 'PRIMARY KEY' ) {
+			if( $constraint->type === 'PRIMARY KEY' ) {
 				$type = IndexDefinition::TYPE_PRIMARY;
-			} else if( $constraint['type'] === 'UNIQUE' ) {
+			} else if( $constraint->type === 'UNIQUE' ) {
 				$type = IndexDefinition::TYPE_UNIQUE;
 			} else {
 				throw new QueryInterfaceException(
 					'Unknown Constraint when reading definition ' .
-					$constraint['name'] . ', ' . $constraint['type'] );
+					$constraint->name . ', ' . $constraint->type );
 			}
-			$indexes[] = new IndexDefinition( $constraint['name'] , $constraint['columns'] , $type );
+			$indexes[] = new IndexDefinition( $constraint->name , $constraint->columns , $type );
 		}
 
 		$indexesResult = $this->queryInterface->select(
-			'information_schema.statistics',
+			'INFORMATION_SCHEMA.STATISTICS',
 			array(
-				'name' => 'index_name',
-				'columns' => 'GROUP_CONCAT(column_name ORDER BY seq_in_index)' ),
+				'COLUMN_NAME',
+				'SEQ_IN_INDEX',
+				'name' => 'INDEX_NAME',
+				'columns' => 'GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX)' ),
 			array( 'TABLE_NAME' => $tableName ),
-			array( 'GROUP BY' => '1,2' )
+			array( 'GROUP BY' => 'name' )
 		);
 
 		foreach( $indexesResult as $index ){
 			//ignore any indexes we already have (primary and unique)
 			foreach( $constraintsResult as $constraint ){
-				if( $constraint['name'] === $index['name'] ){
+				if( $constraint->name === $index->name ){
 					continue 2;
 				}
 			}
 			$cols = array();
-			foreach( explode( ',', $index['columns'] ) as $col ){
+			foreach( explode( ',', $index->columns ) as $col ){
 				$cols[ $col ] = 0;
 			}
-			$indexes[] = new IndexDefinition( $index['name'], $cols , IndexDefinition::TYPE_INDEX );
+			$indexes[] = new IndexDefinition( $index->name, $cols , IndexDefinition::TYPE_INDEX );
 		}
 
 		return $indexes;
@@ -138,7 +142,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		if( stristr( $dataType, 'blob' ) ){
 			return FieldDefinition::TYPE_TEXT;
 		} else if ( stristr( $dataType, 'tinyint' ) ){
-			return FieldDefinition::TYPE_INTEGER;
+			return FieldDefinition::TYPE_BOOLEAN;
 		} else if ( stristr( $dataType, 'int' ) ){
 			return FieldDefinition::TYPE_INTEGER;
 		} else if ( stristr( $dataType, 'float' ) ){

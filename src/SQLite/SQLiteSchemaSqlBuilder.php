@@ -44,13 +44,13 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 		$definition = $this->tableDefinitionReader->readDefinition( $tableName );
 		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
 		$tmpTableName = $this->tableNameFormatter->formatTableName( $tableName . '_tmp' );
-		$sql = "ALTER TABLE {$tableName} RENAME TO {$tmpTableName};";
+		$sql = "ALTER TABLE {$tableName} RENAME TO {$tmpTableName};" . PHP_EOL;
 
 		$definition = $definition->mutateFieldAway( $fieldName );
-		$sql .= $this->tableSqlBuilder->getCreateTableSql( $definition );
+		$sql .= $this->tableSqlBuilder->getCreateTableSql( $definition ) . PHP_EOL;
 
 		$fieldsSql = $this->getFieldsSql( $definition->getFields() );
-		$sql .= "INSERT INTO {$tableName}({$fieldsSql}) SELECT {$fieldsSql} FROM {$tmpTableName};";
+		$sql .= "INSERT INTO {$tableName}({$fieldsSql}) SELECT {$fieldsSql} FROM {$tmpTableName};" . PHP_EOL;
 		$sql .= "DROP TABLE {$tmpTableName};";
 
 		return $sql;

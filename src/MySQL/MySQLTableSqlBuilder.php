@@ -62,7 +62,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 
 		$sql .= implode( ', ', $queryParts );
 
-		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
+		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary;';
 
 		return $sql;
 	}

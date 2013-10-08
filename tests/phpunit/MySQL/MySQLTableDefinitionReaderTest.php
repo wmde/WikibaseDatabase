@@ -54,13 +54,13 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			array(
 				array(
-					array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'default' => null ),
-					array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'default' => null ),
-					array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'default' => 42 ),
+					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null ),
+					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => null ),
+					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => 42 ),
 				),
 				//TODO test UNIQUE and PRIMARY keys
-				array( array( ) ),
-				array( array( 'name' => 'indexName', 'columns' => 'intField,textField' ) )
+				array( null ),
+				array( (object)array( 'name' => 'indexName', 'columns' => 'intField,textField' ) )
 			),
 			new TableDefinition(
 				'dbNametableName',

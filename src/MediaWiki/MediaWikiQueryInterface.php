@@ -150,7 +150,7 @@ class MediaWikiQueryInterface implements QueryInterface {
 	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
 		$selectionResult = $this->getDB()->select(
 			$tableName,
-			 $fields,
+			$fields,
 			$conditions,
 			__METHOD__,
 			$options

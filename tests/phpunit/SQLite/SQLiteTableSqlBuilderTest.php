@@ -121,7 +121,8 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX indexName ON tableName (intField,textField);'
+			'CREATE TABLE tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);' . PHP_EOL
+			. 'CREATE INDEX indexName ON tableName (intField,textField);'
 		);
 
 		return $argLists;

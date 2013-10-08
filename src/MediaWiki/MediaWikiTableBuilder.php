@@ -71,11 +71,14 @@ class MediaWikiTableBuilder implements TableBuilder {
 	public function createTable( TableDefinition $table ) {
 		$sql = $this->tableSqlBuilder->getCreateTableSql( $table );
 
-		$success = $this->getDB()->query( $sql );
+		foreach( explode( PHP_EOL, $sql ) as $query ){
+			$success = $this->getDB()->query( $query );
 
-		if ( $success === false ) {
-			throw new TableCreationFailedException( $table, $this->getDB()->lastError() );
+			if ( $success === false ) {
+				throw new TableCreationFailedException( $table, $this->getDB()->lastError() );
+			}
 		}
+
 	}
 
 	/**

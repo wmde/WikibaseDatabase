@@ -67,7 +67,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					new FieldDefinition( 'fieldName', FieldDefinition::TYPE_INTEGER )
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (fieldName INT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (fieldName INT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		$argLists[] = array(
@@ -85,7 +85,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 
@@ -106,7 +106,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, INDEX `indexName` (`textField`,`intField`)) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, INDEX `indexName` (`textField`,`intField`)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		$argLists[] = array(
@@ -132,7 +132,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, textField2 BLOB NULL, INDEX `indexName` (`intField`), UNIQUE INDEX `uniqueIndexName` (`textField2`)) ENGINE=InnoDB, DEFAULT CHARSET=binary'
+			'CREATE TABLE `dbName`.tableName (textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, textField2 BLOB NULL, INDEX `indexName` (`intField`), UNIQUE INDEX `uniqueIndexName` (`textField2`)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		return $argLists;

@@ -2,25 +2,25 @@
 
 namespace Wikibase\Database\Tests;
 
+use Wikibase\Database\MediaWiki\MediaWikiQueryInterface;
 use Wikibase\Database\MediaWiki\MWTableBuilderBuilder;
+use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\LazyDBConnectionProvider;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
- * @file
  * @since 0.1
- *
- * @ingroup WikibaseDatabaseTest
  *
  * @group Wikibase
  * @group WikibaseDatabase
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
-class TableCreationAndDeletionTest extends \PHPUnit_Framework_TestCase {
+class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 
 	protected function tearDown() {
 		parent::tearDown();
@@ -43,6 +43,19 @@ class TableCreationAndDeletionTest extends \PHPUnit_Framework_TestCase {
 
 		$tbBuilder = new MWTableBuilderBuilder();
 		return $tbBuilder->setConnection( $connectionProvider )->getTableBuilder();
+	}
+
+	protected function newTableReader() {
+		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
+
+		$trBuilder = new MWTableDefinitionReaderBuilder();
+		return $trBuilder->setConnection( $connectionProvider )->getTableDefinitionReader( $this->newQueryInterface() );
+	}
+
+	protected function newQueryInterface() {
+		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
+
+		return new MediaWikiQueryInterface( $connectionProvider );
 	}
 
 	public function tableProvider() {
@@ -70,9 +83,9 @@ class TableCreationAndDeletionTest extends \PHPUnit_Framework_TestCase {
 		) );
 
 		$tables[] = new TableDefinition( 'default_field_values', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
-			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, false ),
-			new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, false ),
+				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
+				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, false ),
+				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, false ),
 			),
 			array( new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) ) )
 		);
@@ -104,6 +117,13 @@ class TableCreationAndDeletionTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(
 			$tableBuilder->tableExists( $table->getName() ),
 			'Table "' . $table->getName() . '" exists after creation'
+		);
+
+		$tableReader = $this->newTableReader();
+
+		$this->assertEquals(
+			$table,
+			$tableReader->readDefinition( $table->getName() )
 		);
 
 		$tableBuilder->dropTable( $table->getName() );

@@ -28,15 +28,19 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 
 		$sql .= $this->getFieldType( $field->getType() );
 
-		$sql .= $this->getDefault( $field->getDefault() );
+		$sql .= $this->getDefault( $field->getDefault(), $field->getType() );
 
 		$sql .= $this->getNull( $field->allowsNull() );
 
 		return $sql;
 	}
 
-	protected function getDefault( $default ) {
+	protected function getDefault( $default, $type ) {
 		if ( $default !== null ) {
+			//TODO ints shouldn't have quotes added to them so we can not use the escaper used for strings below???
+			if( $type === FieldDefinition::TYPE_INTEGER ){
+				return ' DEFAULT ' . $default;
+			}
 			return ' DEFAULT ' . $this->escaper->getEscapedValue( $default );
 		}
 

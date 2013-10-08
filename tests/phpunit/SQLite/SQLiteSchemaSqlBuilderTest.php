@@ -67,7 +67,13 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		$instance = $this->newInstance( $existingDefinition );
 		$sql = $instance->getRemoveFieldSql( 'tableName', 'textField' );
-		$this->assertEquals( 'ALTER TABLE tableName RENAME TO tableName_tmp;CREATE TABLE tableName (primaryField INT NOT NULL, intField INT DEFAULT 42 NOT NULL);CREATE INDEX INDEX ON tableName (intField,primaryField);INSERT INTO tableName(primaryField, intField) SELECT primaryField, intField FROM tableName_tmp;DROP TABLE tableName_tmp;', $sql );
+		$this->assertEquals(
+			'ALTER TABLE tableName RENAME TO tableName_tmp;' . PHP_EOL
+			. 'CREATE TABLE tableName (primaryField INT NOT NULL, intField INT DEFAULT 42 NOT NULL);' . PHP_EOL
+			. 'CREATE INDEX INDEX ON tableName (intField,primaryField);' . PHP_EOL
+			. 'INSERT INTO tableName(primaryField, intField) SELECT primaryField, intField FROM tableName_tmp;' . PHP_EOL
+			. 'DROP TABLE tableName_tmp;' ,
+			$sql );
 	}
 
 	public function testGetAddFieldSql(){
