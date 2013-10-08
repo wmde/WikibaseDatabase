@@ -125,6 +125,26 @@ $builder->dropTable( $tableName );
 $builder->tableExists( $tableName );
 ```
 
+SchemaModifier:
+
+```php
+$modifier->removeField( $tableName, $fieldName );
+```
+
+```php
+$field = new FieldDefinition( /* ... */ );
+$modifier->addField( $tableName, $field );
+```
+
+```php
+$modifier->removeIndex( $tableName, $indexName );
+```
+
+```php
+$index = new IndexDefinition( /* ... */ );
+$modifier->addIndex( $tableName, $index );
+```
+
 ## Abstraction layer structure
 
 All classes of this component reside in the Wikibase\Database namespace, which is PSR-0 mapped
