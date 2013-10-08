@@ -120,31 +120,31 @@ $builder->createTable( $tableDefinition );
 ```
 
 ```php
-$builder->dropTable( $tableName );
+$builder->dropTable( 'tableName' );
 ```
 
 ```php
-$builder->tableExists( $tableName );
+$builder->tableExists( 'tableName' );
 ```
 
 SchemaModifier:
 
 ```php
 $field = new FieldDefinition( /* ... */ );
-$modifier->addField( $tableName, $field );
+$modifier->addField( 'tableName', $field );
 ```
 
 ```php
-$modifier->removeField( $tableName, $fieldName );
+$modifier->removeField( 'tableName', 'fieldName' );
 ```
 
 ```php
 $index = new IndexDefinition( /* ... */ );
-$modifier->addIndex( $tableName, $index );
+$modifier->addIndex( 'tableName', $index );
 ```
 
 ```php
-$modifier->removeIndex( $tableName, $indexName );
+$modifier->removeIndex( 'tableName', 'indexName' );
 ```
 
 ## Abstraction layer structure
