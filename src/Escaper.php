@@ -8,11 +8,9 @@ namespace Wikibase\Database;
  *
  * @since 0.1
  *
- * @file
- * @ingroup WikibaseDatabase
- *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 interface Escaper {
 
@@ -22,5 +20,12 @@ interface Escaper {
 	 * @return string The escaped value
 	 */
 	public function getEscapedValue( $value );
+
+	/**
+	 * @param mixed $identifier
+	 *
+	 * @return string The escaped identifier
+	 */
+	public function getEscapedIdentifier( $identifier );
 
 }

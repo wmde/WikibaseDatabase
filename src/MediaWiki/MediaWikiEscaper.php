@@ -11,6 +11,7 @@ use Wikibase\Database\Escaper;
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class MediaWikiEscaper implements Escaper {
 
@@ -29,6 +30,17 @@ class MediaWikiEscaper implements Escaper {
 	 */
 	public function getEscapedValue( $value ) {
 		return $this->dbConnection->addQuotes( $value );
+	}
+
+	/**
+	 * @see Escaper::getEscapedIdentifier
+	 *
+	 * @param mixed $identifier
+	 *
+	 * @return string The escaped identifier
+	 */
+	public function getEscapedIdentifier( $identifier ) {
+		return $this->dbConnection->addIdentifierQuotes( $identifier );
 	}
 
 }
