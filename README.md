@@ -130,21 +130,21 @@ $builder->tableExists( $tableName );
 SchemaModifier:
 
 ```php
-$modifier->removeField( $tableName, $fieldName );
-```
-
-```php
 $field = new FieldDefinition( /* ... */ );
 $modifier->addField( $tableName, $field );
 ```
 
 ```php
-$modifier->removeIndex( $tableName, $indexName );
+$modifier->removeField( $tableName, $fieldName );
 ```
 
 ```php
 $index = new IndexDefinition( /* ... */ );
 $modifier->addIndex( $tableName, $index );
+```
+
+```php
+$modifier->removeIndex( $tableName, $indexName );
 ```
 
 ## Abstraction layer structure
