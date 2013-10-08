@@ -2,6 +2,8 @@
 
 [![Build Status](https://secure.travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase.png?branch=master)](http://travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase)
 [![Coverage Status](https://coveralls.io/repos/wikimedia/mediawiki-extensions-WikibaseDatabase/badge.png?branch=master)](https://coveralls.io/r/wikimedia/mediawiki-extensions-WikibaseDatabase?branch=master)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/wikimedia/mediawiki-extensions-WikibaseDatabase/badges/quality-score.png?s=a470de62a233cd5dbe29ebdf1335b55645d2f259)](https://scrutinizer-ci.com/g/wikimedia/mediawiki-extensions-WikibaseDatabase/)
+[![Dependency Status](https://www.versioneye.com/package/php--wikibase--database/badge.png)](https://www.versioneye.com/package/php--wikibase--database)
 
 On Packagist:
 [![Latest Stable Version](https://poser.pugx.org/wikibase/database/version.png)](https://packagist.org/packages/wikibase/database)
