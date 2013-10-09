@@ -4,7 +4,6 @@ namespace Wikibase\Database\SQLite;
 
 use Exception;
 use Wikibase\Database\Escaper;
-use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
