@@ -6,16 +6,10 @@ use DatabaseBase;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
- * Base database abstraction class to put stuff into that is not present
- * in the MW core db abstraction layer.
- *
- * Like to core class DatabaseBase, each deriving class provides support
- * for a specific type of database.
- *
- * Everything implemented in these classes could go into DatabaseBase and
- * deriving classes, though this might take quite some time, hence implementation
- * is first done here. If you feel like taking core CR crap and waiting a few
- * months, by all means try to get the functionality into core.
+ * The SQL returned by the methods in this interface may contain multiple statements.
+ * The SQL may also consist out of multiple lines. One statement per line.
+ * Multiple statements on one line is not allowed, and neither is spreading a
+ * statement over multiple lines.
  *
  * @since 0.1
  * @licence GNU GPL v2+
