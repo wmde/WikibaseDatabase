@@ -5,6 +5,7 @@ namespace Wikibase\Database\SQLite;
 use RuntimeException;
 use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\QueryInterface\QueryInterfaceException;
+use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -46,41 +47,27 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		return new TableDefinition( $tableName, $fields, array_merge( $indexes, $keys ) );
 	}
 
+	/**
+	 * Returns an array of all fields in the given table
+	 * @param string $tableName
+	 * @throws QueryInterfaceException
+	 * @return FieldDefinition[]
+	 */
 	private function getFields( $tableName ) {
-		$results = $this->queryInterface->select(
-			'sqlite_master',
-			array( 'sql' ),
-			array( 'type' => 'table', 'tbl_name' => $tableName ) );
-
+		$results = $this->doCreateQuery( $tableName );
 		if( iterator_count( $results ) > 1 ){
 			throw new QueryInterfaceException( "More than one set of fields returned for {$tableName}" );
 		}
 		$fields = array();
 
 		foreach( $results as $result ){
+			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 			preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $result->sql, $createParts );
-			/** 1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ){
-				if( preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?/', $fieldSql, $fieldParts ) &&
-					$fieldParts[0] !== 'PRIMARY KEY' ){
-					/** 1 => column, 2 => type, 4 => default, 6 => NotNull */
-
-					$type = $this->getFieldType( $fieldParts[2] );
-
-					if( !empty( $fieldParts[4] ) ){
-						$default = $fieldParts[4];
-					} else {
-						$default = null;
-					}
-
-					if( $fieldParts[6] === 'NOT NULL' ){
-						$null = false;
-					} else {
-						$null = true;
-					}
-
-					$fields[] = new FieldDefinition( $fieldParts[1], $type, $null, $default );
+				if( preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?/', $fieldSql, $fieldParts )
+					&& $fieldParts[0] !== 'PRIMARY KEY' ) {
+					$fields[] = $this->getField( $fieldParts );
 				}
 			}
 		}
@@ -88,50 +75,23 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		return $fields;
 	}
 
-	private function getIndexes( $tableName ) {
-		$results = $this->queryInterface->select(
+	/**
+	 * Performs a request to get the SQL needed to create the given table
+	 * @param string $tableName
+	 * @return ResultIterator
+	 */
+	private function doCreateQuery( $tableName ){
+		return $this->queryInterface->select(
 			'sqlite_master',
 			array( 'sql' ),
-			array( 'type' => 'index', 'tbl_name' => $tableName )
-		);
-		$indexes = array();
-
-		foreach( $results as $result ){
-			preg_match( '/CREATE ([^ ]+) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $result->sql, $createParts );
-			$parsedColumns = explode( ',', $createParts[4] );
-			$columns = array();
-			foreach( $parsedColumns as $columnName ){
-				//default unrestricted index size limit
-				$columns[ $columnName ] = 0;
-			}
-			$indexes[] = new IndexDefinition( $createParts[2], $columns , strtolower( $createParts[1] ) );
-		}
-
-		return $indexes;
+			array( 'type' => 'table', 'tbl_name' => $tableName ) );
 	}
 
-	private function getPrimaryKeys( $tableName ) {
-		$keys = array();
-		$results = $this->queryInterface->select(
-			'sqlite_master',
-			array( 'sql' ),
-			array( 'type' => 'table', 'tbl_name' => $tableName, "sql LIKE '%PRIMARY KEY%'" )
-		);
-
-		foreach( $results as $result ){
-			if( preg_match( '/PRIMARY KEY \(([^\)]+)\)/', $result->sql, $createParts ) ){
-				/**  0 => PRIMARY KEY (column1, column2), 1 => column1, column2 */
-				$parsedColumns = explode( ',', $createParts[1] );
-				$columns = array();
-				foreach( $parsedColumns as $columnName ){
-					//default unrestricted index size limit
-					$columns[ trim( $columnName ) ] = 0;
-				}
-				$keys[] = new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
-			}
-		}
-
-		return $keys;
+	private function getField( $fieldParts ) {
+		$type = $this->getFieldType( $fieldParts[2] );
+		$default = $this->getFieldDefault( $fieldParts[4] );
+		$null = $this->getFieldCanNull( $fieldParts[6] );
+		return new FieldDefinition( $fieldParts[1], $type, $null, $default );
 	}
 
 	private function getFieldType( $type ) {
@@ -152,6 +112,96 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
 		}
 
+	}
+
+	private function getFieldDefault( $default ) {
+		if( !empty( $default ) ){
+			return $default;
+		} else {
+			return null;
+		}
+	}
+
+	private function getFieldCanNull( $canNull ) {
+		if( $canNull === 'NOT NULL' ){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Returns an array of all indexes for a given table (excluding Primary Keys)
+	 * @param string $tableName
+	 * @return IndexDefinition[]
+	 */
+	private function getIndexes( $tableName ) {
+		$results = $this->doIndexQuery( $tableName );
+		$indexes = array();
+
+		foreach( $results as $result ){
+			preg_match( '/CREATE ([^ ]+) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $result->sql, $createParts );
+			$parsedColumns = explode( ',', $createParts[4] );
+			$columns = array();
+			foreach( $parsedColumns as $columnName ){
+				//default unrestricted index size limit
+				$columns[ $columnName ] = 0;
+			}
+			$indexes[] = new IndexDefinition( $createParts[2], $columns , strtolower( $createParts[1] ) );
+		}
+
+		return $indexes;
+	}
+
+	/**
+	 * Performs a request to get the SQL needed to create all indexes for a table
+	 * @param string $tableName
+	 * @return ResultIterator
+	 */
+	private function doIndexQuery( $tableName ){
+		return $this->queryInterface->select(
+			'sqlite_master',
+			array( 'sql' ),
+			array( 'type' => 'index', 'tbl_name' => $tableName )
+		);
+	}
+
+	/**
+	 * Returns an array of all primary keys for a given table
+	 * @param string $tableName
+	 * @return IndexDefinition[]
+	 */
+	private function getPrimaryKeys( $tableName ) {
+		$keys = array();
+		$results = $this->doPrimaryKeyQuery( $tableName );
+
+		foreach( $results as $result ){
+			if( preg_match( '/PRIMARY KEY \(([^\)]+)\)/', $result->sql, $createParts ) ){
+				/**  0 => PRIMARY KEY (column1, column2), 1 => column1, column2 */
+				$parsedColumns = explode( ',', $createParts[1] );
+				$columns = array();
+				foreach( $parsedColumns as $columnName ){
+					//default unrestricted index size limit
+					$columns[ trim( $columnName ) ] = 0;
+				}
+				$keys[] = new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
+	 * Performs a request to get the SQL needed to create the primary key for a given table
+	 * @param string $tableName
+	 * @return ResultIterator
+	 */
+	private function doPrimaryKeyQuery( $tableName ){
+		return $this->queryInterface->select(
+			'sqlite_master',
+			array( 'sql' ),
+			array( 'type' => 'table', 'tbl_name' => $tableName, "sql LIKE '%PRIMARY KEY%'" )
+		);
 	}
 
 }
