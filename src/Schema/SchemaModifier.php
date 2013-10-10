@@ -32,7 +32,7 @@ interface SchemaModifier {
 	 * @param string $tableName
 	 * @param string $indexName
 	 *
-	 * TODO: document throws
+	 * @throws IndexRemovalFailedException
 	 */
 	public function removeIndex( $tableName, $indexName );
 
@@ -40,7 +40,7 @@ interface SchemaModifier {
 	 * @param string $tableName
 	 * @param IndexDefinition $index
 	 *
-	 * TODO: document throws
+	 * @throws IndexAdditionFailedException
 	 */
 	public function addIndex( $tableName, IndexDefinition $index );
 

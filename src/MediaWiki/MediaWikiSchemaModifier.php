@@ -8,6 +8,8 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\FieldAdditionFailedException;
 use Wikibase\Database\Schema\FieldRemovalFailedException;
+use Wikibase\Database\Schema\IndexAdditionFailedException;
+use Wikibase\Database\Schema\IndexRemovalFailedException;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 use Wikibase\Database\Schema\SchemaModifier;
 
@@ -91,10 +93,21 @@ class MediaWikiSchemaModifier implements SchemaModifier {
 	 * @param string $tableName
 	 * @param string $indexName
 	 *
-	 * TODO: document throws
+	 * @throws IndexRemovalFailedException
 	 */
 	public function removeIndex( $tableName, $indexName ) {
-		// TODO
+		$success = $this->getDB()->query(
+			$this->sqlBuilder->getRemoveIndexSql( $tableName, $indexName ),
+			__METHOD__
+		);
+
+		if ( $success === false ) {
+			throw new IndexRemovalFailedException(
+				$tableName,
+				$indexName,
+				$this->getDB()->lastQuery()
+			);
+		}
 	}
 
 	/**
@@ -103,10 +116,21 @@ class MediaWikiSchemaModifier implements SchemaModifier {
 	 * @param string $tableName
 	 * @param IndexDefinition $index
 	 *
-	 * TODO: document throws
+	 * @throws IndexAdditionFailedException
 	 */
 	public function addIndex( $tableName, IndexDefinition $index ) {
-		// TODO
+		$success = $this->getDB()->query(
+			$this->sqlBuilder->getAddIndexSql( $tableName, $index ),
+			__METHOD__
+		);
+
+		if ( $success === false ) {
+			throw new IndexAdditionFailedException(
+				$tableName,
+				$index,
+				$this->getDB()->lastQuery()
+			);
+		}
 	}
 
 }
