@@ -86,4 +86,13 @@ interface QueryInterface {
 	 */
 	public function select( $tableName, array $fields, array $conditions, array $options = array() );
 
+	/**
+	 * @since 0.1
+	 *
+	 * @param string $tableName
+	 *
+	 * @return boolean
+	 */
+	public function tableExists( $tableName );
+
 }
