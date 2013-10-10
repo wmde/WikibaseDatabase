@@ -82,24 +82,13 @@ class FieldDefinition {
 	 * @param string|null $attributes
 	 * @param boolean $autoIncrement
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = null, $autoIncrement = false ) {
-		if ( !is_string( $name ) ) {
-			throw new InvalidArgumentException( 'The field $name needs to be a string' );
-		}
-
-		if ( !is_string( $type ) ) {
-			throw new InvalidArgumentException( 'The field $type needs to be a string' );
-		}
-
-		if ( !is_bool( $null ) ) {
-			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
-		}
-
-		if ( !is_bool( $autoIncrement ) ) {
-			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
-		}
+		$this->assertIsValidName( $name );
+		$this->assertIsValidType( $type );
+		$this->assertIsValudNull( $null );
+		$this->assertIsValidAutoIncrement( $autoIncrement );
 
 		$this->name = $name;
 		$this->type = $type;
@@ -177,6 +166,30 @@ class FieldDefinition {
 	 */
 	public function hasAutoIncrement() {
 		return $this->autoIncrement;
+	}
+
+	private function assertIsValidName( $name ) {
+		if ( !is_string( $name ) ) {
+			throw new InvalidArgumentException( 'The field $name needs to be a string' );
+		}
+	}
+
+	private function assertIsValidType( $type ) {
+		if ( !is_string( $type ) ) {
+			throw new InvalidArgumentException( 'The field $type needs to be a string' );
+		}
+	}
+
+	private function assertIsValudNull( $null ) {
+		if ( !is_bool( $null ) ) {
+			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
+		}
+	}
+
+	private function assertIsValidAutoIncrement( $autoIncrement ) {
+		if ( !is_bool( $autoIncrement ) ) {
+			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
+		}
 	}
 
 }
