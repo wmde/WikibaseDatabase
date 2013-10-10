@@ -39,6 +39,10 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		return new MySQLTableDefinitionReader( $mockQueryInterface );
 	}
 
+	public function testReadNonExistentTable(){
+		$this->markTestIncomplete( 'Test QueryInterfaceException on reading non existant table' );
+	}
+
 	/**
 	 * @dataProvider sqlAndDefinitionProvider
 	 */
@@ -50,6 +54,10 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
 	public function sqlAndDefinitionProvider() {
 		$argLists = array();
+
+		//TODO test field type TYPE_BOOLEAN
+		//TODO test field type TYPE_FLOAT
+		//TODO test case containing constraints PRIMARY & UNIQUE
 
 		$argLists[] = array(
 			array(

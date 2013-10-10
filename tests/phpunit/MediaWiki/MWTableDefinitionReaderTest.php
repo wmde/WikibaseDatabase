@@ -50,4 +50,8 @@ class MWTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf( 'Wikibase\Database\Schema\TableDefinitionReader', $tableDefinitionReader );
 	}
 
+	public function testUnsupportedDbType(){
+		$this->markTestIncomplete( 'Test RuntimeException on unsupported DB type' );
+	}
+
 }

@@ -69,4 +69,8 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
+	public function testUnsupportedType(){
+		$this->markTestIncomplete( 'Test RuntimeException on unsupported field type' );
+	}
+
 }

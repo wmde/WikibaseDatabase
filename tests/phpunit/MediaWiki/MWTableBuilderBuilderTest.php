@@ -52,4 +52,8 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf( 'Wikibase\Database\Schema\TableBuilder', $tableBuilder );
 	}
 
+	public function testUnsupportedDbType(){
+		$this->markTestIncomplete( 'Test RuntimeException on unsupported DB type' );
+	}
+
 }

@@ -97,6 +97,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		} else if ( stristr( $dataType, 'float' ) ){
 			return FieldDefinition::TYPE_FLOAT;
 		} else {
+			//TODO FIXME decide if this is the correct behaviour or throw a RuntimeException
 			return $dataType;
 		}
 	}

@@ -69,25 +69,30 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		) );
 
 		$tables[] = new TableDefinition( 'default_field_values', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, true, 42 ),
+			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NULL, 42 ),
 		) );
 
 		$tables[] = new TableDefinition( 'not_null_fields', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
+			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL ),
+			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
 		) );
 
 		$tables[] = new TableDefinition( 'not_null_fields', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
+			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL ),
+			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NULL ),
 		) );
 
 		$tables[] = new TableDefinition( 'default_field_values', array(
-				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
-				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, false ),
-				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, false ),
+				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NULL, 3 ),
+				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, FieldDefinition::NOT_NULL, true ),
 			),
-			array( new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) ) )
+			array(
+				//TODO uncomment the below line in test once text keys correctly specify a key length
+				//new IndexDefinition( 'PRIMARY', array( 'textfield' => 100 ), IndexDefinition::TYPE_PRIMARY ),
+				new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) )
+			)
 		);
 
 		$argLists = array();

@@ -24,6 +24,7 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 	}
 
 	public function getFieldSQL( FieldDefinition $field ){
+		//todo escape name once identifier escaping is implemented
 		$sql = $field->getName() . ' ';
 
 		$sql .= $this->getFieldType( $field->getType() );
@@ -31,6 +32,8 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		$sql .= $this->getDefault( $field->getDefault(), $field->getType() );
 
 		$sql .= $this->getNull( $field->allowsNull() );
+
+		//TODO use field->autoIncrement and add to sql if needed
 
 		return $sql;
 	}
