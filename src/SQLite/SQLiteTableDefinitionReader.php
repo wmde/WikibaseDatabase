@@ -140,17 +140,21 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$indexes = array();
 
 		foreach( $results as $result ){
-			preg_match( '/CREATE ([^ ]+) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $result->sql, $createParts );
-			$parsedColumns = explode( ',', $createParts[4] );
-			$columns = array();
-			foreach( $parsedColumns as $columnName ){
-				//default unrestricted index size limit
-				$columns[ $columnName ] = 0;
-			}
-			$indexes[] = new IndexDefinition( $createParts[2], $columns , strtolower( $createParts[1] ) );
+			$indexes[] = $this->getIndex( $result->sql );
 		}
 
 		return $indexes;
+	}
+
+	private function getIndex( $sql ){
+		preg_match( '/CREATE ([^ ]+) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
+		$parsedColumns = explode( ',', $createParts[4] );
+		$columns = array();
+		foreach( $parsedColumns as $columnName ){
+			//default unrestricted index size limit
+			$columns[ $columnName ] = 0;
+		}
+		return new IndexDefinition( $createParts[2], $columns , strtolower( $createParts[1] ) );
 	}
 
 	/**

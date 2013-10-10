@@ -4,6 +4,7 @@ namespace Wikibase\Database\MySQL;
 
 use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\QueryInterface\QueryInterfaceException;
+use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -49,18 +50,10 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return FieldDefinition[]
 	 */
 	private function getFields( $tableName ) {
-		$results = $this->queryInterface->select(
-			'INFORMATION_SCHEMA.COLUMNS',
-			array(
-				'name' => 'COLUMN_NAME',
-				'cannull' => 'IS_NULLABLE',
-				'type' => 'DATA_TYPE',
-				'defaultvalue' => 'COLUMN_DEFAULT', ),
-			array( 'TABLE_NAME' => $tableName )
-		);
+		$fieldResults = $this->doColumnsQuery( $tableName );
 
 		$fields = array();
-		foreach( $results as $field ){
+		foreach( $fieldResults as $field ){
 
 			$fields[] = new FieldDefinition(
 				$field->name,
@@ -73,64 +66,20 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	/**
-	 * @param $tableName string
-	 * @throws QueryInterfaceException
-	 * @return IndexDefinition[]
+	 * Performs a request to get information needed to construct FieldDefinitions
+	 * @param string $tableName
+	 * @return ResultIterator
 	 */
-	private function getIndexes( $tableName ) {
-		//TODO we currently don't notice FULLTEXT or SPATIAL indexes
-		$indexes = array();
-
-		$constraintsResult = $this->queryInterface->select(
-			'INFORMATION_SCHEMA.TABLE_CONSTRAINTS',
+	private function doColumnsQuery( $tableName ){
+		return $this->queryInterface->select(
+			'INFORMATION_SCHEMA.COLUMNS',
 			array(
-				'name' => 'CONSTRAINT_NAME',
-				'type' => 'CONSTRAINT_TYPE',
-			),
+				'name' => 'COLUMN_NAME',
+				'cannull' => 'IS_NULLABLE',
+				'type' => 'DATA_TYPE',
+				'defaultvalue' => 'COLUMN_DEFAULT', ),
 			array( 'TABLE_NAME' => $tableName )
 		);
-
-		//TODO FIXME the below check for constraints will never work as $constraint->columns is undefined...
-		//TODO check unit tests and write an integration test...
-		foreach( $constraintsResult as $constraint ) {
-			if( $constraint->type === 'PRIMARY KEY' ) {
-				$type = IndexDefinition::TYPE_PRIMARY;
-			} else if( $constraint->type === 'UNIQUE' ) {
-				$type = IndexDefinition::TYPE_UNIQUE;
-			} else {
-				throw new QueryInterfaceException(
-					'Unknown Constraint when reading definition ' .
-					$constraint->name . ', ' . $constraint->type );
-			}
-			$indexes[] = new IndexDefinition( $constraint->name , $constraint->columns , $type );
-		}
-
-		$indexesResult = $this->queryInterface->select(
-			'INFORMATION_SCHEMA.STATISTICS',
-			array(
-				'COLUMN_NAME',
-				'SEQ_IN_INDEX',
-				'name' => 'INDEX_NAME',
-				'columns' => 'GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX)' ),
-			array( 'TABLE_NAME' => $tableName ),
-			array( 'GROUP BY' => 'name' )
-		);
-
-		foreach( $indexesResult as $index ){
-			//ignore any indexes we already have (primary and unique)
-			foreach( $constraintsResult as $constraint ){
-				if( $constraint->name === $index->name ){
-					continue 2;
-				}
-			}
-			$cols = array();
-			foreach( explode( ',', $index->columns ) as $col ){
-				$cols[ $col ] = 0;
-			}
-			$indexes[] = new IndexDefinition( $index->name, $cols , IndexDefinition::TYPE_INDEX );
-		}
-
-		return $indexes;
 	}
 
 	/**
@@ -162,6 +111,90 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * @param $tableName string
+	 * @throws QueryInterfaceException
+	 * @return IndexDefinition[]
+	 * @TODO support currently don't notice FULLTEXT or SPATIAL indexes
+	 * @TODO integration test that uses primarykey in MYSQL
+	 */
+	private function getIndexes( $tableName ) {
+		$indexes = array();
+
+		$constraintsResult =  $this->doConstraintsQuery( $tableName );
+		$constraints = array();
+		foreach( $constraintsResult as $constraint ) {
+			//todo we should try to detect the index length here and use that instead of default 0
+			$constraints[ $constraint->name ][ $constraint->columnName ] = 0;
+		}
+		foreach( $constraints as $name => $cols ){
+			$indexes[] = $this->getConstraint( $name, $cols );
+		}
+
+		$indexesResult = $this->doIndexesQuery( $tableName );
+		foreach( $indexesResult as $index ){
+			$indexDef =  $this->getIndex( $index );
+			//ignore any indexes we already have (primary and unique)
+			if( !array_key_exists( $indexDef->getName(), $constraints ) ){
+				$indexes[] = $indexDef;
+			}
+		}
+
+		return $indexes;
+	}
+
+	private function getConstraint( $name, $columns ) {
+		if( $name === 'PRIMARY' ){
+			return new IndexDefinition( 'PRIMARY' , $columns , IndexDefinition::TYPE_PRIMARY );
+		} else {
+			return new IndexDefinition( $name , $columns , IndexDefinition::TYPE_UNIQUE );
+		}
+	}
+
+	private function getIndex( $index ){
+		$cols = array();
+		foreach( explode( ',', $index->columns ) as $col ){
+			$cols[ $col ] = 0;
+		}
+		return new IndexDefinition( $index->name, $cols , IndexDefinition::TYPE_INDEX );
+	}
+
+	/**
+	 * Performs a request to get information needed to construct IndexDefinitions
+	 * for Primary Keys and Unique Indexes from constraints
+	 * @param string $tableName
+	 * @return ResultIterator
+	 */
+	private function doConstraintsQuery( $tableName ) {
+		return $this->queryInterface->select(
+			'INFORMATION_SCHEMA.KEY_COLUMN_USAGE',
+			array(
+				'name' => 'CONSTRAINT_NAME',
+				'columnName' => 'COLUMN_NAME'
+			),
+			array( 'TABLE_NAME' => $tableName )
+		);
+	}
+
+	/**
+	 * Performs a request to get information needed to construct IndexDefinitions
+	 * that are not Primary Keys or Unique Indexes from statistics
+	 * @param string $tableName
+	 * @return ResultIterator
+	 */
+	private function doIndexesQuery( $tableName ){
+		return $this->queryInterface->select(
+			'INFORMATION_SCHEMA.STATISTICS',
+			array(
+				'COLUMN_NAME',
+				'SEQ_IN_INDEX',
+				'name' => 'INDEX_NAME',
+				'columns' => 'GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX)' ),
+			array( 'TABLE_NAME' => $tableName ),
+			array( 'GROUP BY' => 'name' )
+		);
 	}
 
 }
