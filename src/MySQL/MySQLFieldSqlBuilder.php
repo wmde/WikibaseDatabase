@@ -24,6 +24,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	}
 
 	public function getFieldSQL( FieldDefinition $field ){
+		//todo escape name once identifier escaping is implemented
 		$sql =  $field->getName() . ' ';
 
 		$sql .= $this->getFieldType( $field->getType() );
@@ -33,6 +34,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 		$sql .= $this->getNull( $field->allowsNull() );
 
 		// TODO: add all field stuff relevant here
+		//TODO use field->autoIncrement and add to sql if needed
 
 		return $sql;
 	}
@@ -63,6 +65,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 				return 'INT';
 			case FieldDefinition::TYPE_FLOAT:
 				return 'FLOAT';
+			//todo define max length of text fields?
 			case FieldDefinition::TYPE_TEXT:
 				return 'BLOB';
 			case FieldDefinition::TYPE_BOOLEAN:

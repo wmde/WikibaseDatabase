@@ -339,6 +339,10 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
+	public function testSelectFailure() {
+		$this->markTestIncomplete( 'write test for MediaWikiQueryInterface select SelectFailedException' );
+	}
+
 }
 
 class DirectConnectionProvider implements DBConnectionProvider {

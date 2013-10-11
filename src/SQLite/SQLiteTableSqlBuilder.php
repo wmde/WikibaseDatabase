@@ -32,6 +32,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
 		$this->escaper = $fieldValueEscaper;
 		$this->tableNameFormatter = $tableNameFormatter;
+		//TODO inject sqlbuilders
 		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $this->escaper );
 		$this->indexSqlBuilder = new SQLiteIndexSqlBuilder( $tableNameFormatter );
 	}

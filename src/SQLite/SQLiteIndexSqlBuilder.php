@@ -27,6 +27,7 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 	public function getIndexSQL( IndexDefinition $index, $tableName ){
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
+		//todo escape name once identifier escaping is implemented
 		$sql .= $index->getName() . ' ';
 		$sql .= 'ON ' . $this->tableNameFormatter->formatTableName( $tableName );
 
@@ -55,6 +56,7 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 			case IndexDefinition::TYPE_UNIQUE:
 				return 'UNIQUE INDEX';
 			default:
+				//TODO FIXME SQLite doesnt actually support primary keys, but we probably want to support them some how
 				throw new RuntimeException( __CLASS__ . ' does not support db indexes of type ' . $indexType );
 		}
 	}

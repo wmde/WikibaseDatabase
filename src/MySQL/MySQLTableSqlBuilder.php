@@ -34,6 +34,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 		$this->dbName = $dbName;
 		$this->escaper = $fieldValueEscaper;
 		$this->tableNameFormatter = $tableNameFormatter;
+		//TODO inject sqlbuilder
 		$this->fieldSqlBuilder = new MySQLFieldSqlBuilder( $this->escaper );
 	}
 
@@ -79,10 +80,13 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 		$sql = $this->getIndexType( $index->getType() );
 
 		if( $index->getType() !== IndexDefinition::TYPE_PRIMARY ){
+			//todo escape name once identifier escaping is implemented
 			$sql .= ' `'.$index->getName().'`';
 		}
 
 		$columnNames = array();
+		//TODO FIXME Error: 1170 BLOB/TEXT column 'textfield' used in key specification without a key length (localhost)
+		//todo $intSize here needs to specify the length of the key for text fields.
 		foreach( $index->getColumns() as $columnName => $intSize ){
 			$columnNames[] = $columnName;
 		}

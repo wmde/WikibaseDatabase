@@ -62,6 +62,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	private function getFieldsSql( $fields ){
 		$fieldNames = array();
 		foreach( $fields as $field ){
+			//todo escape name once identifier escaping is implemented
 			$fieldNames[] = $field->getName();
 		}
 		return implode( ', ', $fieldNames );

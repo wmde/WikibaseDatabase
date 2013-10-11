@@ -39,6 +39,10 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		return new SQLiteTableDefinitionReader( $mockQueryInterface );
 	}
 
+	public function testReadNonExistentTable(){
+		$this->markTestIncomplete( 'Test QueryInterfaceException on reading non existant table' );
+	}
+
 	/**
 	 * @dataProvider sqlAndDefinitionProvider
 	 */

@@ -17,6 +17,8 @@ use Wikibase\Database\Schema\ReportingTableBuilder;
  */
 class ReportingTableBuilderTest extends \PHPUnit_Framework_TestCase {
 
+	//TODO test tableExists method
+
 	/**
 	 * @dataProvider tableProvider
 	 */

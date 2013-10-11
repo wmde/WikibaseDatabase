@@ -34,6 +34,9 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function fieldAndSqlProvider() {
 		$argLists = array();
 
+		//TODO test with type TYPE_SPATIAL
+		//TODO test with type TYPE_FULLTEXT
+
 		$argLists[] = array(
 			new IndexDefinition(
 				'indexName',
@@ -62,6 +65,10 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		return $argLists;
+	}
+
+	public function testUnsupportedType(){
+		$this->markTestIncomplete( 'Test RuntimeException on unsupported index type' );
 	}
 
 }
