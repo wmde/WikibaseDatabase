@@ -10,6 +10,8 @@
 
 !.coveralls.yml
 
+!.scrutinizer.yml
+
 composer.phar
 composer.lock
 
