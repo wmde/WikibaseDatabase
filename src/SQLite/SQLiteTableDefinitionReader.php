@@ -111,7 +111,6 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
 		}
-
 	}
 
 	private function getFieldDefault( $default ) {
@@ -147,14 +146,15 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	private function getIndex( $sql ){
-		preg_match( '/CREATE ([^ ]+) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
+		preg_match( '/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
 		$parsedColumns = explode( ',', $createParts[4] );
 		$columns = array();
 		foreach( $parsedColumns as $columnName ){
 			//default unrestricted index size limit
 			$columns[ $columnName ] = 0;
 		}
-		return new IndexDefinition( $createParts[2], $columns , strtolower( $createParts[1] ) );
+		$type = $this->getIndexType( $createParts[1] );
+		return new IndexDefinition( $createParts[2], $columns , $type );
 	}
 
 	/**
@@ -168,6 +168,19 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			array( 'sql' ),
 			array( 'type' => 'index', 'tbl_name' => $tableName )
 		);
+	}
+
+	private function getIndexType( $type ) {
+		switch ( $type ) {
+			case 'INDEX':
+				return IndexDefinition::TYPE_INDEX;
+				break;
+			case 'UNIQUE INDEX':
+				return IndexDefinition::TYPE_UNIQUE;
+				break;
+			default:
+				throw new RuntimeException( __CLASS__ . ' does not support db indexes of type ' . $type );
+		}
 	}
 
 	/**

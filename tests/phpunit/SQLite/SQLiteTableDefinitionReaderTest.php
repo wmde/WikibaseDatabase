@@ -50,8 +50,8 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testReadDefinition( $results, TableDefinition $expectedDefinition ) {
 		$reader = $this->newInstance( $results );
-		$definition = $reader->readDefinition( 'dbNametableName' );
-		$this->assertEquals( $definition, $expectedDefinition );
+		$readDefinition = $reader->readDefinition( 'dbNametableName' );
+		$this->assertEquals( $expectedDefinition, $readDefinition );
 	}
 
 	public function sqlAndDefinitionProvider() {
@@ -59,9 +59,15 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
 		$argLists[] = array(
 			array(
+				//create sql
 				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
-				array( (object)array( 'sql' => 'CREATE INDEX indexName ON dbNametableName (intField,textField)' ) ),
-				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
+				//indexes sql
+				array(
+					(object)array( 'sql' => 'CREATE UNIQUE INDEX uniqueName ON dbNametableName (textField)' ),
+					(object)array( 'sql' => 'CREATE INDEX indexName ON dbNametableName (intField,textField)' )
+				),
+				//primarykey sql
+				array( (object)array( 'sql' => 'PRIMARY KEY (textField,primaryField)' ) ),
 			),
 			new TableDefinition(
 				'dbNametableName',
@@ -88,6 +94,11 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 						'indexName',
 						array( 'intField' => 0, 'textField' => 0 ),
 						IndexDefinition::TYPE_INDEX
+					),
+					new IndexDefinition(
+						'uniqueName',
+						array( 'textField' => 0 ),
+						IndexDefinition::TYPE_UNIQUE
 					),
 					new IndexDefinition(
 						'PRIMARY',

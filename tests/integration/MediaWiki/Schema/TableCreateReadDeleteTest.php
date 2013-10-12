@@ -89,8 +89,8 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, FieldDefinition::NOT_NULL, true ),
 			),
 			array(
-				//TODO uncomment the below line in test once text keys correctly specify a key length
-				//new IndexDefinition( 'PRIMARY', array( 'textfield' => 100 ), IndexDefinition::TYPE_PRIMARY ),
+				//TODO test PRIMARY key
+				//TODO test UNIQUE INDEX
 				new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) )
 			)
 		);
