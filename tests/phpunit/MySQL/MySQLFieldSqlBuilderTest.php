@@ -39,15 +39,21 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function fieldAndSqlProvider() {
 		$argLists = array();
 
-		//TODO testcase with type INTEGER
-		//TODO testcase with type FLOAT
+		$argLists[] = array(
+			new FieldDefinition(
+				'fieldName',
+				FieldDefinition::TYPE_INTEGER
+			),
+			'fieldName INT NULL'
+		);
 
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_BOOLEAN
+				FieldDefinition::TYPE_FLOAT,
+				FieldDefinition::NOT_NULL
 			),
-			'fieldName TINYINT NULL'
+			'fieldName FLOAT NOT NULL'
 		);
 
 		$argLists[] = array(
@@ -73,8 +79,10 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
-	public function testUnsupportedType(){
-		$this->markTestIncomplete( 'Test RuntimeException on unsupported field type' );
+	public function testUnsupportedType() {
+		$this->setExpectedException( 'RuntimeException', 'does not support db fields of type' );
+		$sqlBuilder = new MySQLFieldSqlBuilder( $this->getMock( 'Wikibase\Database\Escaper' ) );
+		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', 'foobar' ) );
 	}
 
 }

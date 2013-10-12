@@ -20,7 +20,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue( true );
 	}
 
-	protected function newInstance( $results = array() ) {
+	protected function newInstance( $results = array(), $tableExists = true ) {
 		$mockQueryInterface = $this
 			->getMockBuilder( 'Wikibase\Database\MediaWiki\MediaWikiQueryInterface' )
 			->disableOriginalConstructor()
@@ -28,7 +28,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
 		$mockQueryInterface->expects( $this->any() )
 			->method( 'tableExists' )
-			->will( $this->returnValue( true ) );
+			->will( $this->returnValue( $tableExists ) );
 
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )
@@ -40,7 +40,9 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testReadNonExistentTable(){
-		$this->markTestIncomplete( 'Test QueryInterfaceException on reading non existant table' );
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\QueryInterfaceException' );
+		$reader = $this->newInstance( array(), false );
+		$reader->readDefinition( 'dbNametableName' );
 	}
 
 	/**

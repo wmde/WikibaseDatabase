@@ -20,7 +20,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue( true );
 	}
 
-	protected function newInstance( $results = array() ) {
+	protected function newInstance( $results = array(), $tableExists = true ) {
 		$mockQueryInterface = $this
 			->getMockBuilder( 'Wikibase\Database\MediaWiki\MediaWikiQueryInterface' )
 			->disableOriginalConstructor()
@@ -28,7 +28,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
 		$mockQueryInterface->expects( $this->any() )
 			->method( 'tableExists' )
-			->will( $this->returnValue( true ) );
+			->will( $this->returnValue( $tableExists ) );
 
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )
@@ -40,7 +40,9 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testReadNonExistentTable(){
-		$this->markTestIncomplete( 'Test QueryInterfaceException on reading non existant table' );
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\QueryInterfaceException' );
+		$reader = $this->newInstance( array(), false );
+		$reader->readDefinition( 'dbNametableName' );
 	}
 
 	/**
@@ -55,8 +57,6 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function sqlAndDefinitionProvider() {
 		$argLists = array();
 
-		//TODO test field type TYPE_BOOLEAN
-		//TODO test field type TYPE_FLOAT
 		//TODO test case containing constraints PRIMARY & UNIQUE
 
 		$argLists[] = array(
@@ -65,6 +65,8 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null ),
 					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => null ),
 					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => 42 ),
+					(object)array( 'name' => 'boolField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null ),
+					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null ),
 				),
 				//TODO test UNIQUE and PRIMARY keys
 				array( null ),
@@ -88,6 +90,14 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 						FieldDefinition::TYPE_INTEGER,
 						FieldDefinition::NOT_NULL, 42
 					),
+					new FieldDefinition(
+						'boolField',
+						FieldDefinition::TYPE_BOOLEAN
+					),
+					new FieldDefinition(
+						'floatField',
+						FieldDefinition::TYPE_FLOAT
+					)
 				),
 				array(
 					new IndexDefinition(

@@ -57,8 +57,22 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
-	public function testUnsupportedType(){
-		$this->markTestIncomplete( 'Test RuntimeException on unsupported index type' );
+	public function testUnsupportedType() {
+		$this->setExpectedException( 'RuntimeException', 'does not support db indexes of type' );
+
+		$tableNameFormatter = $this->getMockBuilder( 'Wikibase\Database\MediaWiki\MediaWikiTableNameFormatter' )
+			->disableOriginalConstructor()
+			->getMock();
+
+		$indexDefinition = $this->getMockBuilder( 'Wikibase\Database\Schema\Definitions\IndexDefinition' )
+			->disableOriginalConstructor()
+			->getMock();
+		$indexDefinition->expects( $this->once() )
+			->method( 'getType' )
+			->will( $this->returnValue( 'foobar' ) );
+
+		$sqlBuilder = new SQLiteIndexSqlBuilder( $tableNameFormatter );
+		$sqlBuilder->getIndexSQL( $indexDefinition, 'tableName' );
 	}
 
 }

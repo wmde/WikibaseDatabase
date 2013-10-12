@@ -340,7 +340,14 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testSelectFailure() {
-		$this->markTestIncomplete( 'write test for MediaWikiQueryInterface select SelectFailedException' );
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\SelectFailedException' );
+		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection->expects( $this->once() )
+			->method( 'select' )
+			->will( $this->returnValue( 'FOOBAR' ) );
+
+		$queryInterface = new MediaWikiQueryInterface( new DirectConnectionProvider( $connection ) );
+		$queryInterface->select( 'ham', array( 'egg' ), array( 'chips' ) );
 	}
 
 }

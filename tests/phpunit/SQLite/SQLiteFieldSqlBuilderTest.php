@@ -69,8 +69,10 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
-	public function testUnsupportedType(){
-		$this->markTestIncomplete( 'Test RuntimeException on unsupported field type' );
+	public function testUnsupportedType() {
+		$this->setExpectedException( 'RuntimeException', 'does not support db fields of type' );
+		$sqlBuilder = new SQLiteFieldSqlBuilder( $this->getMock( 'Wikibase\Database\Escaper' ) );
+		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', 'foobar' ) );
 	}
 
 }

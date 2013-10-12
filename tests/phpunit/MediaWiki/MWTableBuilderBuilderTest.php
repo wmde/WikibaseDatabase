@@ -53,7 +53,20 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testUnsupportedDbType(){
-		$this->markTestIncomplete( 'Test RuntimeException on unsupported DB type' );
+		$this->setExpectedException( 'RuntimeException', 'Cannot build a MediaWikiQueryInterface for database type' );
+
+		$connection =  $this->getMock( 'DatabaseMysql' );
+		$connection->expects( $this->once() )
+			->method( 'getType' )
+			->will( $this->returnValue( 'foobar' ) );
+
+		$connectionProvider = $this->getMock( 'Wikibase\Database\DBConnectionProvider' );
+		$connectionProvider->expects( $this->atLeastOnce() )
+			->method( 'getConnection' )
+			->will( $this->returnValue( $connection ) );
+
+		$builder = new MWTableBuilderBuilder();
+		$builder->setConnection( $connectionProvider )->getTableBuilder();
 	}
 
 }

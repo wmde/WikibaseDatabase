@@ -17,8 +17,6 @@ use Wikibase\Database\Schema\ReportingTableBuilder;
  */
 class ReportingTableBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	//TODO test tableExists method
-
 	/**
 	 * @dataProvider tableProvider
 	 */
@@ -137,4 +135,25 @@ class ReportingTableBuilderTest extends \PHPUnit_Framework_TestCase {
 		$reportingBuilder->dropTable( $table->getName() );
 	}
 
+	/**
+	 * @dataProvider tableExistsProvider
+	 */
+	public function testTableExists( $tableExists ){
+		$innerBuilder = $this->getMock( 'Wikibase\Database\Schema\TableBuilder' );
+		$reporter = $this->getMock( 'Wikibase\Database\MessageReporter' );
+
+		$innerBuilder->expects( $this->once() )
+			->method( 'tableExists' )
+			->will( $this->returnValue( $tableExists ) );
+
+		$reportingBuilder = new ReportingTableBuilder( $innerBuilder, $reporter );
+		$this->assertEquals( $tableExists, $reportingBuilder->tableExists( 'foo' ) );
+	}
+
+	public function tableExistsProvider(){
+		return array(
+			array( true ),
+			array( false )
+		);
+	}
 }
