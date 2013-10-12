@@ -60,6 +60,8 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		}
 		$fields = array();
 
+		//todo read auto increment
+
 		foreach( $results as $result ){
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 			preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $result->sql, $createParts );

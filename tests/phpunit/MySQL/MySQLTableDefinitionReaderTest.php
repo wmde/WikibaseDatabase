@@ -62,11 +62,11 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			array(
 				array(
-					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null ),
-					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => null ),
-					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => 42 ),
-					(object)array( 'name' => 'boolField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null ),
-					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null ),
+					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => 42, 'extra' => '' ),
+					(object)array( 'name' => 'boolField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 				),
 				//TODO test UNIQUE and PRIMARY keys
 				array( null ),

@@ -28,12 +28,23 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		$this->dropTablesIfStillThere();
 	}
 
+	/**
+	 * Use the tableProvider that is uses for the test and drop any tables that already exist!
+	 * This is a cleanup operation to be run before the tests
+	 */
 	protected function dropTablesIfStillThere() {
 		$tableBuilder = $this->newTableBuilder();
 
-		foreach ( array( 'different_field_types', 'default_field_values', 'not_null_fields' ) as $tableName ) {
-			if ( $tableBuilder->tableExists( $tableName ) ) {
-				$tableBuilder->dropTable( $tableName );
+		$tabeProvider = $this->tableProvider();
+		foreach( $tabeProvider as $provider ){
+			/** @var TableDefinition $tableDefinition */
+			foreach( $provider as $tableDefinition ){
+
+				$tableName = $tableDefinition->getName();
+				if ( $tableBuilder->tableExists( $tableName ) ) {
+					$tableBuilder->dropTable( $tableName );
+				}
+
 			}
 		}
 	}
@@ -58,31 +69,43 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		return new MediaWikiQueryInterface( $connectionProvider );
 	}
 
+	/**
+	 * @return string 'sqlite' or 'mysql'
+	 */
+	protected function getType(){
+		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
+
+		return $connectionProvider->getConnection()->getType();
+	}
+
 	public function tableProvider() {
 		$tables = array();
 
 		$tables[] = new TableDefinition( 'different_field_types', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
-			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
-			new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
-		) );
+				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
+				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
+				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
+				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
+			)
+		);
 
-		$tables[] = new TableDefinition( 'default_field_values', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NULL, 42 ),
-		) );
+		if( $this->getType() === 'mysql' ){ //TODO add support for AutoInc cols in sqlite and remove this condition
+			$tables[] = new TableDefinition( 'autoinc_field', array(
+					new FieldDefinition( 'autoinc', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::NO_ATTRIB, FieldDefinition::AUTOINCREMENT ),
+				),
+				array(
+					new IndexDefinition( 'PRIMARY', array( 'autoinc' => 0 ), IndexDefinition::TYPE_PRIMARY ),
+				)
+			);
+		}
 
 		$tables[] = new TableDefinition( 'not_null_fields', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
-		) );
+				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
+			)
+		);
 
-		$tables[] = new TableDefinition( 'not_null_fields', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NULL ),
-		) );
-
-		$tables[] = new TableDefinition( 'default_field_values', array(
+		$tables[] = new TableDefinition( 'default_field_values_and_indexes', array(
 				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NULL, 3 ),
 				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NOT_NULL ),

@@ -50,6 +50,18 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
+				FieldDefinition::TYPE_INTEGER,
+				FieldDefinition::NULL,
+				FieldDefinition::NO_DEFAULT,
+				FieldDefinition::NO_ATTRIB,
+				FieldDefinition::AUTOINCREMENT
+			),
+			'fieldName INT NULL AUTO_INCREMENT'
+		);
+
+		$argLists[] = array(
+			new FieldDefinition(
+				'fieldName',
 				FieldDefinition::TYPE_FLOAT,
 				FieldDefinition::NOT_NULL
 			),

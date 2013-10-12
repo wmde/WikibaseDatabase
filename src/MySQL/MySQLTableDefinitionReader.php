@@ -46,7 +46,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	/**
-	 * @param $tableName string
+	 * @param string $tableName
 	 * @return FieldDefinition[]
 	 */
 	private function getFields( $tableName ) {
@@ -59,7 +59,10 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 				$field->name,
 				$this->getDataType( $field->type ),
 				$this->getNullable( $field->cannull ),
-				$field->defaultvalue );
+				$field->defaultvalue,
+				FieldDefinition::NO_ATTRIB, //todo READ ATTRIBUTES
+				$this->getAutoInc( $field->extra )
+			);
 		}
 
 		return $fields;
@@ -77,7 +80,9 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 				'name' => 'COLUMN_NAME',
 				'cannull' => 'IS_NULLABLE',
 				'type' => 'DATA_TYPE',
-				'defaultvalue' => 'COLUMN_DEFAULT', ),
+				'defaultvalue' => 'COLUMN_DEFAULT',
+				'extra' => 'EXTRA'
+			),
 			array( 'TABLE_NAME' => $tableName )
 		);
 	}
@@ -103,7 +108,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	/**
-	 * @param $nullable string
+	 * @param string $nullable
 	 * @return bool
 	 */
 	private function getNullable( $nullable ) {
@@ -112,6 +117,17 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * @param string $extra
+	 * @return bool
+	 */
+	private function getAutoInc( $extra ){
+		if( strstr( $extra, 'auto_increment' ) ){
+			return FieldDefinition::AUTOINCREMENT;
+		}
+		return FieldDefinition::NO_AUTOINCREMENT;
 	}
 
 	/**

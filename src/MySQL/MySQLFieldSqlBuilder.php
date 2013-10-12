@@ -33,8 +33,9 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 
 		$sql .= $this->getNull( $field->allowsNull() );
 
+		$sql .= $this->getAutoInc( $field->hasAutoIncrement() );
+
 		// TODO: add all field stuff relevant here
-		//TODO use field->autoIncrement and add to sql if needed
 
 		return $sql;
 	}
@@ -49,6 +50,13 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 
 	protected function getNull( $allowsNull ) {
 		return $allowsNull ? ' NULL' : ' NOT NULL';
+	}
+
+	protected function getAutoInc( $isAutoInc ){
+		if( $isAutoInc ){
+			return ' AUTO_INCREMENT';
+		}
+		return '';
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\SQLite;
 
+use LogicException;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
@@ -33,7 +34,10 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 
 		$sql .= $this->getNull( $field->allowsNull() );
 
-		//TODO use field->autoIncrement and add to sql if needed
+		//TODO implement AutoIncrement Stuff for SQLite
+		if( $field->hasAutoIncrement() ){
+			throw new LogicException( 'AutoIncrement support not yet implemented' );
+		}
 
 		return $sql;
 	}
