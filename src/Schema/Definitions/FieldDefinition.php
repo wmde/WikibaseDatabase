@@ -84,7 +84,7 @@ class FieldDefinition {
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = null, $autoIncrement = false ) {
+	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = self::NO_ATTRIB, $autoIncrement = self::NO_AUTOINCREMENT ) {
 		$this->assertIsValidName( $name );
 		$this->assertIsValidType( $type );
 		$this->assertIsValudNull( $null );
