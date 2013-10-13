@@ -37,7 +37,7 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
 		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
 		$fieldName = $this->escaper->getEscapedIdentifier( $fieldName );
-		return "ALTER TABLE {$tableName} DROP {$fieldName}"; //todo escape $fieldName?
+		return "ALTER TABLE {$tableName} DROP {$fieldName}";
 	}
 
 	/**

@@ -21,21 +21,20 @@ use Wikibase\Database\TableNameFormatter;
 class MySQLTableSqlBuilder extends TableSqlBuilder {
 
 	protected $dbName;
-	protected $escaper;
 	protected $tableNameFormatter;
 	protected $fieldSqlBuilder;
 
 	/**
 	 * @param string $dbName
-	 * @param Escaper $fieldValueEscaper
+	 * @param Escaper $escaper
 	 * @param TableNameFormatter $tableNameFormatter
+	 * @param MySQLFieldSqlBuilder $fieldSqlBuilder
 	 */
-	public function __construct( $dbName, Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter  ) {
+	public function __construct( $dbName, Escaper $escaper, TableNameFormatter $tableNameFormatter, MySQLFieldSqlBuilder $fieldSqlBuilder ) {
 		$this->dbName = $dbName;
-		$this->escaper = $fieldValueEscaper;
+		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
-		//TODO inject sqlbuilder
-		$this->fieldSqlBuilder = new MySQLFieldSqlBuilder( $this->escaper );
+		$this->fieldSqlBuilder = $fieldSqlBuilder;
 	}
 
 	/**

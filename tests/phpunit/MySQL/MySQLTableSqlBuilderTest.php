@@ -29,18 +29,13 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newInstance() {
-
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
-		$mockEscaper->expects( $this->any() )
-			->method( 'getEscapedValue' )
-			->will( $this->returnArgument(0) );
 
 		$mockEscaper->expects( $this->any() )
 			->method( 'getEscapedValue' )
-			->will( $this->returnCallback( function( $value ) {
-				return '|' . $value . '|';
+			->will( $this->returnCallback( function( $input ) {
+				return "|$input|";
 			} ) );
-
 		$mockEscaper->expects( $this->any() )
 			->method( 'getEscapedIdentifier' )
 			->will( $this->returnCallback( function( $value ) {
@@ -52,12 +47,18 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'formatTableName' )
 			->will( $this->returnArgument(0) );
 
-
+		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\MySQL\MySQLFieldSqlBuilder' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockFieldSqlBuilder->expects( $this->any() )
+			->method( 'getFieldSql' )
+			->will( $this->returnValue( '<FIELDSQL>' ) );
 
 		return new MySQLTableSqlBuilder(
 			self::DB_NAME,
 			$mockEscaper,
-			$mockTableNameFormatter
+			$mockTableNameFormatter,
+			$mockFieldSqlBuilder
 		);
 	}
 
@@ -72,72 +73,53 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expectedSQL, $actualSQL );
 	}
 
+	public function newMockField( $name ){
+		$mockFieldDefinition = $this->getMockBuilder( 'Wikibase\Database\Schema\Definitions\FieldDefinition' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockFieldDefinition->expects( $this->any() )
+			->method( 'getName' )
+			->will( $this->returnValue( $name ) );
+		return $mockFieldDefinition;
+	}
+
 	public function tableAndSqlProvider() {
 		$argLists = array();
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition( 'fieldName', FieldDefinition::TYPE_INTEGER )
-				)
+				array( $this->newMockField( 'foo' ) )
 			),
-			'CREATE TABLE `dbName`.tableName (-fieldName- INT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.tableName (<FIELDSQL>) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition(
-						'primaryField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::NO_ATTRIB
-					),
-					new FieldDefinition(
-						'textField', FieldDefinition::TYPE_TEXT
-					),
-					new FieldDefinition(
-						'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42
-					),
-				)
+				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) )
 			),
-			'CREATE TABLE `dbName`.tableName (-primaryField- INT NOT NULL, -textField- BLOB NULL, -intField- INT DEFAULT 42 NOT NULL) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition(
-						'textField', FieldDefinition::TYPE_TEXT
-					),
-					new FieldDefinition(
-						'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42
-					),
-				),
+				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ) ),
 				array(
 					new IndexDefinition(
 						'indexName', array( 'textField' => 0, 'intField' => 0 ), IndexDefinition::TYPE_INDEX
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (-textField- BLOB NULL, -intField- INT DEFAULT 42 NOT NULL, INDEX -indexName- (-textField-,-intField-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.tableName (<FIELDSQL>, <FIELDSQL>, INDEX -indexName- (-textField-,-intField-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition(
-						'textField', FieldDefinition::TYPE_TEXT
-					),
-					new FieldDefinition(
-						'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42
-					),
-					new FieldDefinition(
-						'textField2', FieldDefinition::TYPE_TEXT
-					),
-				),
+				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
 				array(
 					new IndexDefinition(
 						'indexName', array( 'intField' => 0 ), IndexDefinition::TYPE_INDEX
@@ -147,7 +129,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (-textField- BLOB NULL, -intField- INT DEFAULT 42 NOT NULL, -textField2- BLOB NULL, INDEX -indexName- (-intField-), UNIQUE INDEX -uniqueIndexName- (-textField2-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>, INDEX -indexName- (-intField-), UNIQUE INDEX -uniqueIndexName- (-textField2-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		return $argLists;

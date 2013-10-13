@@ -5,8 +5,11 @@ namespace Wikibase\Database\MediaWiki;
 use DatabaseBase;
 use RuntimeException;
 use Wikibase\Database\DBConnectionProvider;
+use Wikibase\Database\MySQL\MySQLFieldSqlBuilder;
 use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
 use Wikibase\Database\Schema\TableBuilder;
+use Wikibase\Database\SQLite\SQLiteFieldSqlBuilder;
+use Wikibase\Database\SQLite\SQLiteIndexSqlBuilder;
 use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
 
 /**
@@ -65,14 +68,16 @@ class MWTableBuilderBuilder {
 		return new MySQLTableSqlBuilder(
 			$this->connectionProvider->getConnection()->getDBname(),
 			$this->newEscaper(),
-			$this->newTableNameFormatter()
+			$this->newTableNameFormatter(),
+			new MySQLFieldSqlBuilder( $this->newEscaper() )
 		);
 	}
 
 	protected function newSQLiteTableSqlBuilder() {
 		return new SQLiteTableSqlBuilder(
-			$this->newEscaper(),
-			$this->newTableNameFormatter()
+			$this->newTableNameFormatter(),
+			new SQLiteFieldSqlBuilder( $this->newEscaper() ),
+			new SQLiteIndexSqlBuilder( $this->newEscaper(), $this->newTableNameFormatter() )
 		);
 	}
 

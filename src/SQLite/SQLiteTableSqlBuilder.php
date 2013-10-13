@@ -2,8 +2,6 @@
 
 namespace Wikibase\Database\SQLite;
 
-use RuntimeException;
-use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -20,21 +18,19 @@ use Wikibase\Database\Schema\TableSqlBuilder;
  */
 class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
-	protected $escaper;
 	protected $tableNameFormatter;
 	protected $fieldSqlBuilder;
 	protected $indexSqlBuilder;
 
 	/**
-	 * @param Escaper $fieldValueEscaper
 	 * @param TableNameFormatter $tableNameFormatter
+	 * @param SQLiteFieldSqlBuilder $fieldBuilder
+	 * @param SQLiteIndexSqlBuilder $indexBuilder
 	 */
-	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
-		$this->escaper = $fieldValueEscaper;
+	public function __construct( TableNameFormatter $tableNameFormatter, SQLiteFieldSqlBuilder $fieldBuilder, SQLiteIndexSqlBuilder $indexBuilder ) {
 		$this->tableNameFormatter = $tableNameFormatter;
-		//TODO inject sqlbuilders
-		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $this->escaper );
-		$this->indexSqlBuilder = new SQLiteIndexSqlBuilder( $this->escaper, $tableNameFormatter );
+		$this->fieldSqlBuilder = $fieldBuilder;
+		$this->indexSqlBuilder = $indexBuilder;
 	}
 
 	/**
