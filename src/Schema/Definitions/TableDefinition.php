@@ -194,4 +194,36 @@ class TableDefinition {
 		return $this->mutateFields( $newFields );
 	}
 
+	/**
+	 * Returns a clone of the table, though with the provided indexes rather then the original ones.
+	 *
+	 * @since 0.1
+	 *
+	 * @param IndexDefinition[] $indexes
+	 *
+	 * @return TableDefinition
+	 */
+	public function mutateIndexes( array $indexes ) {
+		return new self( $this->name, $this->fields, $indexes );
+	}
+
+	/**
+	 * Returns a clone of the table, though with the provided index removed.
+	 *
+	 * @since 0.1
+	 *
+	 * @param string $indexName
+	 *
+	 * @return TableDefinition
+	 */
+	public function mutateIndexAway( $indexName ){
+		$newIndexes = array();
+		foreach( $this->getIndexes() as $index ){
+			if( $index->getName() !== $indexName ){
+				$newIndexes[] = $index;
+			}
+		}
+		return $this->mutateIndexes( $newIndexes );
+	}
+
 }

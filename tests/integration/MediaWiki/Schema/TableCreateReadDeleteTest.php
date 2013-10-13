@@ -89,15 +89,13 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 
-		if( $this->getType() === 'mysql' ){ //TODO add support for AutoInc cols in sqlite and remove this condition
-			$tables[] = new TableDefinition( 'autoinc_field', array(
-					new FieldDefinition( 'autoinc', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::NO_ATTRIB, FieldDefinition::AUTOINCREMENT ),
-				),
-				array(
-					new IndexDefinition( 'PRIMARY', array( 'autoinc' => 0 ), IndexDefinition::TYPE_PRIMARY ),
-				)
-			);
-		}
+		$tables[] = new TableDefinition( 'autoinc_field', array(
+				new FieldDefinition( 'autoinc', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::NO_ATTRIB, FieldDefinition::AUTOINCREMENT ),
+			),
+			array(
+				new IndexDefinition( 'PRIMARY', array( 'autoinc' => 0 ), IndexDefinition::TYPE_PRIMARY ),
+			)
+		);
 
 		$tables[] = new TableDefinition( 'not_null_fields', array(
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),

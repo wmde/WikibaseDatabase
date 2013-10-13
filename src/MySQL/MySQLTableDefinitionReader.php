@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\MySQL;
 
+use RuntimeException;
 use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\QueryInterface\QueryInterfaceException;
 use Wikibase\Database\QueryInterface\ResultIterator;
@@ -89,7 +90,10 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * Simplifies the datatype and returns something a FieldDefinition can expect
+	 *
 	 * @param $dataType string
+	 *
+	 * @throws RuntimeException
 	 * @return string
 	 */
 	private function getDataType( $dataType ) {
@@ -102,8 +106,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		} else if ( stristr( $dataType, 'float' ) ){
 			return FieldDefinition::TYPE_FLOAT;
 		} else {
-			//TODO FIXME decide if this is the correct behaviour or throw a RuntimeException
-			return $dataType;
+			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $dataType );
 		}
 	}
 
@@ -135,7 +138,6 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @throws QueryInterfaceException
 	 * @return IndexDefinition[]
 	 * @TODO support currently don't notice FULLTEXT or SPATIAL indexes
-	 * @TODO integration test that uses primarykey in MYSQL
 	 */
 	private function getIndexes( $tableName ) {
 		$indexes = array();

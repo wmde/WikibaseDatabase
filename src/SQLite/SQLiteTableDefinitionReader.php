@@ -60,14 +60,12 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		}
 		$fields = array();
 
-		//todo read auto increment
-
 		foreach( $results as $result ){
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 			preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $result->sql, $createParts );
 
-			foreach( explode( ',', $createParts[2] ) as $fieldSql ){
-				if( preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?/', $fieldSql, $fieldParts )
+			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
+				if( preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts )
 					&& $fieldParts[0] !== 'PRIMARY KEY' ) {
 					$fields[] = $this->getField( $fieldParts );
 				}
@@ -93,7 +91,15 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$type = $this->getFieldType( $fieldParts[2] );
 		$default = $this->getFieldDefault( $fieldParts[4] );
 		$null = $this->getFieldCanNull( $fieldParts[6] );
-		return new FieldDefinition( $fieldParts[1], $type, $null, $default );
+		$attr = FieldDefinition::NO_ATTRIB; //todo read ATTRIBS
+
+		if( array_key_exists( 9, $fieldParts ) ){
+			$autoInc = $this->getAutoInc( $fieldParts[9] );
+		} else {
+			$autoInc = FieldDefinition::NO_AUTOINCREMENT;
+		}
+
+		return new FieldDefinition( $fieldParts[1], $type, $null, $default, $attr, $autoInc );
 	}
 
 	private function getFieldType( $type ) {
@@ -105,6 +111,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 				return 'str';
 				break;
 			case 'INT':
+				return 'int';
+				break;
+			case 'INTEGER':
 				return 'int';
 				break;
 			case 'FLOAT':
@@ -119,16 +128,23 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		if( !empty( $default ) ){
 			return $default;
 		} else {
-			return null;
+			return FieldDefinition::NO_DEFAULT;
 		}
 	}
 
 	private function getFieldCanNull( $canNull ) {
 		if( $canNull === 'NOT NULL' ){
-			return false;
+			return FieldDefinition::NOT_NULL;
 		} else {
-			return true;
+			return FieldDefinition::NULL;
 		}
+	}
+
+	private function getAutoInc( $autoInc ){
+		if( $autoInc === 'PRIMARY KEY AUTOINCREMENT' ){
+			return FieldDefinition::AUTOINCREMENT;
+		}
+		return FieldDefinition::NO_AUTOINCREMENT;
 	}
 
 	/**
@@ -204,6 +220,8 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 					$columns[ trim( $columnName ) ] = 0;
 				}
 				$keys[] = new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
+			} else if( preg_match( '/(\(|,| )+([^ ]+)[a-z0-9 _]+PRIMARY KEY AUTOINCREMENT/i', $result->sql, $createParts ) ){
+				$keys[] = new IndexDefinition( 'PRIMARY', array( $createParts[2] => 0 ) , IndexDefinition::TYPE_PRIMARY );
 			}
 		}
 

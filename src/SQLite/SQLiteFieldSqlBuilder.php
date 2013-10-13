@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\SQLite;
 
-use LogicException;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
@@ -34,10 +33,7 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 
 		$sql .= $this->getNull( $field->allowsNull() );
 
-		//TODO implement AutoIncrement Stuff for SQLite
-		if( $field->hasAutoIncrement() ){
-			throw new LogicException( 'AutoIncrement support not yet implemented' );
-		}
+		$sql .= $this->getAutoInc( $field->hasAutoIncrement() );
 
 		return $sql;
 	}
@@ -69,7 +65,7 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 	protected function getFieldType( $fieldType ) {
 		switch ( $fieldType ) {
 			case FieldDefinition::TYPE_INTEGER:
-				return 'INT';
+				return 'INTEGER';
 			case FieldDefinition::TYPE_FLOAT:
 				return 'FLOAT';
 			case FieldDefinition::TYPE_TEXT:
@@ -79,6 +75,13 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
 		}
+	}
+
+	protected function getAutoInc( $shouldAutoInc ){
+		if ( $shouldAutoInc ){
+			return ' PRIMARY KEY AUTOINCREMENT';
+		}
+		return '';
 	}
 
 }

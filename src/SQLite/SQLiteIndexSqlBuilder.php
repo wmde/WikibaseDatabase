@@ -43,6 +43,7 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 
 	/**
 	 * Returns the SQL field type for a given IndexDefinition type constant.
+	 * Primary keys are not supported through the IndexSqlBuilder
 	 *
 	 * @param string $indexType
 	 *
@@ -56,7 +57,6 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 			case IndexDefinition::TYPE_UNIQUE:
 				return 'UNIQUE INDEX';
 			default:
-				//TODO FIXME SQLite doesnt actually support primary keys, but we probably want to support them some how
 				throw new RuntimeException( __CLASS__ . ' does not support db indexes of type ' . $indexType );
 		}
 	}

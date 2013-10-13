@@ -48,6 +48,19 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		$argLists[] = array(
 			new FieldDefinition(
+				'autoInc',
+				FieldDefinition::TYPE_INTEGER,
+				FieldDefinition::NOT_NULL,
+				FieldDefinition::NO_DEFAULT,
+				FieldDefinition::NO_ATTRIB,
+				FieldDefinition::AUTOINCREMENT
+
+			),
+			'autoInc INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
+		);
+
+		$argLists[] = array(
+			new FieldDefinition(
 				'fieldName',
 				FieldDefinition::TYPE_BOOLEAN,
 				FieldDefinition::NOT_NULL,

@@ -64,7 +64,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					new FieldDefinition( 'fieldName', FieldDefinition::TYPE_INTEGER )
 				)
 			),
-			'CREATE TABLE tableName (fieldName INT NULL);'
+			'CREATE TABLE tableName (fieldName INTEGER NULL);'
 		);
 
 		$argLists[] = array(
@@ -89,7 +89,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);'
+			'CREATE TABLE tableName (primaryField INTEGER NOT NULL, textField BLOB NULL, intField INTEGER DEFAULT 42 NOT NULL);'
 		);
 
 		$argLists[] = array(
@@ -121,7 +121,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE tableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL);' . PHP_EOL
+			'CREATE TABLE tableName (primaryField INTEGER NOT NULL, textField BLOB NULL, intField INTEGER DEFAULT 42 NOT NULL);' . PHP_EOL
 			. 'CREATE INDEX indexName ON tableName (intField,textField);'
 		);
 

@@ -35,7 +35,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 
 		$sql .= $this->getAutoInc( $field->hasAutoIncrement() );
 
-		// TODO: add all field stuff relevant here
+		// TODO: Field Attributes
 
 		return $sql;
 	}

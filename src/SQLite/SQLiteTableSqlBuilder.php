@@ -58,6 +58,14 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 		$sql .= implode( ', ', $fields );
 
+		$primaryKey = $this->getPrimaryIndex( $table->getIndexes() );
+		if( !is_null( $primaryKey ) ){
+			$table = $table->mutateIndexAway( $primaryKey->getName() );
+			if( !strstr( $sql, 'PRIMARY KEY' ) ){
+				$sql .= $this->getPrimaryKey( $primaryKey );
+			}
+		}
+
 		$sql .= ');';
 
 		foreach ( $table->getIndexes() as $index ){
@@ -65,6 +73,36 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		}
 
 		return $sql;
+	}
+
+	/**
+	 * @param IndexDefinition[] $indexes
+	 * @return IndexDefinition|null
+	 */
+	protected function getPrimaryIndex( $indexes ){
+		foreach( $indexes as $index ){
+			if( $index->getType() === IndexDefinition::TYPE_PRIMARY ){
+				return $index;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param IndexDefinition $index
+	 * @return string
+	 */
+	protected function getPrimaryKey( $index ){
+		if( $index instanceof IndexDefinition ){
+
+			$cols = array();
+			foreach( $index->getColumns() as $col => $length ){
+				$cols[] = $col;
+			}
+
+			return ',PRIMARY KEY (' . implode( ', ', $cols ) . ')';
+		}
+		return '';
 	}
 
 }

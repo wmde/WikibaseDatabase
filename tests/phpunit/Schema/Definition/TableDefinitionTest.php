@@ -273,4 +273,12 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		return $args;
 	}
 
+	public function testMutateIndexes(){
+		$this->markTestIncomplete( 'Test Me!' );
+	}
+
+	public function testMutateIndexAway(){
+		$this->markTestIncomplete( 'Test Me!' );
+	}
+
 }
