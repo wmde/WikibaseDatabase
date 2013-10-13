@@ -12,6 +12,7 @@ use Wikibase\Database\MediaWiki\MediaWikiEscaper;
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class MediaWikiEscaperTest extends \PHPUnit_Framework_TestCase {
 
@@ -20,7 +21,7 @@ class MediaWikiEscaperTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue( true );
 	}
 
-	public function testEscapeEmptyString() {
+	public function testEscapeEmptyStringValue() {
 		$inputString = '';
 
 		$dbConnection =  $this->getMock( 'DatabaseMysql' );
@@ -33,6 +34,21 @@ class MediaWikiEscaperTest extends \PHPUnit_Framework_TestCase {
 		$escaper = new MediaWikiEscaper( $dbConnection );
 
 		$this->assertEquals( 'foo bar baz', $escaper->getEscapedValue( '' ) );
+	}
+
+	public function testEscapeEmptyStringIdentifier() {
+		$inputString = '';
+
+		$dbConnection =  $this->getMock( 'DatabaseMysql' );
+
+		$dbConnection->expects( $this->once() )
+			->method( 'addIdentifierQuotes' )
+			->with( $this->equalTo( $inputString ) )
+			->will( $this->returnValue( 'foo bar baz' ) );
+
+		$escaper = new MediaWikiEscaper( $dbConnection );
+
+		$this->assertEquals( 'foo bar baz', $escaper->getEscapedIdentifier( '' ) );
 	}
 
 }
