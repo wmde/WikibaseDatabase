@@ -273,12 +273,59 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		return $args;
 	}
 
-	public function testMutateIndexes(){
-		$this->markTestIncomplete( 'Test Me!' );
+	/**
+	 * @dataProvider mutateIndexAwayProvider
+	 */
+	public function testMutateIndexes( $toRemove, TableDefinition $definition, TableDefinition $expected ){
+		$newIndexes = array();
+		foreach( $definition->getIndexes() as $index ){
+			if( $index->getName() !== $toRemove ){
+				$newIndexes[] = $index;
+			}
+		}
+		$newDefinition = $definition->mutateIndexes( $newIndexes );
+		$this->assertEquals( $expected, $newDefinition );
 	}
 
-	public function testMutateIndexAway(){
-		$this->markTestIncomplete( 'Test Me!' );
+	/**
+	 * @dataProvider mutateIndexAwayProvider
+	 */
+	public function testMutateIndexAway( $toRemove, TableDefinition $definition, TableDefinition $expected ){
+		$newDefinition = $definition->mutateIndexAway( $toRemove );
+		$this->assertEquals( $expected, $newDefinition );
+	}
+
+	public function mutateIndexAwayProvider() {
+		$args = array(
+			array( 'o',
+				new TableDefinition(
+					'spam',
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array(
+						new IndexDefinition( 'o', array( 'a' => 1 ), IndexDefinition::TYPE_INDEX ),
+						new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ),
+					)
+				),
+				new TableDefinition(
+					'spam',
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
+				),
+			),
+			array( 'o',
+				new TableDefinition(
+					'spam',
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
+				),
+				new TableDefinition(
+					'spam',
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
+				),
+			),
+		);
+		return $args;
 	}
 
 }
