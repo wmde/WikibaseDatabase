@@ -58,7 +58,10 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
 
 		$trBuilder = new MWTableDefinitionReaderBuilder();
-		return $trBuilder->setConnection( $connectionProvider )->getTableDefinitionReader( $this->newQueryInterface() );
+		return $trBuilder
+			->setConnection( $connectionProvider )
+			->setQueryInterface( $this->newQueryInterface() )
+			->getTableDefinitionReader();
 	}
 
 	protected function newSchemaModifier(){

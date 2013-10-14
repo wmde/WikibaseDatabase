@@ -25,6 +25,10 @@ class MWTableDefinitionReaderBuilder {
 	 * @var DBConnectionProvider
 	 */
 	protected $connectionProvider;
+	/**
+	 * @var QueryInterface
+	 */
+	protected $queryInterface;
 
 	/**
 	 * @param DBConnectionProvider $dbConnection
@@ -37,29 +41,37 @@ class MWTableDefinitionReaderBuilder {
 
 	/**
 	 * @param QueryInterface $queryInterface
+	 * @return $this
+	 */
+	public function setQueryInterface( QueryInterface $queryInterface ) {
+		$this->queryInterface = $queryInterface;
+		return $this;
+	}
+
+	/**
 	 * @throws RuntimeException
 	 * @return TableDefinitionReader
 	 */
-	public function getTableDefinitionReader( QueryInterface $queryInterface ) {
+	public function getTableDefinitionReader() {
 		$dbType = $this->connectionProvider->getConnection()->getType();
 
 		if ( $dbType === 'mysql' ) {
-			return $this->newMySQLTableDefinitionReader( $queryInterface );
+			return $this->newMySQLTableDefinitionReader();
 		}
 
 		if ( $dbType === 'sqlite' ) {
-			return $this->newSQLiteTableDefinitionReader( $queryInterface );
+			return $this->newSQLiteTableDefinitionReader();
 		}
 
 		throw new RuntimeException( "Cannot build a TableDefinitionReader for database type '$dbType'." );
 	}
 
-	protected function newMySQLTableDefinitionReader( QueryInterface $queryInterface ) {
-		return new MySQLTableDefinitionReader( $queryInterface );
+	protected function newMySQLTableDefinitionReader() {
+		return new MySQLTableDefinitionReader( $this->queryInterface );
 	}
 
-	protected function newSQLiteTableDefinitionReader( QueryInterface $queryInterface ) {
-		return new SQLiteTableDefinitionReader( $queryInterface, new SQLiteUnEscaper() );
+	protected function newSQLiteTableDefinitionReader() {
+		return new SQLiteTableDefinitionReader( $this->queryInterface, new SQLiteUnEscaper() );
 	}
 
 }

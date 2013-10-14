@@ -85,7 +85,15 @@ class MediaWikiSchemaModifierBuilder {
 	}
 
 	private function newSQLiteSchemaModificationSqlBuilder() {
-		return new SQLiteSchemaSqlBuilder( $this->newEscaper(), $this->newTableNameFormatter(), $this->newSQLiteTableDefinitionReader() );
+		if( !$this->queryInterface instanceof QueryInterface ){
+			throw new RuntimeException( "Cannot build a MediaWikiSchemaModifier for database type 'SQLite' without queryInterface being defined" );
+		}
+		$tableDefinitionReaderBuilder = new MWTableDefinitionReaderBuilder();
+		$tableDefinitonReader = $tableDefinitionReaderBuilder
+			->setConnection( $this->connectionProvider )
+			->setQueryInterface( $this->queryInterface )
+			->getTableDefinitionReader();
+		return new SQLiteSchemaSqlBuilder( $this->newEscaper(), $this->newTableNameFormatter(), $tableDefinitonReader );
 	}
 
 	private function newEscaper() {
@@ -94,13 +102,6 @@ class MediaWikiSchemaModifierBuilder {
 
 	private function newTableNameFormatter() {
 		return new MediaWikiTableNameFormatter( $this->connectionProvider );
-	}
-
-	private function newSQLiteTableDefinitionReader( ) {
-		if( !$this->queryInterface instanceof QueryInterface ){
-			throw new RuntimeException( "Cannot build a MediaWikiSchemaModifier for database type 'SQLite' without queryInterface being defined" );
-		}
-		return new SQLiteTableDefinitionReader( $this->queryInterface, new SQLiteUnEscaper() );
 	}
 
 }

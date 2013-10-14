@@ -54,7 +54,7 @@ class MediaWikiSchemaModifierBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testGetSchemaModifier( $type, $class ){
 		$connection =  $this->getMock( $class );
 
-		$connection->expects( $this->once() )
+		$connection->expects( $this->atLeastOnce() )
 			->method( 'getType' )
 			->will( $this->returnValue( $type ) );
 
