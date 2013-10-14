@@ -29,12 +29,22 @@ class MWTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( $builder, $returnValue );
 	}
 
-	public function testGetDefinitionReader() {
-		$connection =  $this->getMock( 'DatabaseMysql' );
+	public function databaseTypeProvider(){
+		return array(
+			array( 'mysql', 'DatabaseMysql' ),
+			array( 'sqlite', 'DatabaseSqlite'),
+		);
+	}
+
+	/**
+	 * @dataProvider databaseTypeProvider
+	 */
+	public function testGetDefinitionReader( $type, $class ) {
+		$connection =  $this->getMock( $class );
 
 		$connection->expects( $this->once() )
 			->method( 'getType' )
-			->will( $this->returnValue( 'mysql' ) );
+			->will( $this->returnValue( $type ) );
 
 		$connectionProvider = $this->getMock( 'Wikibase\Database\DBConnectionProvider' );
 
