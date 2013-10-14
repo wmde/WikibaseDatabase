@@ -20,16 +20,18 @@ use Wikibase\Database\TableNameFormatter;
  */
 class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
+	protected $escaper;
 	protected $fieldSqlBuilder;
 	protected $tableNameFormatter;
 	protected $tableDefinitionReader;
 	protected $tableSqlBuilder;
 
-	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter, TableDefinitionReader $definitionReader ) {
-		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $fieldValueEscaper );
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter, TableDefinitionReader $definitionReader ) {
+		$this->escaper = $escaper;
+		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $escaper );
 		$this->tableNameFormatter = $tableNameFormatter;
 		$this->tableDefinitionReader = $definitionReader;
-		$this->tableSqlBuilder = new SQLiteTableSqlBuilder( $fieldValueEscaper, $tableNameFormatter );
+		$this->tableSqlBuilder = new SQLiteTableSqlBuilder( $escaper, $tableNameFormatter );
 	}
 
 	/**
@@ -62,8 +64,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	private function getFieldsSql( $fields ){
 		$fieldNames = array();
 		foreach( $fields as $field ){
-			//todo escape name once identifier escaping is implemented
-			$fieldNames[] = $field->getName();
+			$fieldNames[] = $this->escaper->getEscapedIdentifier( $field->getName() );
 		}
 		return implode( ', ', $fieldNames );
 	}
@@ -97,7 +98,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddIndexSql( $tableName, IndexDefinition $index ){
-		$indexSqlBuilder = new SQLiteIndexSqlBuilder( $this->tableNameFormatter );
+		$indexSqlBuilder = new SQLiteIndexSqlBuilder( $this->escaper, $this->tableNameFormatter );
 		return $indexSqlBuilder->getIndexSQL( $index, $tableName );
 	}
 

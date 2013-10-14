@@ -21,10 +21,17 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	private function newInstance() {
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+
 		$mockEscaper->expects( $this->any() )
 			->method( 'getEscapedValue' )
 			->will( $this->returnCallback( function( $input ) {
 				return "|$input|";
+			} ) );
+
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return '-' . $value . '-';
 			} ) );
 
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
@@ -40,26 +47,26 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testGetRemoveFieldSql(){
 		$instance = $this->newInstance();
 		$sql = $instance->getRemoveFieldSql( 'tableName', 'fieldName' );
-		$this->assertEquals( "ALTER TABLE ||tableName|| DROP fieldName", $sql );
+		$this->assertEquals( "ALTER TABLE ||tableName|| DROP -fieldName-", $sql );
 	}
 
 	public function testGetAddFieldSql(){
 		$instance = $this->newInstance();
 		$field = new FieldDefinition( 'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 );
 		$sql = $instance->getAddFieldSql( 'tableName', $field );
-		$this->assertEquals( 'ALTER TABLE ||tableName|| ADD intField INT DEFAULT |42| NOT NULL', $sql );
+		$this->assertEquals( 'ALTER TABLE ||tableName|| ADD -intField- INT DEFAULT |42| NOT NULL', $sql );
 	}
 
 	public function testGetRemoveIndexSql(){
 		$instance = $this->newInstance();
 		$sql = $instance->getRemoveIndexSql( 'tableName', 'indexName' );
-		$this->assertEquals( "DROP INDEX indexName ON ||tableName||", $sql );
+		$this->assertEquals( "DROP INDEX -indexName- ON ||tableName||", $sql );
 	}
 
 	public function testGetAddIndexSql(){
 		$instance = $this->newInstance();
-		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'name', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
-		$this->assertEquals( "CREATE INDEX `name` ON ||tableName|| (`a`,`b`)", $sql );
+		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'indexName', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
+		$this->assertEquals( "CREATE INDEX -indexName- ON ||tableName|| (-a-,-b-)", $sql );
 	}
 
 }

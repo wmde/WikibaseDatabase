@@ -30,6 +30,12 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '|' . $value . '|';
 			} ) );
 
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return '-' . $value . '-';
+			} ) );
+
 		$sqlBuilder = new MySQLFieldSqlBuilder( $mockEscaper );
 
 		$actualSQL = $sqlBuilder->getFieldSQL( $field );
@@ -45,7 +51,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'fieldName',
 				FieldDefinition::TYPE_INTEGER
 			),
-			'fieldName INT NULL'
+			'-fieldName- INT NULL'
 		);
 
 		$argLists[] = array(
@@ -57,7 +63,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::NO_ATTRIB,
 				FieldDefinition::AUTOINCREMENT
 			),
-			'fieldName INT NULL AUTO_INCREMENT'
+			'-fieldName- INT NULL AUTO_INCREMENT'
 		);
 
 		$argLists[] = array(
@@ -66,7 +72,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::TYPE_FLOAT,
 				FieldDefinition::NOT_NULL
 			),
-			'fieldName FLOAT NOT NULL'
+			'-fieldName- FLOAT NOT NULL'
 		);
 
 		$argLists[] = array(
@@ -76,7 +82,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::NOT_NULL,
 				'1'
 			),
-			'fieldName TINYINT DEFAULT |1| NOT NULL'
+			'-fieldName- TINYINT DEFAULT |1| NOT NULL'
 		);
 
 		$argLists[] = array(
@@ -86,7 +92,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::NOT_NULL,
 				'foo'
 			),
-			'fieldName BLOB DEFAULT |foo| NOT NULL'
+			'-fieldName- BLOB DEFAULT |foo| NOT NULL'
 		);
 
 		return $argLists;

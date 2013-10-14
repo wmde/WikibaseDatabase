@@ -20,12 +20,15 @@ use Wikibase\Database\Schema\TableDefinitionReader;
 class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	protected $queryInterface;
+	protected $unEscaper;
 
 	/**
 	 * @param QueryInterface $queryInterface
+	 * @param SQLiteUnEscaper $unEscaper
 	 */
-	public function __construct( QueryInterface $queryInterface ) {
+	public function __construct( QueryInterface $queryInterface, SQLiteUnEscaper $unEscaper ) {
 		$this->queryInterface = $queryInterface;
+		$this->unEscaper = $unEscaper;
 	}
 
 	/**
@@ -88,6 +91,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	private function getField( $fieldParts ) {
+		$name = $this->unEscaper->getUnEscapedIdentifier( $fieldParts[1] );
 		$type = $this->getFieldType( $fieldParts[2] );
 		$default = $this->getFieldDefault( $fieldParts[4] );
 		$null = $this->getFieldCanNull( $fieldParts[6] );
@@ -99,7 +103,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			$autoInc = FieldDefinition::NO_AUTOINCREMENT;
 		}
 
-		return new FieldDefinition( $fieldParts[1], $type, $null, $default, $attr, $autoInc );
+		return new FieldDefinition( $name, $type, $null, $default, $attr, $autoInc );
 	}
 
 	private function getFieldType( $type ) {
@@ -169,10 +173,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$columns = array();
 		foreach( $parsedColumns as $columnName ){
 			//default unrestricted index size limit
-			$columns[ $columnName ] = 0;
+			$columns[ $this->unEscaper->getUnEscapedIdentifier( $columnName ) ] = 0;
 		}
+		$name = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
 		$type = $this->getIndexType( $createParts[1] );
-		return new IndexDefinition( $createParts[2], $columns , $type );
+		return new IndexDefinition( $name, $columns , $type );
 	}
 
 	/**
@@ -217,11 +222,12 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 				$columns = array();
 				foreach( $parsedColumns as $columnName ){
 					//default unrestricted index size limit
-					$columns[ trim( $columnName ) ] = 0;
+					$columns[ trim( $this->unEscaper->getUnEscapedIdentifier( $columnName ) ) ] = 0;
 				}
 				$keys[] = new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
 			} else if( preg_match( '/(\(|,| )+([^ ]+)[a-z0-9 _]+PRIMARY KEY AUTOINCREMENT/i', $result->sql, $createParts ) ){
-				$keys[] = new IndexDefinition( 'PRIMARY', array( $createParts[2] => 0 ) , IndexDefinition::TYPE_PRIMARY );
+				$fieldName = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
+				$keys[] = new IndexDefinition( 'PRIMARY', array( $fieldName => 0 ) , IndexDefinition::TYPE_PRIMARY );
 			}
 		}
 

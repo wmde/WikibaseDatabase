@@ -34,7 +34,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		$this->tableNameFormatter = $tableNameFormatter;
 		//TODO inject sqlbuilders
 		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $this->escaper );
-		$this->indexSqlBuilder = new SQLiteIndexSqlBuilder( $tableNameFormatter );
+		$this->indexSqlBuilder = new SQLiteIndexSqlBuilder( $this->escaper, $tableNameFormatter );
 	}
 
 	/**

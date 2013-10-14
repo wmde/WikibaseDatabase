@@ -37,13 +37,20 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'tableExists' )
 			->will( $this->returnValue( $tableExists ) );
 
+		$mockUnEscaper = $this->getMock( 'Wikibase\Database\SQLite\SQLiteUnEscaper' );
+		$mockUnEscaper->expects( $this->any() )
+			->method( 'getUnEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return substr( $value, 1, -1 );
+			} ) );
+
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )
 				->method( 'select' )
 				->will( $this->returnValue( new ResultIterator( $result ) ) );
 		}
 
-		return new SQLiteTableDefinitionReader( $mockQueryInterface );
+		return new SQLiteTableDefinitionReader( $mockQueryInterface, $mockUnEscaper );
 	}
 
 	public function testReadNonExistentTable(){
@@ -67,14 +74,14 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			array(
 				//create sql
-				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName (primaryField INT NOT NULL, textField BLOB NULL, intField INT DEFAULT 42 NOT NULL, PRIMARY KEY (textField, primaryField))' ) ),
+				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName ("primaryField" INT NOT NULL, "textField" BLOB NULL, "intField" INT DEFAULT 42 NOT NULL, PRIMARY KEY ("textField", "primaryField"))' ) ),
 				//indexes sql
 				array(
-					(object)array( 'sql' => 'CREATE UNIQUE INDEX uniqueName ON dbNametableName (textField)' ),
-					(object)array( 'sql' => 'CREATE INDEX indexName ON dbNametableName (intField,textField)' )
+					(object)array( 'sql' => 'CREATE UNIQUE INDEX "uniqueName" ON dbNametableName ("textField")' ),
+					(object)array( 'sql' => 'CREATE INDEX "indexName" ON dbNametableName ("intField","textField")' )
 				),
 				//primarykey sql
-				array( (object)array( 'sql' => 'PRIMARY KEY (textField,primaryField)' ) ),
+				array( (object)array( 'sql' => 'PRIMARY KEY ("textField","primaryField")' ) ),
 			),
 			new TableDefinition(
 				'dbNametableName',
