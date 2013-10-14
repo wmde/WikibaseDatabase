@@ -32,6 +32,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 		$this->tableDefinitionReader = $definitionReader;
 		//todo inject SQLiteTableSqlBuilder to make testing easier?
 		$this->tableSqlBuilder = new SQLiteTableSqlBuilder(
+			$escaper,
 			$tableNameFormatter,
 			new SQLiteFieldSqlBuilder( $escaper ),
 			new SQLiteIndexSqlBuilder( $escaper, $tableNameFormatter )

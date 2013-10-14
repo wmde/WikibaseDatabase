@@ -106,14 +106,14 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 
 		$tables[] = new TableDefinition( 'default_field_values_and_indexes', array(
 				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
-				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NULL, 3 ),
-				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 3 ),
+				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NULL ),
 				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, FieldDefinition::NOT_NULL, true ),
 			),
 			array(
-				//TODO test PRIMARY key
-				//TODO test UNIQUE INDEX
-				new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) )
+				new IndexDefinition( 'PRIMARY', array( 'intfield' => 0 ), IndexDefinition::TYPE_PRIMARY ),
+				new IndexDefinition( 'uniqueIndexName', array( 'floatfield' => 0 ), IndexDefinition::TYPE_UNIQUE ),
+				new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) ),
 			)
 		);
 

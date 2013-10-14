@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\SQLite;
 
+use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -18,16 +19,19 @@ use Wikibase\Database\Schema\TableSqlBuilder;
  */
 class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
+	protected $escaper;
 	protected $tableNameFormatter;
 	protected $fieldSqlBuilder;
 	protected $indexSqlBuilder;
 
 	/**
+	 * @param Escaper $escaper
 	 * @param TableNameFormatter $tableNameFormatter
 	 * @param SQLiteFieldSqlBuilder $fieldBuilder
 	 * @param SQLiteIndexSqlBuilder $indexBuilder
 	 */
-	public function __construct( TableNameFormatter $tableNameFormatter, SQLiteFieldSqlBuilder $fieldBuilder, SQLiteIndexSqlBuilder $indexBuilder ) {
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter, SQLiteFieldSqlBuilder $fieldBuilder, SQLiteIndexSqlBuilder $indexBuilder ) {
+		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 		$this->fieldSqlBuilder = $fieldBuilder;
 		$this->indexSqlBuilder = $indexBuilder;
@@ -93,7 +97,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 			$cols = array();
 			foreach( $index->getColumns() as $col => $length ){
-				$cols[] = $col;
+				$cols[] = $this->escaper->getEscapedIdentifier( $col );
 			}
 
 			return ',PRIMARY KEY (' . implode( ', ', $cols ) . ')';

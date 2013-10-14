@@ -27,7 +27,12 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newInstance() {
-
+		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return '-' . $value . '-';
+			} ) );
 
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
@@ -49,6 +54,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->will( $this->returnValue( '<INDEXSQL>' ) );
 
 		return new SQLiteTableSqlBuilder(
+			$mockEscaper,
 			$mockTableNameFormatter,
 			$mockFieldSqlBuilder,
 			$mockIndexSqlBuilder

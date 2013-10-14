@@ -75,6 +75,7 @@ class MWTableBuilderBuilder {
 
 	protected function newSQLiteTableSqlBuilder() {
 		return new SQLiteTableSqlBuilder(
+			$this->newEscaper(),
 			$this->newTableNameFormatter(),
 			new SQLiteFieldSqlBuilder( $this->newEscaper() ),
 			new SQLiteIndexSqlBuilder( $this->newEscaper(), $this->newTableNameFormatter() )
