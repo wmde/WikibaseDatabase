@@ -7,7 +7,6 @@ use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
-use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
 
 /**
@@ -26,12 +25,17 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	protected $tableDefinitionReader;
 	protected $tableSqlBuilder;
 
-	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter, TableDefinitionReader $definitionReader ) {
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter, SQLiteTableDefinitionReader $definitionReader ) {
 		$this->escaper = $escaper;
 		$this->fieldSqlBuilder = new SQLiteFieldSqlBuilder( $escaper );
 		$this->tableNameFormatter = $tableNameFormatter;
 		$this->tableDefinitionReader = $definitionReader;
-		$this->tableSqlBuilder = new SQLiteTableSqlBuilder( $escaper, $tableNameFormatter );
+		//todo inject SQLiteTableSqlBuilder to make testing easier?
+		$this->tableSqlBuilder = new SQLiteTableSqlBuilder(
+			$tableNameFormatter,
+			new SQLiteFieldSqlBuilder( $escaper ),
+			new SQLiteIndexSqlBuilder( $escaper, $tableNameFormatter )
+		);
 	}
 
 	/**

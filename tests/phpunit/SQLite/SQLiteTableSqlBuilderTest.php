@@ -28,24 +28,30 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	protected function newInstance() {
 
-		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
-		$mockEscaper->expects( $this->any() )
-			->method( 'getEscapedValue' )
-			->will( $this->returnArgument(0) );
-		$mockEscaper->expects( $this->any() )
-			->method( 'getEscapedIdentifier' )
-			->will( $this->returnCallback( function( $value ) {
-				return '-' . $value . '-';
-			} ) );
 
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
 			->will( $this->returnArgument(0) );
 
+		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteFieldSqlBuilder' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockFieldSqlBuilder->expects( $this->any() )
+			->method( 'getFieldSql' )
+			->will( $this->returnValue( '<FIELDSQL>' ) );
+
+		$mockIndexSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteIndexSqlBuilder' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockIndexSqlBuilder->expects( $this->any() )
+			->method( 'getIndexSql' )
+			->will( $this->returnValue( '<INDEXSQL>' ) );
+
 		return new SQLiteTableSqlBuilder(
-			$mockEscaper,
-			$mockTableNameFormatter
+			$mockTableNameFormatter,
+			$mockFieldSqlBuilder,
+			$mockIndexSqlBuilder
 		);
 	}
 
@@ -60,75 +66,57 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expectedSQL, $actualSQL );
 	}
 
+
+	public function newMockField( $name ){
+		$mockFieldDefinition = $this->getMockBuilder( 'Wikibase\Database\Schema\Definitions\FieldDefinition' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockFieldDefinition->expects( $this->any() )
+			->method( 'getName' )
+			->will( $this->returnValue( $name ) );
+		return $mockFieldDefinition;
+	}
+
+	public function newMockIndex( $name ){
+		$mockIndexDefinition = $this->getMockBuilder( 'Wikibase\Database\Schema\Definitions\IndexDefinition' )
+			->disableOriginalConstructor()
+			->getMock();
+		$mockIndexDefinition->expects( $this->any() )
+			->method( 'getName' )
+			->will( $this->returnValue( $name ) );
+		return $mockIndexDefinition;
+	}
+
 	public function tableAndSqlProvider() {
 		$argLists = array();
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition( 'fieldName', FieldDefinition::TYPE_INTEGER )
-				)
+				array( $this->newMockField( 'foo' ) )
 			),
-			'CREATE TABLE tableName (-fieldName- INTEGER NULL);'
+			'CREATE TABLE tableName (<FIELDSQL>);'
 		);
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition(
-						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
-						FieldDefinition::NOT_NULL,
-						FieldDefinition::NO_DEFAULT,
-						FieldDefinition::NO_ATTRIB
-					),
-					new FieldDefinition(
-						'textField',
-						FieldDefinition::TYPE_TEXT
-					),
-					new FieldDefinition(
-						'intField',
-						FieldDefinition::TYPE_INTEGER,
-						FieldDefinition::NOT_NULL, 42
-					),
-				)
+				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
+				array( $this->newMockIndex( 'ham' ) )
 			),
-			'CREATE TABLE tableName (-primaryField- INTEGER NOT NULL, -textField- BLOB NULL, -intField- INTEGER DEFAULT 42 NOT NULL);'
+			'CREATE TABLE tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
+			. '<INDEXSQL>'
 		);
 
 		$argLists[] = array(
 			new TableDefinition(
 				'tableName',
-				array(
-					new FieldDefinition(
-						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
-						FieldDefinition::NOT_NULL,
-						FieldDefinition::NO_DEFAULT,
-						FieldDefinition::NO_ATTRIB
-					),
-					new FieldDefinition(
-						'textField',
-						FieldDefinition::TYPE_TEXT
-					),
-					new FieldDefinition(
-						'intField',
-						FieldDefinition::TYPE_INTEGER,
-						FieldDefinition::NOT_NULL, 42
-					),
-				),
-				array(
-					new IndexDefinition(
-						'indexName',
-						array( 'intField' => 0, 'textField' => 0 ),
-						IndexDefinition::TYPE_INDEX
-					),
-				)
+				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
+				array( $this->newMockIndex( 'ham' ), $this->newMockIndex( 'egg' ) )
 			),
-			'CREATE TABLE tableName (-primaryField- INTEGER NOT NULL, -textField- BLOB NULL, -intField- INTEGER DEFAULT 42 NOT NULL);' . PHP_EOL
-			. 'CREATE INDEX -indexName- ON tableName (-intField-,-textField-);'
+			'CREATE TABLE tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
+			. '<INDEXSQL>' . PHP_EOL
+			. '<INDEXSQL>'
 		);
 
 		return $argLists;
