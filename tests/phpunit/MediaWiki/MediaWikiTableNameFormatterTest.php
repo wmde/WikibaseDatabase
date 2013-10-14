@@ -9,6 +9,7 @@ use Wikibase\Database\MediaWiki\MediaWikiTableNameFormatter;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group WikibaseDatabaseMediawiki
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >

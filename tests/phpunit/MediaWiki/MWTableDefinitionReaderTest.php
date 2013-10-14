@@ -9,6 +9,7 @@ use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group WikibaseDatabaseMediawiki
  *
  * @licence GNU GPL v2+
  * @author Adam Shorland

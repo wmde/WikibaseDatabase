@@ -9,6 +9,7 @@ use Wikibase\Database\SQLite\SQLiteFieldSqlBuilder;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group WikibaseDatabaseSQLite
  * @group Database
  *
  * @licence GNU GPL v2+

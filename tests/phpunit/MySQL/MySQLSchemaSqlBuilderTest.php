@@ -11,6 +11,7 @@ use Wikibase\Database\Schema\Definitions\IndexDefinition;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group WikibaseDatabaseMySQL
  * @group Database
  *
  * @licence GNU GPL v2+
