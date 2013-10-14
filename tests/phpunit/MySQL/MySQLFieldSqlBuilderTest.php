@@ -10,6 +10,7 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group WikibaseDatabaseMySQL
  * @group Database
  *
  * @licence GNU GPL v2+

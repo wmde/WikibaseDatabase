@@ -9,6 +9,13 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\SQLite\SQLiteTableDefinitionReader;
 
 /**
+ * @covers Wikibase\Database\SQLite\SQLiteTableDefinitionReader
+ *
+ * @group Wikibase
+ * @group WikibaseDatabase
+ * @group WikibaseDatabaseSQLite
+ * @group Database
+ *
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Adam Shorland

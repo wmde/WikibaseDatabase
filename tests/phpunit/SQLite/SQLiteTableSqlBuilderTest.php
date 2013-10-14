@@ -12,6 +12,7 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group WikibaseDatabaseSQLite
  * @group Database
  *
  * @licence GNU GPL v2+

@@ -9,6 +9,13 @@ use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
+ * @covers Wikibase\Database\MySQL\MySQLTableDefinitionReader
+ *
+ * @group Wikibase
+ * @group WikibaseDatabase
+ * @group WikibaseDatabaseMySQL
+ * @group Database
+ *
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Adam Shorland

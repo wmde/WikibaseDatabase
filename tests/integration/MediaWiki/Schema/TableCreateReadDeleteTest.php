@@ -15,6 +15,7 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
  *
  * @group Wikibase
  * @group WikibaseDatabase
+ * @group Integration
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
