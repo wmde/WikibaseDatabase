@@ -34,7 +34,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			} ) );
 
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->atLeastOnce() )
+		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
 			->will( $this->returnArgument(0) );
 
@@ -93,7 +93,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testGetRemoveIndexSql(){
 		$instance = $this->newInstance( );
 		$sql = $instance->getRemoveIndexSql( 'tableName', 'textField' );
-		$this->assertEquals( "DROP INDEX IF EXISTS tableName.textField", $sql );
+		$this->assertEquals( "DROP INDEX IF EXISTS -textField-", $sql );
 	}
 
 	public function testGetAddIndexSql(){

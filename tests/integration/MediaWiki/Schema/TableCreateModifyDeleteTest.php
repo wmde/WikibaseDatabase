@@ -4,7 +4,6 @@ namespace Wikibase\Database\Tests;
 
 use Wikibase\Database\LazyDBConnectionProvider;
 use Wikibase\Database\MediaWiki\MediaWikiQueryInterface;
-use Wikibase\Database\MediaWiki\MediaWikiSchemaModifier;
 use Wikibase\Database\MediaWiki\MediaWikiSchemaModifierBuilder;
 use Wikibase\Database\MediaWiki\MWTableBuilderBuilder;
 use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
@@ -34,7 +33,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 
 	protected function dropTablesIfStillThere( $tablesToDrop ) {
 		$tableBuilder = $this->newTableBuilder();
-		foreach( $tablesToDrop as $tableName ){
+		foreach( $tablesToDrop as $tableName ) {
 			if ( $tableBuilder->tableExists( $tableName ) ) {
 				$tableBuilder->dropTable( $tableName );
 			}
@@ -61,7 +60,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		return $trBuilder->setConnection( $connectionProvider )->getTableDefinitionReader( $this->newQueryInterface() );
 	}
 
-	protected function newSchemaModifier(){
+	protected function newSchemaModifier() {
 		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
 		$schemaModifierBuilder = new MediaWikiSchemaModifierBuilder();
 		return $schemaModifierBuilder
@@ -70,15 +69,113 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 			->getSchemaModifier();
 	}
 
-	public function testModifyTable(){
-		$tableBuilder = $this->newTableBuilder();
+	public function getType(){
+		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
+		return $connectionProvider->getConnection()->getType();
+	}
+
+	public function testAddField() {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
 				new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
 			)
 		);
+		$this->setupTestTable( $table );
 
+		$newField = new FieldDefinition( 'secondField', FieldDefinition::TYPE_INTEGER );
+		$this->newSchemaModifier()->addField( $table->getName(), $newField );
+		$table = $table->mutateFields( array_merge( $table->getFields(), array( $newField ) ) );
+		$this->assertTable( $this->newTableBuilder(), $table, 'assert field added' );
+	}
+
+	public function testAddIndex() {
+		$table = new TableDefinition(
+			'modify_table_test',
+			array(
+				new FieldDefinition( 'startField', FieldDefinition::TYPE_INTEGER )
+			)
+		);
+		$this->setupTestTable( $table );
+
+		$newIndex = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
+		$this->newSchemaModifier()->addIndex( $table->getName(), $newIndex );
+		$table = $table->mutateIndexes( array_merge( $table->getIndexes(), array( $newIndex ) ) );
+		$this->assertTable( $this->newTableBuilder(), $table, 'assert index added' );
+	}
+
+	public function testRemoveField() {
+		$table = new TableDefinition(
+			'modify_table_test',
+			array(
+				new FieldDefinition( 'startField1', FieldDefinition::TYPE_TEXT ),
+				new FieldDefinition( 'startField2', FieldDefinition::TYPE_TEXT ),
+			)
+		);
+		$this->setupTestTable( $table );
+
+		$removeField = new FieldDefinition( 'startField2', FieldDefinition::TYPE_INTEGER );
+		$this->newSchemaModifier()->removeField( $table->getName(), $removeField->getName() );
+		$table = $table->mutateFieldAway( $removeField->getName() );
+		$this->assertTable( $this->newTableBuilder(), $table, 'assert field removed' );
+	}
+
+	public function testRemoveIndex() {
+		$table = new TableDefinition(
+			'modify_table_test',
+			array(
+				new FieldDefinition( 'startField', FieldDefinition::TYPE_INTEGER )
+			),
+			array(
+				new IndexDefinition( 'indexName', array( 'startField' => 0 ) )
+			)
+		);
+		$this->setupTestTable( $table );
+
+		$removeIndex = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
+		$this->newSchemaModifier()->removeIndex( $table->getName(), $removeIndex->getName() );
+		$table = $table->mutateIndexAway( $removeIndex->getName() );
+		$this->assertTable( $this->newTableBuilder(), $table, 'assert index removed' );
+	}
+
+	public function testFieldAddRemoveRoundtrip() {
+		$startTable = new TableDefinition(
+			'modify_table_test',
+			array(
+				new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
+			)
+		);
+		$this->setupTestTable( $startTable );
+		$field = new FieldDefinition( 'secondField', FieldDefinition::TYPE_INTEGER );
+
+		$this->newSchemaModifier()->addField( $startTable->getName(), $field );
+		$newTable = $startTable->mutateFields( array_merge( $startTable->getFields(), array( $field ) ) );
+		$this->assertTable( $this->newTableBuilder(), $newTable, 'assert field added' );
+
+		$this->newSchemaModifier()->removeField( $startTable->getName(), $field->getName() );
+		$this->assertTable( $this->newTableBuilder(), $startTable, 'assert field remove' );
+	}
+
+	public function testIndexAddRemoveRoundtrip() {
+		$startTable = new TableDefinition(
+			'modify_table_test',
+			array(
+				new FieldDefinition( 'startField', FieldDefinition::TYPE_INTEGER )
+			)
+		);
+		$this->setupTestTable( $startTable );
+		$index = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
+
+		$this->newSchemaModifier()->addIndex( $startTable->getName(), $index );
+		$newTable = $startTable->mutateIndexes( array_merge( $startTable->getIndexes(), array( $index ) ) );
+		$this->assertTable( $this->newTableBuilder(), $newTable, 'assert index added' );
+
+		$this->newSchemaModifier()->removeIndex( $startTable->getName(), $index->getName() );
+		$this->assertTable( $this->newTableBuilder(), $startTable, 'assert index remove' );
+	}
+
+	public function setupTestTable( TableDefinition $table ) {
+		$tableBuilder = $this->newTableBuilder();
 		$this->assertFalse(
 			$tableBuilder->tableExists( $table->getName() ),
 			'Table should not exist before creation'
@@ -86,26 +183,9 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 
 		$tableBuilder->createTable( $table );
 		$this->assertTable( $tableBuilder, $table, 'assert table after creation' );
-
-		$schemaModifer = $this->newSchemaModifier();
-
-		//add a new field
-		$newField = new FieldDefinition( 'secondField', FieldDefinition::TYPE_INTEGER );
-		$schemaModifer->addField( $table->getName(), $newField );
-		$table = $table->mutateFields( array_merge( $table->getFields(), array( $newField ) ) );
-		$this->assertTable( $tableBuilder, $table, 'assert field added' );
-
-		//remove a new index
-		$newIndex = new IndexDefinition( 'indexName', array( 'secondField' => 0 ) );
-		$schemaModifer->addIndex( $table->getName(), $newIndex );
-		$table = $table->mutateIndexes( array_merge( $table->getIndexes(), array( $newIndex ) ) );
-		$this->assertTable( $tableBuilder, $table, 'assert index added' );
-
-		//TODO remove and field
-		//TODO remove an index
 	}
 
-	protected function assertTable( TableBuilder $tableBuilder, TableDefinition $table, $message = '' ){
+	protected function assertTable( TableBuilder $tableBuilder, TableDefinition $table, $message = '' ) {
 		$this->assertTrue(
 			$tableBuilder->tableExists( $table->getName() ),
 			$message . ' (tableExists)'
@@ -116,7 +196,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(
 			$table,
 			$tableReader->readDefinition( $table->getName() ),
-			$message . '(definitionEquals)'
+			$message . ' (definitionEquals)'
 		);
 	}
 

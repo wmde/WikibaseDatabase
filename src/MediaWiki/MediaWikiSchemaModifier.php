@@ -50,18 +50,20 @@ class MediaWikiSchemaModifier implements SchemaModifier {
 	 * @throws FieldRemovalFailedException
 	 */
 	public function removeField( $tableName, $fieldName ) {
-		$success = $this->getDB()->query(
-			$this->sqlBuilder->getRemoveFieldSql( $tableName, $fieldName ),
-			__METHOD__
-		);
+		$sql = $this->sqlBuilder->getRemoveFieldSql( $tableName, $fieldName );
 
-		if ( $success === false ) {
-			throw new FieldRemovalFailedException(
-				$tableName,
-				$fieldName,
-				$this->getDB()->lastQuery()
-			);
+		foreach( explode( PHP_EOL, $sql ) as $query ) {
+			$success = $this->getDB()->query( $query );
+
+			if ( $success === false ) {
+				throw new FieldRemovalFailedException(
+					$tableName,
+					$fieldName,
+					$this->getDB()->lastQuery()
+				);
+			}
 		}
+
 	}
 
 	/**

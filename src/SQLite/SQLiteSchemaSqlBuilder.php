@@ -86,14 +86,15 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
-	 * @param string $tableName
+	 * @param string $tableName Ignored by this method
 	 * @param string $indexName
 	 *
+	 * @see http://www.sqlite.org/lang_dropindex.html
 	 * @return string
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
-		return "DROP INDEX IF EXISTS {$tableName}.{$indexName}";
+		$indexName = $this->escaper->getEscapedIdentifier( $indexName );
+		return "DROP INDEX IF EXISTS {$indexName}";
 	}
 
 	/**
