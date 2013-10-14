@@ -70,15 +70,6 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		return new MediaWikiQueryInterface( $connectionProvider );
 	}
 
-	/**
-	 * @return string 'sqlite' or 'mysql'
-	 */
-	protected function getType(){
-		$connectionProvider = new LazyDBConnectionProvider( DB_MASTER );
-
-		return $connectionProvider->getConnection()->getType();
-	}
-
 	public function tableProvider() {
 		$tables = array();
 
@@ -131,7 +122,7 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @param TableDefinition $table
 	 */
-	public function testCreateAndDropTable( TableDefinition $table ) {
+	public function testCreateReadDeleteTable( TableDefinition $table ) {
 		$tableBuilder = $this->newTableBuilder();
 
 		$this->assertFalse(
