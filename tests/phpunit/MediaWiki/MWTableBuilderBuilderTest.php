@@ -29,14 +29,24 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( $builder, $returnValue );
 	}
 
-	public function testGetQueryInterface() {
-		$connection =  $this->getMock( 'DatabaseMysql' );
+	public function databaseTypeProvider(){
+		return array(
+			array( 'mysql', 'DatabaseMysql', $this->once() ),
+			array( 'sqlite', 'DatabaseSqlite', $this->never() ),
+		);
+	}
+
+	/**
+	 * @dataProvider databaseTypeProvider
+	 */
+	public function testGetQueryInterface( $type, $class, $getDBnameExpectsCount ) {
+		$connection =  $this->getMock( $class );
 
 		$connection->expects( $this->once() )
 			->method( 'getType' )
-			->will( $this->returnValue( 'mysql' ) );
+			->will( $this->returnValue( $type ) );
 
-		$connection->expects( $this->once() )
+		$connection->expects( $getDBnameExpectsCount )
 			->method( 'getDBname' )
 			->will( $this->returnValue( 'dbName' ) );
 
