@@ -18,11 +18,13 @@ use Wikibase\Database\TableNameFormatter;
  */
 class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 
+	protected $escaper;
 	protected $fieldSqlBuilder;
 	protected $tableNameFormatter;
 
-	public function __construct( Escaper $fieldValueEscaper, TableNameFormatter $tableNameFormatter ) {
-		$this->fieldSqlBuilder = new MySQLFieldSqlBuilder( $fieldValueEscaper );
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter ) {
+		$this->escaper = $escaper;
+		$this->fieldSqlBuilder = new MySQLFieldSqlBuilder( $escaper );
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
@@ -34,6 +36,7 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 */
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
 		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$fieldName = $this->escaper->getEscapedIdentifier( $fieldName );
 		return "ALTER TABLE {$tableName} DROP {$fieldName}"; //todo escape $fieldName?
 	}
 
@@ -56,6 +59,7 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){
 		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$indexName = $this->escaper->getEscapedIdentifier( $indexName );
 		return "DROP INDEX {$indexName} ON {$tableName}";
 	}
 
@@ -66,7 +70,7 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddIndexSql( $tableName, IndexDefinition $index ){
-		$indexSqlBuilder = new MySQLIndexSqlBuilder( $this->tableNameFormatter );
+		$indexSqlBuilder = new MySQLIndexSqlBuilder( $this->escaper, $this->tableNameFormatter );
 		return $indexSqlBuilder->getIndexSQL( $index, $tableName );
 	}
 

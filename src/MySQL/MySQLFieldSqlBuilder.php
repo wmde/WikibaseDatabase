@@ -24,8 +24,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	}
 
 	public function getFieldSQL( FieldDefinition $field ){
-		//todo escape name once identifier escaping is implemented
-		$sql =  $field->getName() . ' ';
+		$sql = $this->escaper->getEscapedIdentifier( $field->getName() ). ' ';
 
 		$sql .= $this->getFieldType( $field->getType() );
 

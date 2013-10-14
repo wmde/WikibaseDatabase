@@ -3,6 +3,7 @@
 namespace Wikibase\Database\MySQL;
 
 use RuntimeException;
+use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\IndexSqlBuilder;
@@ -15,10 +16,15 @@ use Wikibase\Database\TableNameFormatter;
  */
 class MySQLIndexSqlBuilder extends IndexSqlBuilder {
 
+	protected $escaper;
+	protected $tableNameFormatter;
+
 	/**
+	 * @param Escaper $escaper
 	 * @param TableNameFormatter $tableNameFormatter
 	 */
-	public function __construct( TableNameFormatter $tableNameFormatter ) {
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter ) {
+		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
@@ -27,17 +33,17 @@ class MySQLIndexSqlBuilder extends IndexSqlBuilder {
 		$sql .= $this->getIndexType( $index->getType() );
 
 		if( $index->getType() !== IndexDefinition::TYPE_PRIMARY ){
-			$sql .= ' `'.$index->getName().'`';//todo escape index name?
+			$sql .= ' ' . $this->escaper->getEscapedIdentifier( $index->getName() );
 		}
 
 		$sql .= ' ON ' . $this->tableNameFormatter->formatTableName( $tableName );
 
 		$columnNames = array();
 		foreach( $index->getColumns() as $columnName => $intSize ){
-			$columnNames[] = $columnName;
+			$columnNames[] =  $this->escaper->getEscapedIdentifier( $columnName );
 		}
 
-		$sql .= ' (`'.implode( '`,`', $columnNames ).'`)';
+		$sql .= ' (' . implode( ',', $columnNames ). ')';
 
 		return $sql;
 	}

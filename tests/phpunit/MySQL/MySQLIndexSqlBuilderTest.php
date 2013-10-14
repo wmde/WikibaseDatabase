@@ -22,12 +22,19 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider fieldAndSqlProvider
 	 */
 	public function testGetCreateTableSql( IndexDefinition $index, $expectedSQL ) {
+		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return '-' . $value . '-';
+			} ) );
+
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
 			->will( $this->returnArgument(0) );
 
-		$sqlBuilder = new MySQLIndexSqlBuilder( $mockTableNameFormatter );
+		$sqlBuilder = new MySQLIndexSqlBuilder( $mockEscaper, $mockTableNameFormatter );
 		$sql = $sqlBuilder->getIndexSQL( $index, 'tableName' );
 		$this->assertEquals( $expectedSQL, $sql );
 	}
@@ -44,7 +51,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField' => 0, 'textField' => 0 ),
 				IndexDefinition::TYPE_INDEX
 			),
-			'CREATE INDEX `indexName` ON tableName (`intField`,`textField`)'
+			'CREATE INDEX -indexName- ON tableName (-intField-,-textField-)'
 		);
 
 		$argLists[] = array(
@@ -53,7 +60,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField' => 0, 'textField' => 0 ),
 				IndexDefinition::TYPE_UNIQUE
 			),
-			'CREATE UNIQUE INDEX `indexName` ON tableName (`intField`,`textField`)'
+			'CREATE UNIQUE INDEX -indexName- ON tableName (-intField-,-textField-)'
 		);
 
 		$argLists[] = array(
@@ -62,7 +69,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField' => 0, 'textField' => 0 ),
 				IndexDefinition::TYPE_PRIMARY
 			),
-			'CREATE PRIMARY KEY ON tableName (`intField`,`textField`)'
+			'CREATE PRIMARY KEY ON tableName (-intField-,-textField-)'
 		);
 
 		return $argLists;
@@ -70,6 +77,13 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	public function testUnsupportedType() {
 		$this->setExpectedException( 'RuntimeException', 'does not support db indexes of type' );
+
+		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return '-' . $value . '-';
+			} ) );
 
 		$tableNameFormatter = $this->getMockBuilder( 'Wikibase\Database\MediaWiki\MediaWikiTableNameFormatter' )
 			->disableOriginalConstructor()
@@ -82,7 +96,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'getType' )
 			->will( $this->returnValue( 'foobar' ) );
 
-		$sqlBuilder = new MySQLIndexSqlBuilder( $tableNameFormatter );
+		$sqlBuilder = new MySQLIndexSqlBuilder( $mockEscaper, $tableNameFormatter );
 		$sqlBuilder->getIndexSQL( $indexDefinition, 'tableName' );
 	}
 
