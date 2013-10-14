@@ -3,6 +3,7 @@
 namespace Wikibase\Database\SQLite;
 
 use RuntimeException;
+use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\IndexSqlBuilder;
@@ -15,25 +16,27 @@ use Wikibase\Database\TableNameFormatter;
  */
 class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 
+	protected $escaper;
 	protected $tableNameFormatter;
 
 	/**
+	 * @param Escaper $escaper
 	 * @param TableNameFormatter $tableNameFormatter
 	 */
-	public function __construct( TableNameFormatter $tableNameFormatter ) {
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter ) {
+		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
 	public function getIndexSQL( IndexDefinition $index, $tableName ){
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
-		//todo escape name once identifier escaping is implemented
-		$sql .= $index->getName() . ' ';
+		$sql .= $this->escaper->getEscapedIdentifier( $index->getName() ) . ' ';
 		$sql .= 'ON ' . $this->tableNameFormatter->formatTableName( $tableName );
 
 		$columnNames = array();
 		foreach( $index->getColumns() as $columnName => $intSize ){
-			$columnNames[] = $columnName;
+			$columnNames[] = $this->escaper->getEscapedIdentifier( $columnName );
 		}
 
 		$sql .= ' ('.implode( ',', $columnNames ).');';

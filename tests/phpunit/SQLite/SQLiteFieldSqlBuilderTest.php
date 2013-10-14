@@ -28,6 +28,11 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->will( $this->returnCallback( function( $value ) {
 				return '|' . $value . '|';
 			} ) );
+		$mockEscaper->expects( $this->any() )
+			->method( 'getEscapedIdentifier' )
+			->will( $this->returnCallback( function( $value ) {
+				return '-' . $value . '-';
+			} ) );
 
 		$sqlBuilder = new SQLiteFieldSqlBuilder( $mockEscaper );
 
@@ -44,7 +49,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'fieldName',
 				FieldDefinition::TYPE_BOOLEAN
 			),
-			'fieldName TINYINT NULL'
+			'-fieldName- TINYINT NULL'
 		);
 
 		$argLists[] = array(
@@ -57,7 +62,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::AUTOINCREMENT
 
 			),
-			'autoInc INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
+			'-autoInc- INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT'
 		);
 
 		$argLists[] = array(
@@ -67,7 +72,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::NOT_NULL,
 				'1'
 			),
-			'fieldName TINYINT DEFAULT |1| NOT NULL'
+			'-fieldName- TINYINT DEFAULT |1| NOT NULL'
 		);
 
 		$argLists[] = array(
@@ -77,7 +82,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				FieldDefinition::NOT_NULL,
 				'foo'
 			),
-			'fieldName BLOB DEFAULT |foo| NOT NULL'
+			'-fieldName- BLOB DEFAULT |foo| NOT NULL'
 		);
 
 		return $argLists;

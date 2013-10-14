@@ -9,6 +9,7 @@ use Wikibase\Database\MySQL\MySQLTableDefinitionReader;
 use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\SQLite\SQLiteTableDefinitionReader;
+use Wikibase\Database\SQLite\SQLiteUnEscaper;
 
 /**
  * Builder for TableDefinitionReader objects.
@@ -58,7 +59,7 @@ class MWTableDefinitionReaderBuilder {
 	}
 
 	protected function newSQLiteTableDefinitionReader( QueryInterface $queryInterface ) {
-		return new SQLiteTableDefinitionReader( $queryInterface );
+		return new SQLiteTableDefinitionReader( $queryInterface, new SQLiteUnEscaper() );
 	}
 
 }
