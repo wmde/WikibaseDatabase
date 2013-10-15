@@ -71,6 +71,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * Performs a request to get information needed to construct FieldDefinitions
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/columns-table.html
+	 *
 	 * @param string $tableName
 	 * @return ResultIterator
 	 */
@@ -183,6 +185,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	/**
 	 * Performs a request to get information needed to construct IndexDefinitions
 	 * for Primary Keys and Unique Indexes from constraints
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/key-column-usage-table.html
+	 *
 	 * @param string $tableName
 	 * @return ResultIterator
 	 */
@@ -200,6 +204,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	/**
 	 * Performs a request to get information needed to construct IndexDefinitions
 	 * that are not Primary Keys or Unique Indexes from statistics
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
+	 *
 	 * @param string $tableName
 	 * @return ResultIterator
 	 */

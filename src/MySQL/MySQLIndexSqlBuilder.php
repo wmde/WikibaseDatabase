@@ -28,6 +28,9 @@ class MySQLIndexSqlBuilder extends IndexSqlBuilder {
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
+	/**
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/create-index.html
+	 */
 	public function getIndexSQL( IndexDefinition $index, $tableName ){
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() );

@@ -39,6 +39,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 	/**
 	 * @see ExtendedAbstraction::createTable
+	 * @see http://www.sqlite.org/lang_createtable.html
 	 *
 	 * @since 0.1
 	 *
@@ -90,6 +91,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 
 	/**
 	 * @param IndexDefinition $index
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#table-constraint
 	 * @return string
 	 */
 	protected function getPrimaryKey( $index ){

@@ -28,6 +28,9 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#create-index-stmt
+	 */
 	public function getIndexSQL( IndexDefinition $index, $tableName ){
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';

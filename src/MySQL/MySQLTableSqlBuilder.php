@@ -39,6 +39,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 
 	/**
 	 * @see ExtendedAbstraction::createTable
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/create-table.html
 	 *
 	 * @since 0.1
 	 *
