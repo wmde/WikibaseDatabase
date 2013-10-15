@@ -110,19 +110,13 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		switch ( $type ) {
 			case 'TINYINT':
 				return 'bool';
-				break;
 			case 'BLOB':
 				return 'str';
-				break;
 			case 'INT':
-				return 'int';
-				break;
 			case 'INTEGER':
 				return 'int';
-				break;
 			case 'FLOAT':
 				return 'float';
-				break;
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
 		}
@@ -197,10 +191,8 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		switch ( $type ) {
 			case 'INDEX':
 				return IndexDefinition::TYPE_INDEX;
-				break;
 			case 'UNIQUE INDEX':
 				return IndexDefinition::TYPE_UNIQUE;
-				break;
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db indexes of type ' . $type );
 		}
