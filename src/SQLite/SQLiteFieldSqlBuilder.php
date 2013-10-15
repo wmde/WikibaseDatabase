@@ -23,6 +23,9 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		$this->escaper = $escaper;
 	}
 
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#column-def
+	 */
 	public function getFieldSQL( FieldDefinition $field ){
 		$sql =  $this->escaper->getEscapedIdentifier( $field->getName() ) . ' ';
 
@@ -37,6 +40,9 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		return $sql;
 	}
 
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#column-constraint
+	 */
 	protected function getDefault( $default, $type ) {
 		if ( $default !== null ) {
 			//TODO ints shouldn't have quotes added to them so we can not use the escaper used for strings below???
@@ -49,12 +55,17 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		return '';
 	}
 
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#column-constraint
+	 */
 	protected function getNull( $allowsNull ) {
 		return $allowsNull ? ' NULL' : ' NOT NULL';
 	}
 
 	/**
 	 * Returns the MySQL field type for a given FieldDefinition type constant.
+	 *
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#type-name
 	 *
 	 * @param string $fieldType
 	 *
@@ -76,6 +87,9 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		}
 	}
 
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#column-constraint
+	 */
 	protected function getAutoInc( $shouldAutoInc ){
 		if ( $shouldAutoInc ){
 			return ' PRIMARY KEY AUTOINCREMENT';

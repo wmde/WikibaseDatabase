@@ -6,6 +6,7 @@ use Exception;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
+use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 use Wikibase\Database\TableNameFormatter;
 
@@ -40,6 +41,11 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
+	 * This returns sql to rename the table to a temporary name,
+	 * create a new table with the new definition (without the field we are removing)
+	 * copy all of the data across and drop the temporary table.
+	 * The returned string consists of these 4 separate queries divided by the PHP_EOL character
+	 *
 	 * @param string $tableName
 	 * @param string $fieldName
 	 *
@@ -48,18 +54,45 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 */
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
 		$definition = $this->tableDefinitionReader->readDefinition( $tableName );
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
-		$tmpTableName = $this->tableNameFormatter->formatTableName( $tableName . '_tmp' );
-		$sql = "ALTER TABLE {$tableName} RENAME TO {$tmpTableName};" . PHP_EOL;
 
+		$tmpTableName = $tableName . '_tmp';
+		$sql = $this->getRenameTableSql( $tableName, $tmpTableName ) . PHP_EOL;
+
+		/** @var TableDefinition $definition */
 		$definition = $definition->mutateFieldAway( $fieldName );
-		$sql .= $this->tableSqlBuilder->getCreateTableSql( $definition ) . PHP_EOL;
 
-		$fieldsSql = $this->getFieldsSql( $definition->getFields() );
-		$sql .= "INSERT INTO {$tableName}({$fieldsSql}) SELECT {$fieldsSql} FROM {$tmpTableName};" . PHP_EOL;
-		$sql .= "DROP TABLE {$tmpTableName};";
+		$sql .= $this->tableSqlBuilder->getCreateTableSql( $definition ) . PHP_EOL;
+		$sql .= $this->getContentsCopySql( $tmpTableName, $tableName, $definition->getFields() ) . PHP_EOL;
+		$sql .= $this->getDropTableSql( $tmpTableName );
 
 		return $sql;
+	}
+
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#alter-table-stmt
+	 */
+	protected function getRenameTableSql( $fromTable, $toTable ){
+		$fromTable = $this->tableNameFormatter->formatTableName( $fromTable );
+		$toTable = $this->tableNameFormatter->formatTableName( $toTable );
+		return "ALTER TABLE {$fromTable} RENAME TO {$toTable};";
+	}
+
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#insert-stmt
+	 */
+	protected function getContentsCopySql( $fromTable, $toTable, $fields ){
+		$fromTable = $this->tableNameFormatter->formatTableName( $fromTable );
+		$toTable = $this->tableNameFormatter->formatTableName( $toTable );
+		$fieldsSql = $this->getFieldsSql( $fields );
+		return "INSERT INTO {$toTable}({$fieldsSql}) SELECT {$fieldsSql} FROM {$fromTable};";
+	}
+
+	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#drop-table-stmt
+	 */
+	protected function getDropTableSql( $tableName ){
+		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		return "DROP TABLE {$tableName};";
 	}
 
 	/**
@@ -75,6 +108,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#alter-table-stmt
+	 *
 	 * @param string $tableName
 	 * @param FieldDefinition $field
 	 *
@@ -86,10 +121,11 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
+	 * @see http://www.sqlite.org/syntaxdiagrams.html#drop-index-stmt
+	 *
 	 * @param string $tableName Ignored by this method
 	 * @param string $indexName
 	 *
-	 * @see http://www.sqlite.org/lang_dropindex.html
 	 * @return string
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){

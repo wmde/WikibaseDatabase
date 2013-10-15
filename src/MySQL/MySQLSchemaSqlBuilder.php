@@ -29,6 +29,8 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/alter-table.html
+	 *
 	 * @param string $tableName
 	 * @param string $fieldName
 	 *
@@ -41,6 +43,8 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/alter-table.html
+	 *
 	 * @param string $tableName
 	 * @param FieldDefinition $field
 	 *
@@ -52,6 +56,8 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	}
 
 	/**
+	 * @see http://dev.mysql.com/doc/refman/5.7/en/drop-index.html
+	 *
 	 * @param string $tableName
 	 * @param string $indexName
 	 *
