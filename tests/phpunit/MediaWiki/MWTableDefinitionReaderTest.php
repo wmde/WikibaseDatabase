@@ -56,7 +56,10 @@ class MWTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
 		$builder = new MWTableDefinitionReaderBuilder();
 
-		$tableDefinitionReader = $builder->setConnection( $connectionProvider )->getTableDefinitionReader( $queryInterface );
+		$tableDefinitionReader = $builder
+			->setConnection( $connectionProvider )
+			->setQueryInterface( $queryInterface )
+			->getTableDefinitionReader();
 
 		$this->assertInstanceOf( 'Wikibase\Database\Schema\TableDefinitionReader', $tableDefinitionReader );
 	}
@@ -79,7 +82,10 @@ class MWTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 			->getMock();
 
 		$builder = new MWTableDefinitionReaderBuilder();
-		$builder->setConnection( $connectionProvider )->getTableDefinitionReader( $queryInterface );
+		$builder
+		->setQueryInterface( $queryInterface )
+			->setConnection( $connectionProvider )
+			->getTableDefinitionReader();
 	}
 
 }
