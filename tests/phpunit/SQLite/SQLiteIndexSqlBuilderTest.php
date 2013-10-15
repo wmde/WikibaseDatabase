@@ -33,7 +33,9 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
-			->will( $this->returnArgument(0) );
+			->will( $this->returnCallback( function( $tableName ) {
+				return 'prefix_' . $tableName;
+			} ) );
 
 		$sqlBuilder = new SQLiteIndexSqlBuilder( $mockEscaper, $mockTableNameFormatter );
 		$sql = $sqlBuilder->getIndexSQL( $index, 'tableName' );
@@ -49,7 +51,7 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField' => 0, 'textField' => 0 ),
 				IndexDefinition::TYPE_INDEX
 			),
-			'CREATE INDEX -indexName- ON tableName (-intField-,-textField-);'
+			'CREATE INDEX -indexName- ON -prefix_tableName- (-intField-,-textField-);'
 		);
 
 
@@ -59,7 +61,7 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField' => 0, 'textField' => 0 ),
 				IndexDefinition::TYPE_UNIQUE
 			),
-			'CREATE UNIQUE INDEX -indexName- ON tableName (-intField-,-textField-);'
+			'CREATE UNIQUE INDEX -indexName- ON -prefix_tableName- (-intField-,-textField-);'
 		);
 
 		return $argLists;

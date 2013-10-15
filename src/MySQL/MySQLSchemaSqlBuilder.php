@@ -37,9 +37,15 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveFieldSql( $tableName, $fieldName ) {
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$tableName = $this->getPreparedTableName( $tableName );
 		$fieldName = $this->escaper->getEscapedIdentifier( $fieldName );
 		return "ALTER TABLE {$tableName} DROP {$fieldName}";
+	}
+
+	protected function getPreparedTableName( $tableName ) {
+		return $this->escaper->getEscapedIdentifier(
+			$this->tableNameFormatter->formatTableName( $tableName )
+		);
 	}
 
 	/**
@@ -51,7 +57,7 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$tableName = $this->getPreparedTableName( $tableName );
 		return "ALTER TABLE {$tableName} ADD " . $this->fieldSqlBuilder->getFieldSQL( $field );
 	}
 
@@ -64,7 +70,7 @@ class MySQLSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$tableName = $this->getPreparedTableName( $tableName );
 		$indexName = $this->escaper->getEscapedIdentifier( $indexName );
 		return "DROP INDEX {$indexName} ON {$tableName}";
 	}

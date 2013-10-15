@@ -90,7 +90,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$newField = new FieldDefinition( 'secondField', FieldDefinition::TYPE_INTEGER );
 		$this->newSchemaModifier()->addField( $table->getName(), $newField );
 		$table = $table->mutateFields( array_merge( $table->getFields(), array( $newField ) ) );
-		$this->assertTable( $this->newTableBuilder(), $table, 'assert field added' );
+		$this->assertTableExistsAsDefined( $table, 'assert field added' );
 	}
 
 	public function testAddIndex() {
@@ -105,7 +105,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$newIndex = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
 		$this->newSchemaModifier()->addIndex( $table->getName(), $newIndex );
 		$table = $table->mutateIndexes( array_merge( $table->getIndexes(), array( $newIndex ) ) );
-		$this->assertTable( $this->newTableBuilder(), $table, 'assert index added' );
+		$this->assertTableExistsAsDefined( $table, 'assert index added' );
 	}
 
 	public function testRemoveField() {
@@ -121,7 +121,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$removeField = new FieldDefinition( 'startField2', FieldDefinition::TYPE_INTEGER );
 		$this->newSchemaModifier()->removeField( $table->getName(), $removeField->getName() );
 		$table = $table->mutateFieldAway( $removeField->getName() );
-		$this->assertTable( $this->newTableBuilder(), $table, 'assert field removed' );
+		$this->assertTableExistsAsDefined( $table, 'assert field removed' );
 	}
 
 	public function testRemoveIndex() {
@@ -139,7 +139,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$removeIndex = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
 		$this->newSchemaModifier()->removeIndex( $table->getName(), $removeIndex->getName() );
 		$table = $table->mutateIndexAway( $removeIndex->getName() );
-		$this->assertTable( $this->newTableBuilder(), $table, 'assert index removed' );
+		$this->assertTableExistsAsDefined( $table, 'assert index removed' );
 	}
 
 	public function testFieldAddRemoveRoundtrip() {
@@ -154,10 +154,10 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 
 		$this->newSchemaModifier()->addField( $startTable->getName(), $field );
 		$newTable = $startTable->mutateFields( array_merge( $startTable->getFields(), array( $field ) ) );
-		$this->assertTable( $this->newTableBuilder(), $newTable, 'assert field added' );
+		$this->assertTableExistsAsDefined( $newTable, 'assert field added' );
 
 		$this->newSchemaModifier()->removeField( $startTable->getName(), $field->getName() );
-		$this->assertTable( $this->newTableBuilder(), $startTable, 'assert field remove' );
+		$this->assertTableExistsAsDefined( $startTable, 'assert field remove' );
 	}
 
 	public function testIndexAddRemoveRoundtrip() {
@@ -172,10 +172,10 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 
 		$this->newSchemaModifier()->addIndex( $startTable->getName(), $index );
 		$newTable = $startTable->mutateIndexes( array_merge( $startTable->getIndexes(), array( $index ) ) );
-		$this->assertTable( $this->newTableBuilder(), $newTable, 'assert index added' );
+		$this->assertTableExistsAsDefined( $newTable, 'assert index added' );
 
 		$this->newSchemaModifier()->removeIndex( $startTable->getName(), $index->getName() );
-		$this->assertTable( $this->newTableBuilder(), $startTable, 'assert index remove' );
+		$this->assertTableExistsAsDefined( $startTable, 'assert index remove' );
 	}
 
 	public function setupTestTable( TableDefinition $table ) {
@@ -186,20 +186,20 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$tableBuilder->createTable( $table );
-		$this->assertTable( $tableBuilder, $table, 'assert table after creation' );
+		$this->assertTableExistsAsDefined( $table, 'assert table after creation' );
 	}
 
-	protected function assertTable( TableBuilder $tableBuilder, TableDefinition $table, $message = '' ) {
+	protected function assertTableExistsAsDefined( TableDefinition $expectedTable, $message = '' ) {
 		$this->assertTrue(
-			$tableBuilder->tableExists( $table->getName() ),
+			$this->newTableBuilder()->tableExists( $expectedTable->getName() ),
 			$message . ' (tableExists)'
 		);
 
-		$tableReader = $this->newTableReader();
+		$actualTable = $this->newTableReader()->readDefinition( $expectedTable->getName() );
 
 		$this->assertEquals(
-			$table,
-			$tableReader->readDefinition( $table->getName() ),
+			$expectedTable,
+			$actualTable,
 			$message . ' (definitionEquals)'
 		);
 	}

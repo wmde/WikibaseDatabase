@@ -25,6 +25,11 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	protected $fieldSqlBuilder;
 
 	/**
+	 * @var TableDefinition
+	 */
+	protected $table;
+
+	/**
 	 * @param string $dbName
 	 * @param Escaper $escaper
 	 * @param TableNameFormatter $tableNameFormatter
@@ -48,24 +53,47 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	 * @return string
 	 */
 	public function getCreateTableSql( TableDefinition $table ) {
-		$sql = 'CREATE TABLE `' . $this->dbName . '`.' .
-			$this->tableNameFormatter->formatTableName( $table->getName() ) .' (';
+		$this->table = $table;
 
+		$sql = $this->getCreateNameSql();
+		$sql .= $this->getTheBracketsAndSqlInBetween();
+		$sql .= $this->getTableOptionSql();
+		$sql .= $this->getQueryEnd();
+
+		return $sql;
+	}
+
+	protected function getCreateNameSql() {
+		return 'CREATE TABLE `' . $this->dbName . '`.'
+			. $this->getPreparedTableName( $this->table->getName() );
+	}
+
+	protected function getPreparedTableName( $tableName ) {
+		return $this->escaper->getEscapedIdentifier(
+			$this->tableNameFormatter->formatTableName( $tableName )
+		);
+	}
+
+	protected function getTheBracketsAndSqlInBetween() {
 		$queryParts = array();
 
-		foreach ( $table->getFields() as $field ) {
+		foreach ( $this->table->getFields() as $field ) {
 			$queryParts[] = $this->fieldSqlBuilder->getFieldSQL( $field );
 		}
 
-		foreach ( $table->getIndexes() as $index ){
+		foreach ( $this->table->getIndexes() as $index ){
 			$queryParts[] = $this->getIndexSQL( $index );
 		}
 
-		$sql .= implode( ', ', $queryParts );
+		return ' (' . implode( ', ', $queryParts ) . ') ';
+	}
 
-		$sql .= ') ' . 'ENGINE=InnoDB, DEFAULT CHARSET=binary;';
+	protected function getTableOptionSql() {
+		return 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
+	}
 
-		return $sql;
+	protected function getQueryEnd() {
+		return ';';
 	}
 
 	/**

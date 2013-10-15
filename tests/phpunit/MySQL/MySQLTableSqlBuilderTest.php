@@ -45,7 +45,9 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
-			->will( $this->returnArgument(0) );
+			->will( $this->returnCallback( function( $value ) {
+				return 'prefix_' . $value;
+			} ) );
 
 		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\MySQL\MySQLFieldSqlBuilder' )
 			->disableOriginalConstructor()
@@ -91,7 +93,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'tableName',
 				array( $this->newMockField( 'foo' ) )
 			),
-			'CREATE TABLE `dbName`.tableName (<FIELDSQL>) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.-prefix_tableName- (<FIELDSQL>) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		$argLists[] = array(
@@ -99,7 +101,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'tableName',
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) )
 			),
-			'CREATE TABLE `dbName`.tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.-prefix_tableName- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 
@@ -113,7 +115,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (<FIELDSQL>, <FIELDSQL>, INDEX -indexName- (-textField-,-intField-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.-prefix_tableName- (<FIELDSQL>, <FIELDSQL>, INDEX -indexName- (-textField-,-intField-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		$argLists[] = array(
@@ -129,7 +131,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					),
 				)
 			),
-			'CREATE TABLE `dbName`.tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>, INDEX -indexName- (-intField-), UNIQUE INDEX -uniqueIndexName- (-textField2-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
+			'CREATE TABLE `dbName`.-prefix_tableName- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>, INDEX -indexName- (-intField-), UNIQUE INDEX -uniqueIndexName- (-textField2-)) ENGINE=InnoDB, DEFAULT CHARSET=binary;'
 		);
 
 		return $argLists;

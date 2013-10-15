@@ -10,8 +10,15 @@ namespace Wikibase\Database;
 interface TableNameFormatter {
 
 	/**
-	 * Does any formatting and escaping of a table name (as for instance obtained from a TableDefinition)
-	 * which needs to be done before using it in an SQL statement.
+	 * Format a table name ready for use in constructing an SQL query.
+	 * This includes doing transformations, such as prepending prefixes.
+	 *
+	 * It does NOT include escaping. The caller is responsible for using
+	 * the appropriate type of escaping depending on the usage context.
+	 *
+	 * This method should typically always be called right before the
+	 * construction of an SQL string. This makes it clear where the
+	 * transmigration boundary is, and easier to spot inconsistencies.
 	 *
 	 * @param string $tableName
 	 *

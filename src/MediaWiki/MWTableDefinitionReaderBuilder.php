@@ -67,11 +67,17 @@ class MWTableDefinitionReaderBuilder {
 	}
 
 	protected function newMySQLTableDefinitionReader() {
-		return new MySQLTableDefinitionReader( $this->queryInterface );
+		return new MySQLTableDefinitionReader(
+			$this->queryInterface,
+			new MediaWikiTableNameFormatter( $this->connectionProvider )
+		);
 	}
 
 	protected function newSQLiteTableDefinitionReader() {
-		return new SQLiteTableDefinitionReader( $this->queryInterface, new SQLiteUnEscaper() );
+		return new SQLiteTableDefinitionReader(
+			$this->queryInterface,
+			new SQLiteUnEscaper()
+		);
 	}
 
 }

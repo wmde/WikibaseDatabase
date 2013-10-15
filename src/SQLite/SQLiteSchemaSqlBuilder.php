@@ -72,8 +72,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#alter-table-stmt
 	 */
 	protected function getRenameTableSql( $fromTable, $toTable ){
-		$fromTable = $this->tableNameFormatter->formatTableName( $fromTable );
-		$toTable = $this->tableNameFormatter->formatTableName( $toTable );
+		$fromTable = $this->getPreparedTableName( $fromTable );
+		$toTable = $this->getPreparedTableName( $toTable );
 		return "ALTER TABLE {$fromTable} RENAME TO {$toTable};";
 	}
 
@@ -81,8 +81,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#insert-stmt
 	 */
 	protected function getContentsCopySql( $fromTable, $toTable, $fields ){
-		$fromTable = $this->tableNameFormatter->formatTableName( $fromTable );
-		$toTable = $this->tableNameFormatter->formatTableName( $toTable );
+		$fromTable = $this->getPreparedTableName( $fromTable );
+		$toTable = $this->getPreparedTableName( $toTable );
 		$fieldsSql = $this->getFieldsSql( $fields );
 		return "INSERT INTO {$toTable}({$fieldsSql}) SELECT {$fieldsSql} FROM {$fromTable};";
 	}
@@ -91,7 +91,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#drop-table-stmt
 	 */
 	protected function getDropTableSql( $tableName ){
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$tableName = $this->getPreparedTableName( $tableName );
 		return "DROP TABLE {$tableName};";
 	}
 
@@ -116,8 +116,14 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getAddFieldSql( $tableName, FieldDefinition $field ) {
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$tableName = $this->getPreparedTableName( $tableName );
 		return "ALTER TABLE {$tableName} ADD COLUMN " . $this->fieldSqlBuilder->getFieldSQL( $field );
+	}
+
+	protected function getPreparedTableName( $tableName ) {
+		return $this->escaper->getEscapedIdentifier(
+			$this->tableNameFormatter->formatTableName( $tableName )
+		);
 	}
 
 	/**

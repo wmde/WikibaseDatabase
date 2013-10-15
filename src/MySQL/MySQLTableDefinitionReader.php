@@ -10,6 +10,7 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\TableDefinitionReader;
+use Wikibase\Database\TableNameFormatter;
 
 /**
  * @since 0.1
@@ -20,12 +21,11 @@ use Wikibase\Database\Schema\TableDefinitionReader;
 class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 	protected $queryInterface;
+	protected $tableNameFormatter;
 
-	/**
-	 * @param QueryInterface $queryInterface
-	 */
-	public function __construct( QueryInterface $queryInterface ) {
+	public function __construct( QueryInterface $queryInterface, TableNameFormatter $tableNameFormatter ) {
 		$this->queryInterface = $queryInterface;
+		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
 	/**
@@ -37,7 +37,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return TableDefinition
 	 */
 	public function readDefinition( $tableName ) {
-		if( !$this->queryInterface->tableExists( $tableName ) ){
+		if( !$this->queryInterface->tableExists( $tableName ) ) {
 			throw new QueryInterfaceException( "Unknown table {$tableName}" );
 		}
 
@@ -76,7 +76,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @param string $tableName
 	 * @return ResultIterator
 	 */
-	private function doColumnsQuery( $tableName ){
+	private function doColumnsQuery( $tableName ) {
 		return $this->queryInterface->select(
 			'INFORMATION_SCHEMA.COLUMNS',
 			array(
@@ -86,7 +86,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 				'defaultvalue' => 'COLUMN_DEFAULT',
 				'extra' => 'EXTRA'
 			),
-			array( 'TABLE_NAME' => $tableName )
+			$this->tableNameIs( $tableName )
 		);
 	}
 
@@ -99,13 +99,13 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return string
 	 */
 	private function getDataType( $dataType ) {
-		if( stristr( $dataType, 'blob' ) ){
+		if( stristr( $dataType, 'blob' ) ) {
 			return FieldDefinition::TYPE_TEXT;
-		} else if ( stristr( $dataType, 'tinyint' ) ){
+		} else if ( stristr( $dataType, 'tinyint' ) ) {
 			return FieldDefinition::TYPE_BOOLEAN;
-		} else if ( stristr( $dataType, 'int' ) ){
+		} else if ( stristr( $dataType, 'int' ) ) {
 			return FieldDefinition::TYPE_INTEGER;
-		} else if ( stristr( $dataType, 'float' ) ){
+		} else if ( stristr( $dataType, 'float' ) ) {
 			return FieldDefinition::TYPE_FLOAT;
 		} else {
 			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $dataType );
@@ -117,7 +117,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return bool
 	 */
 	private function getNullable( $nullable ) {
-		if( $nullable === 'YES' ){
+		if( $nullable === 'YES' ) {
 			return true;
 		} else {
 			return false;
@@ -146,18 +146,22 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 		$constraintsResult =  $this->doConstraintsQuery( $tableName );
 		$constraints = array();
+
 		foreach( $constraintsResult as $constraint ) {
 			//todo we should try to detect the index length here and use that instead of default 0
 			$constraints[ $constraint->name ][ $constraint->columnName ] = 0;
 		}
+
 		foreach( $constraints as $name => $cols ){
 			$indexes[] = $this->getConstraint( $name, $cols );
 		}
 
 		$indexesResult = $this->doIndexesQuery( $tableName );
-		foreach( $indexesResult as $index ){
+
+		foreach( $indexesResult as $index ) {
 			$indexDef =  $this->getIndex( $index );
-			//ignore any indexes we already have (primary and unique)
+
+			// Ignore any indexes we already have (primary and unique).
 			if( !array_key_exists( $indexDef->getName(), $constraints ) ){
 				$indexes[] = $indexDef;
 			}
@@ -197,7 +201,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 				'name' => 'CONSTRAINT_NAME',
 				'columnName' => 'COLUMN_NAME'
 			),
-			array( 'TABLE_NAME' => $tableName )
+			$this->tableNameIs( $tableName )
 		);
 	}
 
@@ -217,8 +221,14 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 				'SEQ_IN_INDEX',
 				'name' => 'INDEX_NAME',
 				'columns' => 'GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX)' ),
-			array( 'TABLE_NAME' => $tableName ),
+			$this->tableNameIs( $tableName ),
 			array( 'GROUP BY' => 'name' )
+		);
+	}
+	
+	protected function tableNameIs( $tableName ) {
+		return array(
+			'TABLE_NAME' => $this->tableNameFormatter->formatTableName( $tableName )
 		);
 	}
 

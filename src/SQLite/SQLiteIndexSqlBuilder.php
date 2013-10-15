@@ -35,7 +35,10 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
 		$sql .= $this->escaper->getEscapedIdentifier( $index->getName() ) . ' ';
-		$sql .= 'ON ' . $this->tableNameFormatter->formatTableName( $tableName );
+
+		$sql .= 'ON ' . $this->escaper->getEscapedIdentifier(
+				$this->tableNameFormatter->formatTableName( $tableName )
+			);
 
 		$columnNames = array();
 		foreach( $index->getColumns() as $columnName => $intSize ){

@@ -30,7 +30,9 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	 * @param SQLiteFieldSqlBuilder $fieldBuilder
 	 * @param SQLiteIndexSqlBuilder $indexBuilder
 	 */
-	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter, SQLiteFieldSqlBuilder $fieldBuilder, SQLiteIndexSqlBuilder $indexBuilder ) {
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter,
+		SQLiteFieldSqlBuilder $fieldBuilder, SQLiteIndexSqlBuilder $indexBuilder ) {
+
 		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 		$this->fieldSqlBuilder = $fieldBuilder;
@@ -49,7 +51,11 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 	 */
 	public function getCreateTableSql( TableDefinition $table ) {
 		$sql = 'CREATE TABLE ' .
-			$this->tableNameFormatter->formatTableName( $table->getName() ) . ' (';
+			$this->escaper->getEscapedIdentifier(
+				$this->tableNameFormatter->formatTableName( $table->getName() )
+			);
+
+		$sql .= ' (';
 
 		$fields = array();
 

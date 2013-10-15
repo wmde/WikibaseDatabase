@@ -23,7 +23,7 @@ class MediaWikiTableNameFormatter implements TableNameFormatter {
 		$db = $this->connectionProvider->getConnection();
 
 		try {
-			$tableName = $db->tableName( $tableName );
+			$tableName = $db->tableName( $tableName, 'raw' );
 		}
 		catch ( Exception $ex ) {
 			$this->connectionProvider->releaseConnection();

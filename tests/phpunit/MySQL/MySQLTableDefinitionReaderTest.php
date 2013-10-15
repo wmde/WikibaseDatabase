@@ -28,22 +28,28 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newInstance( $results = array(), $tableExists = true ) {
-		$mockQueryInterface = $this
-			->getMockBuilder( 'Wikibase\Database\MediaWiki\MediaWikiQueryInterface' )
-			->disableOriginalConstructor()
-			->getMock();
+		$queryInterface = $this
+			->getMock( 'Wikibase\Database\QueryInterface\QueryInterface' );
 
-		$mockQueryInterface->expects( $this->any() )
+		$queryInterface->expects( $this->any() )
 			->method( 'tableExists' )
 			->will( $this->returnValue( $tableExists ) );
 
 		foreach( $results as $key => $result ){
-			$mockQueryInterface->expects( $this->at( $key + 1 ) )
+			$queryInterface->expects( $this->at( $key + 1 ) )
 				->method( 'select' )
 				->will( $this->returnValue( new ResultIterator( $result ) ) );
 		}
 
-		return new MySQLTableDefinitionReader( $mockQueryInterface );
+		$tableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
+
+		$tableNameFormatter->expects( $this->any() )
+			->method( 'formatTableName' )
+			->will( $this->returnCallback( function( $tableName ) {
+				return '|' . $tableName . '|';
+			} ) );
+
+		return new MySQLTableDefinitionReader( $queryInterface, $tableNameFormatter );
 	}
 
 	public function testReadNonExistentTable(){

@@ -37,7 +37,9 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
-			->will( $this->returnArgument(0) );
+			->will( $this->returnCallback( function( $input ) {
+				return "||$input||";
+			} ) );
 
 		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteFieldSqlBuilder' )
 			->disableOriginalConstructor()
@@ -72,7 +74,6 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( $expectedSQL, $actualSQL );
 	}
 
-
 	public function newMockField( $name ){
 		$mockFieldDefinition = $this->getMockBuilder( 'Wikibase\Database\Schema\Definitions\FieldDefinition' )
 			->disableOriginalConstructor()
@@ -101,7 +102,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'tableName',
 				array( $this->newMockField( 'foo' ) )
 			),
-			'CREATE TABLE tableName (<FIELDSQL>);'
+			'CREATE TABLE -||tableName||- (<FIELDSQL>);'
 		);
 
 		$argLists[] = array(
@@ -110,7 +111,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
 				array( $this->newMockIndex( 'ham' ) )
 			),
-			'CREATE TABLE tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
+			'CREATE TABLE -||tableName||- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
 			. '<INDEXSQL>'
 		);
 
@@ -120,7 +121,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
 				array( $this->newMockIndex( 'ham' ), $this->newMockIndex( 'egg' ) )
 			),
-			'CREATE TABLE tableName (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
+			'CREATE TABLE -||tableName||- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
 			. '<INDEXSQL>' . PHP_EOL
 			. '<INDEXSQL>'
 		);

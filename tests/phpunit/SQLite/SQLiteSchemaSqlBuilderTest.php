@@ -36,7 +36,9 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
 		$mockTableNameFormatter->expects( $this->any() )
 			->method( 'formatTableName' )
-			->will( $this->returnArgument(0) );
+			->will( $this->returnCallback( function( $tableName ) {
+				return 'prefix_' . $tableName;
+			} ) );
 
 		$mockQueryInterface = $this
 			->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteTableDefinitionReader' )
@@ -76,18 +78,18 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$instance = $this->newInstance( $existingDefinition );
 		$sql = $instance->getRemoveFieldSql( 'tableName', 'textField' );
 		$this->assertEquals(
-			'ALTER TABLE tableName RENAME TO tableName_tmp;' . PHP_EOL
-			. 'CREATE TABLE tableName (-primaryField- INTEGER NOT NULL, -intField- INTEGER DEFAULT 42 NOT NULL);' . PHP_EOL
-			. 'CREATE INDEX -INDEX- ON tableName (-intField-,-primaryField-);' . PHP_EOL
-			. 'INSERT INTO tableName(-primaryField-, -intField-) SELECT -primaryField-, -intField- FROM tableName_tmp;' . PHP_EOL
-			. 'DROP TABLE tableName_tmp;' ,
+			'ALTER TABLE -prefix_tableName- RENAME TO -prefix_tableName_tmp-;' . PHP_EOL
+			. 'CREATE TABLE -prefix_tableName- (-primaryField- INTEGER NOT NULL, -intField- INTEGER DEFAULT 42 NOT NULL);' . PHP_EOL
+			. 'CREATE INDEX -INDEX- ON -prefix_tableName- (-intField-,-primaryField-);' . PHP_EOL
+			. 'INSERT INTO -prefix_tableName-(-primaryField-, -intField-) SELECT -primaryField-, -intField- FROM -prefix_tableName_tmp-;' . PHP_EOL
+			. 'DROP TABLE -prefix_tableName_tmp-;' ,
 			$sql );
 	}
 
 	public function testGetAddFieldSql(){
 		$instance = $this->newInstance( );
 		$sql = $instance->getAddFieldSql( 'tableName', new FieldDefinition( 'intField',FieldDefinition::TYPE_INTEGER) );
-		$this->assertEquals( "ALTER TABLE tableName ADD COLUMN -intField- INTEGER NULL", $sql );
+		$this->assertEquals( "ALTER TABLE -prefix_tableName- ADD COLUMN -intField- INTEGER NULL", $sql );
 	}
 
 	public function testGetRemoveIndexSql(){
@@ -99,7 +101,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testGetAddIndexSql(){
 		$instance = $this->newInstance( );
 		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'name', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
-		$this->assertEquals( "CREATE INDEX -name- ON tableName (-a-,-b-);", $sql );
+		$this->assertEquals( "CREATE INDEX -name- ON -prefix_tableName- (-a-,-b-);", $sql );
 	}
 
 }
