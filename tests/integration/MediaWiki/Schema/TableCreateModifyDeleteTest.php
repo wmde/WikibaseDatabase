@@ -18,6 +18,7 @@ use Wikibase\Database\Schema\TableBuilder;
  * @group Wikibase
  * @group WikibaseDatabase
  * @group Integration
+ * @group Database
  *
  * @licence GNU GPL v2+
  * @author Adam Shorland
