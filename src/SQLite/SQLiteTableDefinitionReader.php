@@ -208,22 +208,42 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$results = $this->doPrimaryKeyQuery( $tableName );
 
 		foreach( $results as $result ){
-			if( preg_match( '/PRIMARY KEY \(([^\)]+)\)/', $result->sql, $createParts ) ){
-				/**  0 => PRIMARY KEY (column1, column2), 1 => column1, column2 */
-				$parsedColumns = explode( ',', $createParts[1] );
-				$columns = array();
-				foreach( $parsedColumns as $columnName ){
-					//default unrestricted index size limit
-					$columns[ trim( $this->unEscaper->getUnEscapedIdentifier( $columnName ) ) ] = 0;
-				}
-				$keys[] = new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
-			} else if( preg_match( '/(\(|,| )+([^ ]+)[a-z0-9 _]+PRIMARY KEY AUTOINCREMENT/i', $result->sql, $createParts ) ){
-				$fieldName = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
-				$keys[] = new IndexDefinition( 'PRIMARY', array( $fieldName => 0 ) , IndexDefinition::TYPE_PRIMARY );
-			}
+			$keys[] = $this->getPrimaryKey( $result->sql );
 		}
 
 		return $keys;
+	}
+
+	private function getPrimaryKey( $sql ){
+		if( preg_match( '/PRIMARY KEY \(([^\)]+)\)/', $sql, $createParts ) ) {
+			return $this->getPrimaryKeyForFields( $createParts[1] );
+		} else if( preg_match( '/(\(|,| )+([^ ]+)[a-z0-9 _]+PRIMARY KEY AUTOINCREMENT/i', $sql, $fieldParts ) ) {
+			return $this->getPrimaryKeyForField( $fieldParts[2] );
+		}
+		throw new RuntimeException( __CLASS__ . " can not read primary ky from sql '{$sql}'" );
+	}
+
+	/**
+	 * @param array $fieldNames
+	 * @return IndexDefinition
+	 */
+	private function getPrimaryKeyForFields( $fieldNames ) {
+		$parsedColumns = explode( ',', $fieldNames );
+		$columns = array();
+		foreach( $parsedColumns as $columnName ){
+			//default unrestricted index size limit
+			$columns[ trim( $this->unEscaper->getUnEscapedIdentifier( $columnName ) ) ] = 0;
+		}
+		return new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
+	}
+
+	/**
+	 * @param string $fieldName
+	 * @return IndexDefinition
+	 */
+	private function getPrimaryKeyForField( $fieldName ) {
+		$fieldName = $this->unEscaper->getUnEscapedIdentifier( $fieldName );
+		return new IndexDefinition( 'PRIMARY', array( $fieldName => 0 ) , IndexDefinition::TYPE_PRIMARY );
 	}
 
 	/**
@@ -231,7 +251,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 * @param string $tableName
 	 * @return ResultIterator
 	 */
-	private function doPrimaryKeyQuery( $tableName ){
+	private function doPrimaryKeyQuery( $tableName ) {
 		return $this->queryInterface->select(
 			'sqlite_master',
 			array( 'sql' ),
