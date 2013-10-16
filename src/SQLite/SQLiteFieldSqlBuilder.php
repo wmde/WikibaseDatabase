@@ -77,9 +77,9 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 			case FieldDefinition::TYPE_INTEGER:
 				return 'INTEGER';
 			case FieldDefinition::TYPE_FLOAT:
-				return 'FLOAT';
+				return 'FLOAT'; // SQLite uses REAL, not FLOAT
 			case FieldDefinition::TYPE_TEXT:
-				return 'BLOB';
+				return 'BLOB';  // could/should be TEXT?
 			case FieldDefinition::TYPE_BOOLEAN:
 				return 'TINYINT';
 			default:

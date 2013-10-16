@@ -64,6 +64,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	}
 
 	protected function getCreateNameSql() {
+		// $this->dbName should perhaps be escaped as an identifier.
 		return 'CREATE TABLE `' . $this->dbName . '`.'
 			. $this->getPreparedTableName( $this->table->getName() );
 	}
@@ -91,6 +92,12 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	protected function getTableOptionSql() {
 		return 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
 	}
+		// Should the engine really be hardcoded? InnoDB is performant for concurrent modification,
+		// but MyISAM may be preferable for raw query speed and bulk updates. Also, InnDB doesn't
+		// support full text indexes.
+		// The charset also should be configurable: using binary is safe, but using utf8 gives
+		// better collation (sort order). Note however that when using utf8, comparison
+		// of varchar/char/text is case insensitive per default.
 
 	protected function getQueryEnd() {
 		return ';';

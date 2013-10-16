@@ -56,9 +56,9 @@ class FieldDefinition {
 	private $autoIncrement;
 
 	const TYPE_BOOLEAN = 'bool';
-	const TYPE_TEXT = 'str';
+	const TYPE_TEXT = 'str'; // need at least short sting vs text vs blob
 	const TYPE_INTEGER = 'int';
-	const TYPE_FLOAT = 'float';
+	const TYPE_FLOAT = 'float'; // need decimal vs. float
 
 	const NOT_NULL = false;
 	const NULL = true;
@@ -172,15 +172,17 @@ class FieldDefinition {
 		if ( !is_string( $name ) ) {
 			throw new InvalidArgumentException( 'The field $name needs to be a string' );
 		}
+		//TODO: fail on crazy names (containing e.g. spaces) even if the DB supports that.
 	}
 
 	private function assertIsValidType( $type ) {
 		if ( !is_string( $type ) ) {
 			throw new InvalidArgumentException( 'The field $type needs to be a string' );
 		}
+		//TODO: check against known types
 	}
 
-	private function assertIsValudNull( $null ) {
+	private function assertIsValudNull( $null ) { //FIXME: "Valud"
 		if ( !is_bool( $null ) ) {
 			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
 		}

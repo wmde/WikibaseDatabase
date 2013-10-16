@@ -68,13 +68,14 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	 */
 	protected function getFieldType( $fieldType ) {
 		switch ( $fieldType ) {
+			// No datatype for short strings, i.e. VARCHAR? TEXT or BLOB fields should not be used for that.
 			case FieldDefinition::TYPE_INTEGER:
 				return 'INT';
 			case FieldDefinition::TYPE_FLOAT:
-				return 'FLOAT';
+				return 'FLOAT'; // No support for Decimal? Won't we need that?
 			//todo define max length of text fields?
 			case FieldDefinition::TYPE_TEXT:
-				return 'BLOB';
+				return 'BLOB'; // This is 64k max. And: MySQL also has a TEXT type.
 			case FieldDefinition::TYPE_BOOLEAN:
 				return 'TINYINT';
 			default:

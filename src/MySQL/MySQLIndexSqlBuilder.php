@@ -29,6 +29,7 @@ class MySQLIndexSqlBuilder extends IndexSqlBuilder {
 	 * @param TableNameFormatter $tableNameFormatter
 	 */
 	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter ) {
+		// The only TableNameFormatter implementation I could find is based on the MediaWiki DB class. Is that OK?
 		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 	}

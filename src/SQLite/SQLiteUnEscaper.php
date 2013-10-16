@@ -16,7 +16,8 @@ class SQLiteUnEscaper implements UnEscaper {
 	 * @param string $identifier
 	 * @return string
 	 */
-	public function getUnEscapedIdentifier( $identifier ){
+	public function getUnEscapedIdentifier( $identifier ) {
+		// perhaps assert that the string is actually quoted, to avoid obscure breakage.
 		return str_replace( '""', '"', substr( $identifier, 1, -1 ) );
 	}
 
