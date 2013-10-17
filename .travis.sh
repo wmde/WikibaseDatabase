@@ -21,7 +21,7 @@ else
 	cd ../phase3
 
 	mysql -e 'create database its_a_mw;'
-	php maintenance/install.php --dbtype $DBTYPE --dbuser root --dbname its_a_mw --dbpath $(pwd) --pass nyan TravisWiki admin
+	php maintenance/install.php --dbtype $DBTYPE --dbuser root --dbname its_a_mw --dbpath $(pwd) --dbprefix mw_ --pass nyan TravisWiki admin
 
 	cd extensions/WikibaseDatabase
 	composer install
@@ -33,7 +33,7 @@ else
 	echo 'ini_set("display_errors", 1);' >> LocalSettings.php
 	echo '$wgShowExceptionDetails = true;' >> LocalSettings.php
 	echo '$wgDevelopmentWarnings = true;' >> LocalSettings.php
-	echo 'if ( $wgDBtype == "mysql" ) { $wgDBprefix = "mw_"; }' >> LocalSettings.php
+	echo '$wgDBprefix = "mw_";' >> LocalSettings.php
 
 	php maintenance/update.php --quick
 
