@@ -33,6 +33,7 @@ else
 	echo 'ini_set("display_errors", 1);' >> LocalSettings.php
 	echo '$wgShowExceptionDetails = true;' >> LocalSettings.php
 	echo '$wgDevelopmentWarnings = true;' >> LocalSettings.php
+	echo '$wgDBprefix = "mw_";' >> LocalSettings.php
 
 	php maintenance/update.php --quick
 
