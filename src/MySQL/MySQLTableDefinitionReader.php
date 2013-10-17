@@ -225,7 +225,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 			array( 'GROUP BY' => 'name' )
 		);
 	}
-	
+
 	protected function tableNameIs( $tableName ) {
 		return array(
 			'TABLE_NAME' => $this->tableNameFormatter->formatTableName( $tableName )
