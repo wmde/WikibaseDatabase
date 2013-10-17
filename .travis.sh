@@ -21,7 +21,13 @@ else
 	cd ../phase3
 
 	mysql -e 'create database its_a_mw;'
-	php maintenance/install.php --dbtype $DBTYPE --dbuser root --dbname its_a_mw --dbpath $(pwd) --dbprefix mw_ --pass nyan TravisWiki admin
+
+	if [ $DBTYPE == "mysql" ]
+	then
+		php maintenance/install.php --dbtype $DBTYPE --dbuser root --dbname its_a_mw --dbpath $(pwd) --dbprefix mw_ --pass nyan TravisWiki admin
+	else
+		php maintenance/install.php --dbtype $DBTYPE --dbuser root --dbname its_a_mw --dbpath $(pwd) --pass nyan TravisWiki admin
+	fi
 
 	cd extensions/WikibaseDatabase
 	composer install
