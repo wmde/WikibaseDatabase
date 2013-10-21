@@ -8,8 +8,6 @@ use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
- * @since 0.1
- *
  * @group Wikibase
  * @group WikibaseDatabase
  * @group Integration

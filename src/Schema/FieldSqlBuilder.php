@@ -4,7 +4,6 @@ namespace Wikibase\Database\Schema;
 
 use DatabaseBase;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
-use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
  * @since 0.1

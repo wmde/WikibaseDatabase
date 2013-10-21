@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\SQLite\SQLiteUnEscaper;
