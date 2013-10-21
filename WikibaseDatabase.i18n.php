@@ -178,6 +178,13 @@ $messages['yi'] = array(
 	'wikibasedatabase-desc' => 'קאמפאנענעט וואס אנטהאלט אן איינפאכע דאטנבאזע אבסטראקציע שיכטע',
 );
 
+/** Simplified Chinese (中文（简体）‎)
+ * @author Liuxinyu970226
+ */
+$messages['zh-hans'] = array(
+	'wikibasedatabase-desc' => '组件包含一个简单的数据库抽象层',
+);
+
 /** Traditional Chinese (中文（繁體）‎)
  * @author Justincheng12345
  */
