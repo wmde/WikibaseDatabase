@@ -47,6 +47,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$fields = $this->getFields( $tableName );
 		$indexes = $this->getIndexes( $tableName );
 		$keys = $this->getPrimaryKeys( $tableName );
+
+		if( empty( $fields ) ){
+			wfDebugLog( __CLASS__, __FUNCTION__ . ": Table Name: " . $tableName );
+		}
+
 		return new TableDefinition( $tableName, $fields, array_merge( $indexes, $keys ) );
 	}
 
@@ -73,6 +78,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 					$fields[] = $this->getField( $fieldParts );
 				}
 			}
+		}
+
+		if( empty( $fields ) ){
+			wfDebugLog( __CLASS__, __FUNCTION__ . ": Query Result: " . serialize( $results ) );
+			wfDebugLog( __CLASS__, __FUNCTION__ . ": Fields: " . serialize( $fields ) );
 		}
 
 		return $fields;
