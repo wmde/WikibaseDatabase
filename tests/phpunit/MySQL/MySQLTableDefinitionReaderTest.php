@@ -16,7 +16,6 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
  * @group WikibaseDatabaseMySQL
  * @group Database
  *
- * @since 0.1
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */

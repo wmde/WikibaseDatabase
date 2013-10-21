@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\Schema;
 
-use Wikibase\Database\QueryInterface\QueryInterfaceException;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**

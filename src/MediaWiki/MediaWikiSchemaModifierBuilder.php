@@ -9,8 +9,6 @@ use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\SchemaModificationSqlBuilder;
 use Wikibase\Database\Schema\SchemaModifier;
 use Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder;
-use Wikibase\Database\SQLite\SQLiteTableDefinitionReader;
-use Wikibase\Database\SQLite\SQLiteUnEscaper;
 
 /**
  * Builder for SchemaModifier objects.
