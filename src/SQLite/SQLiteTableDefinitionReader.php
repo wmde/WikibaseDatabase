@@ -48,10 +48,6 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$indexes = $this->getIndexes( $tableName );
 		$keys = $this->getPrimaryKeys( $tableName );
 
-		if( empty( $fields ) ){
-			wfDebugLog( __CLASS__, __FUNCTION__ . ": Table Name: " . $tableName );
-		}
-
 		return new TableDefinition( $tableName, $fields, array_merge( $indexes, $keys ) );
 	}
 
@@ -69,20 +65,21 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$fields = array();
 
 		foreach( $results as $result ){
+			$sql = preg_replace( '/, PRIMARY KEY \([^\)]+\)/', '', $result->sql );
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
-			preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $result->sql, $createParts );
+			$matchedCreate = preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $sql, $createParts );
+			if( $matchedCreate !== 1 ){
+				throw new QueryInterfaceException( "Failed to match CREATE TABLE regex with sql string: " . $sql );
+			}
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
-				if( preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts )
-					&& $fieldParts[0] !== 'PRIMARY KEY' ) {
+				$matchedParts = preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts );
+				if( $matchedParts !== 1 ){
+					throw new QueryInterfaceException( "Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql );
+				} else if( $fieldParts[0] !== 'PRIMARY KEY' ) {
 					$fields[] = $this->getField( $fieldParts );
 				}
 			}
-		}
-
-		if( empty( $fields ) ){
-			wfDebugLog( __CLASS__, __FUNCTION__ . ": Query Result: " . serialize( $results ) );
-			wfDebugLog( __CLASS__, __FUNCTION__ . ": Fields: " . serialize( $fields ) );
 		}
 
 		return $fields;
