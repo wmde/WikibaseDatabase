@@ -3,9 +3,6 @@
 namespace Wikibase\Database\Tests;
 
 use Wikibase\Database\MediaWiki\MediaWikiEscaper;
-use Wikibase\Database\Schema\Definitions\FieldDefinition;
-use Wikibase\Database\Schema\Definitions\IndexDefinition;
-use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**
  * @group Wikibase

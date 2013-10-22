@@ -2,9 +2,8 @@
 
 namespace Wikibase\Database\Tests\MySQL;
 
-use Wikibase\Database\Schema\Definitions\FieldDefinition;
-use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
+use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**

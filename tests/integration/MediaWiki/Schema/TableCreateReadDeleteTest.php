@@ -2,12 +2,12 @@
 
 namespace Wikibase\Database\Tests;
 
+use Wikibase\Database\LazyDBConnectionProvider;
 use Wikibase\Database\MediaWiki\MediaWikiQueryInterface;
 use Wikibase\Database\MediaWiki\MWTableBuilderBuilder;
 use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
-use Wikibase\Database\LazyDBConnectionProvider;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**

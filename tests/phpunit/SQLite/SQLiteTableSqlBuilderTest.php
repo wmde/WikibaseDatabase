@@ -2,10 +2,8 @@
 
 namespace Wikibase\Database\Tests\SQLite;
 
-use Wikibase\Database\Schema\Definitions\FieldDefinition;
-use Wikibase\Database\Schema\Definitions\IndexDefinition;
-use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
 
 /**
  * @covers Wikibase\Database\SQLite\SQLiteTableSqlBuilder

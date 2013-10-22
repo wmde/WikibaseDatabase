@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\Schema;
 
-use DatabaseBase;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 
 /**

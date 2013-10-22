@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\MediaWiki;
 
-use DatabaseBase;
 use RuntimeException;
 use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\MySQL\MySQLTableDefinitionReader;

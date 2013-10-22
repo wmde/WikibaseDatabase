@@ -2,8 +2,6 @@
 
 namespace Wikibase\Database\Schema;
 
-use Wikibase\Database\Schema\Definitions\TableDefinition;
-
 /**
  * @since 0.1
  * @licence GNU GPL v2+

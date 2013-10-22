@@ -3,11 +3,10 @@
 namespace Wikibase\Database\SQLite;
 
 use Wikibase\Database\Escaper;
-use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
-use Wikibase\Database\TableNameFormatter;
 use Wikibase\Database\Schema\TableSqlBuilder;
+use Wikibase\Database\TableNameFormatter;
 
 /**
  * SQLite implementation of TableSqlBuilder.

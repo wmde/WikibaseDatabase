@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\Tests\MediaWiki;
 
-use DatabaseBase;
 use Wikibase\Database\MediaWiki\MediaWikiTableBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;

@@ -10,7 +10,6 @@ use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
-use Wikibase\Database\Schema\TableBuilder;
 
 /**
  * @since 0.1

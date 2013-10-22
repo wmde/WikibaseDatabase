@@ -4,7 +4,6 @@ namespace Wikibase\Database\MySQL;
 
 use RuntimeException;
 use Wikibase\Database\Escaper;
-use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\TableSqlBuilder;
