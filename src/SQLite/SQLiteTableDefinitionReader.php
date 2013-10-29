@@ -81,8 +81,24 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 				}
 			}
 		}
-
+		$this->throwExceptionIfNoFields( $fields, $tableName, $results );
 		return $fields;
+	}
+
+	/**
+	 * @param array $fields
+	 * @param string $tableName
+	 * @param ResultIterator $results
+	 * @throws SchemaReadException
+	 */
+	private function throwExceptionIfNoFields( $fields, $tableName, $results ){
+		if( count( $fields ) === 0 ){
+			$message = "Failed to read any fields for table: {$tableName} from sql: ";
+			foreach( $results as $result ){
+				$message .= "\n" . $result->sql;
+			}
+			throw new SchemaReadException( $message );
+		}
 	}
 
 	/**
