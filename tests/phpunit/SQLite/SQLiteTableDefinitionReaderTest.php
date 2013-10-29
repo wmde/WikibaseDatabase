@@ -56,7 +56,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function testReadNonExistentTable(){
 		$this->setExpectedException( 'Wikibase\Database\QueryInterface\QueryInterfaceException' );
 		$reader = $this->newInstance( array(), false );
-		$reader->readDefinition( 'dbNametableName' );
+		$reader->readDefinition( 'fooBarImNotATable' );
 	}
 
 	/**
@@ -64,12 +64,26 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testReadDefinition( $results, TableDefinition $expectedDefinition ) {
 		$reader = $this->newInstance( $results );
-		$readDefinition = $reader->readDefinition( 'dbNametableName' );
+		$readDefinition = $reader->readDefinition( $expectedDefinition->getName() );
 		$this->assertEquals( $expectedDefinition, $readDefinition );
 	}
 
 	public function sqlAndDefinitionProvider() {
 		$argLists = array();
+
+		$argLists[] = array(
+			array(
+				array( (object)array( 'sql' => 'CREATE TABLE underscore_name ("startField" BLOB NULL )' ) ),
+				array(),
+				array(),
+			),
+			new TableDefinition(
+				'underscore_name',
+				array(
+					new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
+				)
+			),
+		);
 
 		$argLists[] = array(
 			array(
