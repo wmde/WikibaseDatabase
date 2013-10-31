@@ -4,11 +4,11 @@ namespace Wikibase\Database\MySQL;
 
 use RuntimeException;
 use Wikibase\Database\QueryInterface\QueryInterface;
-use Wikibase\Database\QueryInterface\QueryInterfaceException;
 use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\SchemaReadException;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
 
@@ -33,12 +33,12 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 *
 	 * @param string $tableName
 	 *
-	 * @throws QueryInterfaceException
+	 * @throws SchemaReadException
 	 * @return TableDefinition
 	 */
 	public function readDefinition( $tableName ) {
 		if( !$this->queryInterface->tableExists( $tableName ) ) {
-			throw new QueryInterfaceException( "Unknown table {$tableName}" );
+			throw new SchemaReadException( "Unknown table {$tableName}" );
 		}
 
 		$fields = $this->getFields( $tableName );
@@ -137,7 +137,6 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * @param $tableName string
-	 * @throws QueryInterfaceException
 	 * @return IndexDefinition[]
 	 * @TODO support currently don't notice FULLTEXT or SPATIAL indexes
 	 */

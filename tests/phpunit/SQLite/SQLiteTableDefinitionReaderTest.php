@@ -54,7 +54,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testReadNonExistentTable(){
-		$this->setExpectedException( 'Wikibase\Database\QueryInterface\QueryInterfaceException' );
+		$this->setExpectedException( 'Wikibase\Database\Schema\SchemaReadException' );
 		$reader = $this->newInstance( array(), false );
 		$reader->readDefinition( 'fooBarImNotATable' );
 	}
