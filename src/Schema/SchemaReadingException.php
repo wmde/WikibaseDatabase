@@ -7,6 +7,6 @@ namespace Wikibase\Database\Schema;
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */
-class SchemaReadException extends \Exception {
+class SchemaReadingException extends \Exception {
 
 }

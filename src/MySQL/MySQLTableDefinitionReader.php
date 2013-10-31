@@ -8,7 +8,7 @@ use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
-use Wikibase\Database\Schema\SchemaReadException;
+use Wikibase\Database\Schema\SchemaReadingException;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
 
@@ -33,12 +33,12 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 *
 	 * @param string $tableName
 	 *
-	 * @throws SchemaReadException
+	 * @throws SchemaReadingException
 	 * @return TableDefinition
 	 */
 	public function readDefinition( $tableName ) {
 		if( !$this->queryInterface->tableExists( $tableName ) ) {
-			throw new SchemaReadException( "Unknown table {$tableName}" );
+			throw new SchemaReadingException( "Unknown table {$tableName}" );
 		}
 
 		$fields = $this->getFields( $tableName );

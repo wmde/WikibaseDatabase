@@ -8,7 +8,7 @@ use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
-use Wikibase\Database\Schema\SchemaReadException;
+use Wikibase\Database\Schema\SchemaReadingException;
 use Wikibase\Database\Schema\TableDefinitionReader;
 
 /**
@@ -36,12 +36,12 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 *
 	 * @param string $tableName
 	 *
-	 * @throws SchemaReadException
+	 * @throws SchemaReadingException
 	 * @return TableDefinition
 	 */
 	public function readDefinition( $tableName ) {
 		if( !$this->queryInterface->tableExists( $tableName ) ){
-			throw new SchemaReadException( "Unknown table {$tableName}" );
+			throw new SchemaReadingException( "Unknown table {$tableName}" );
 		}
 
 		$fields = $this->getFields( $tableName );
@@ -53,14 +53,16 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * Returns an array of all fields in the given table
+	 *
 	 * @param string $tableName
-	 * @throws SchemaReadException
+	 *
+	 * @throws SchemaReadingException
 	 * @return FieldDefinition[]
 	 */
 	private function getFields( $tableName ) {
 		$results = $this->doCreateQuery( $tableName );
 		if( iterator_count( $results ) > 1 ){
-			throw new SchemaReadException( "More than one set of fields returned for {$tableName}" );
+			throw new SchemaReadingException( "More than one set of fields returned for {$tableName}" );
 		}
 		$fields = array();
 
@@ -69,13 +71,13 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 			$matchedCreate = preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $sql, $createParts );
 			if( $matchedCreate !== 1 ){
-				throw new SchemaReadException( "Failed to match CREATE TABLE regex with sql string: " . $sql );
+				throw new SchemaReadingException( "Failed to match CREATE TABLE regex with sql string: " . $sql );
 			}
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
 				$matchedParts = preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts );
 				if( $matchedParts !== 1 ){
-					throw new SchemaReadException( "Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql );
+					throw new SchemaReadingException( "Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql );
 				} else if( $fieldParts[0] !== 'PRIMARY KEY' ) {
 					$fields[] = $this->getField( $fieldParts );
 				}
@@ -89,15 +91,16 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 * @param array $fields
 	 * @param string $tableName
 	 * @param ResultIterator $results
-	 * @throws SchemaReadException
+	 *
+	 * @throws SchemaReadingException
 	 */
 	private function throwExceptionIfNoFields( $fields, $tableName, $results ){
 		if( count( $fields ) === 0 ){
 			$message = "Failed to read any fields for table: {$tableName} from sql: ";
 			foreach( $results as $result ){
-				$message .= "\n" . $result->sql;
+				$message .= "\n'" . $result->sql . "'";
 			}
-			throw new SchemaReadException( $message );
+			throw new SchemaReadingException( $message );
 		}
 	}
 
