@@ -44,13 +44,24 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				return substr( $value, 1, -1 );
 			} ) );
 
+		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
+		$mockTableNameFormatter->expects( $this->any() )
+			->method( 'formatTableName' )
+			->will( $this->returnCallback( function( $tableName ) {
+				return 'prefix_' . $tableName;
+			} ) );
+
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )
 				->method( 'select' )
 				->will( $this->returnValue( new ResultIterator( $result ) ) );
 		}
 
-		return new SQLiteTableDefinitionReader( $mockQueryInterface, $mockUnEscaper );
+		return new SQLiteTableDefinitionReader(
+			$mockQueryInterface,
+			$mockUnEscaper,
+			$mockTableNameFormatter
+		);
 	}
 
 	public function testReadNonExistentTable(){
