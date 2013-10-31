@@ -75,7 +75,8 @@ class MWTableDefinitionReaderBuilder {
 	protected function newSQLiteTableDefinitionReader() {
 		return new SQLiteTableDefinitionReader(
 			$this->queryInterface,
-			new SQLiteUnEscaper()
+			new SQLiteUnEscaper(),
+			new MediaWikiTableNameFormatter( $this->connectionProvider )
 		);
 	}
 

@@ -10,6 +10,7 @@ use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\SchemaReadingException;
 use Wikibase\Database\Schema\TableDefinitionReader;
+use Wikibase\Database\TableNameFormatter;
 
 /**
  * @since 0.1
@@ -21,14 +22,21 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	protected $queryInterface;
 	protected $unEscaper;
+	protected $tableNameFormatter;
 
 	/**
 	 * @param QueryInterface $queryInterface
 	 * @param SQLiteUnEscaper $unEscaper
+	 * @param TableNameFormatter $tableNameFormatter
 	 */
-	public function __construct( QueryInterface $queryInterface, SQLiteUnEscaper $unEscaper ) {
+	public function __construct(
+		QueryInterface $queryInterface,
+		SQLiteUnEscaper $unEscaper,
+		TableNameFormatter $tableNameFormatter
+	) {
 		$this->queryInterface = $queryInterface;
 		$this->unEscaper = $unEscaper;
+		$this->tableNameFormatter = $tableNameFormatter;
 	}
 
 	/**
@@ -44,9 +52,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			throw new SchemaReadingException( "Unknown table {$tableName}" );
 		}
 
-		$fields = $this->getFields( $tableName );
-		$indexes = $this->getIndexes( $tableName );
-		$keys = $this->getPrimaryKeys( $tableName );
+		$formattedTableName = $this->tableNameFormatter->formatTableName( $tableName );
+
+		$fields = $this->getFields( $formattedTableName );
+		$indexes = $this->getIndexes( $formattedTableName );
+		$keys = $this->getPrimaryKeys( $formattedTableName );
 
 		return new TableDefinition( $tableName, $fields, array_merge( $indexes, $keys ) );
 	}
