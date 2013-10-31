@@ -61,8 +61,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getFields( $tableName ) {
 		$results = $this->doCreateQuery( $tableName );
-		if( iterator_count( $results ) > 1 ){
-			throw new SchemaReadingException( "More than one set of fields returned for {$tableName}" );
+		if( iterator_count( $results ) !== 1 ) {
+			throw new SchemaReadingException(
+				"Incorrect number of CREATE TABLE sql results returned for {$tableName}" .
+				"\nExpected 1, Got " . strval( iterator_count( $results ) )
+			);
 		}
 		$fields = array();
 
@@ -83,25 +86,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 				}
 			}
 		}
-		$this->throwExceptionIfNoFields( $fields, $tableName, $results );
 		return $fields;
-	}
-
-	/**
-	 * @param array $fields
-	 * @param string $tableName
-	 * @param ResultIterator $results
-	 *
-	 * @throws SchemaReadingException
-	 */
-	private function throwExceptionIfNoFields( $fields, $tableName, $results ){
-		if( count( $fields ) === 0 ){
-			$message = "Failed to read any fields for table: {$tableName} from sql: ";
-			foreach( $results as $result ){
-				$message .= "\n'" . $result->sql . "'";
-			}
-			throw new SchemaReadingException( $message );
-		}
 	}
 
 	/**

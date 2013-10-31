@@ -140,4 +140,22 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
+	/**
+	 * @dataProvider incorrectSqlCountProvider
+	 */
+	public function testExceptionOnWrongNumberOfResults( $results ) {
+		$this->setExpectedException( 'Wikibase\Database\Schema\SchemaReadingException' );
+		$reader = $this->newInstance( $results );
+		$reader->readDefinition( 'foo' );
+	}
+
+	public function incorrectSqlCountProvider() {
+		$argLists = array();
+
+		$argLists['0 results'] = array( array( array(  ) ) );
+		$argLists['2 results'] = array( array( array( (object)array( 'sql' => '' ), (object)array( 'sql' => '' ) ) ) );
+
+		return $argLists;
+	}
+
 }
