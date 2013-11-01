@@ -12,9 +12,7 @@ if ( !defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
 	die( 'Not an entry point.' );
 }
 
-global $wgExtensionCredits, $wgExtensionMessagesFiles, $wgHooks;
-
-$wgExtensionCredits['wikibase'][] = array(
+$GLOBALS['wgExtensionCredits']['wikibase'][] = array(
 	'path' => __DIR__,
 	'name' => 'Wikibase Database',
 	'version' => WIKIBASE_DATABASE_VERSION,
@@ -26,7 +24,7 @@ $wgExtensionCredits['wikibase'][] = array(
 	'descriptionmsg' => 'wikibasedatabase-desc'
 );
 
-$wgExtensionMessagesFiles['WikibaseDatabase'] = __DIR__ . '/WikibaseDatabase.i18n.php';
+$GLOBALS['wgExtensionMessagesFiles']['WikibaseDatabase'] = __DIR__ . '/WikibaseDatabase.i18n.php';
 
 if ( defined( 'MW_PHPUNIT_TEST' ) ) {
 	require_once __DIR__ . '/tests/testLoader.php';
@@ -42,7 +40,7 @@ if ( defined( 'MW_PHPUNIT_TEST' ) ) {
  *
  * @return boolean
  */
-$wgHooks['UnitTestsList'][]	= function( array &$files ) {
+$GLOBALS['wgHooks']['UnitTestsList'][]	= function( array &$files ) {
 	// @codeCoverageIgnoreStart
 	$directoryIterator = new RecursiveDirectoryIterator( __DIR__ . '/tests' );
 

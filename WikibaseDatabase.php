@@ -12,7 +12,7 @@ if ( defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
 	return;
 }
 
-define( 'WIKIBASE_DATABASE_VERSION', '0.1 alpha' );
+define( 'WIKIBASE_DATABASE_VERSION', '0.1 rc' );
 
 spl_autoload_register( function ( $className ) {
 	$className = ltrim( $className, '\\' );
