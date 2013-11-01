@@ -7,7 +7,7 @@
 		"Database",
 		"Wikidata"
 	],
-	"homepage": "https://www.mediawiki.org/wiki/Extension:WikibaseDatabase",
+	"homepage": "https://github.com/wmde/WikibaseDatabase",
 	"license": "GPL-2.0+",
 	"authors": [
 		{
@@ -18,13 +18,11 @@
 		}
 	],
 	"support": {
-		"issues": "https://bugzilla.wikimedia.org/",
-		"irc": "irc://irc.freenode.net/wikimedia-wikidata",
-		"forum": "https://www.mediawiki.org/wiki/Extension_talk:WikibaseDatabase",
-		"wiki": "https://www.mediawiki.org/wiki/Extension:WikibaseDatabase"
+		"issues": "https://github.com/wmde/WikibaseDatabase/issues",
+		"irc": "irc://irc.freenode.net/wikimedia-wikidata"
 	},
 	"require": {
-		"php": ">=5.3.0"
+		"php": ">=5.3.2"
 	},
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master"

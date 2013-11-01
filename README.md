@@ -1,8 +1,8 @@
 # Wikibase Database
 
-[![Build Status](https://secure.travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase.png?branch=master)](http://travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase)
-[![Coverage Status](https://coveralls.io/repos/wikimedia/mediawiki-extensions-WikibaseDatabase/badge.png?branch=master)](https://coveralls.io/r/wikimedia/mediawiki-extensions-WikibaseDatabase?branch=master)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/wikimedia/mediawiki-extensions-WikibaseDatabase/badges/quality-score.png?s=a470de62a233cd5dbe29ebdf1335b55645d2f259)](https://scrutinizer-ci.com/g/wikimedia/mediawiki-extensions-WikibaseDatabase/)
+[![Build Status](https://secure.travis-ci.org/wmde/WikibaseDatabase.png?branch=master)](http://travis-ci.org/wmde/WikibaseDatabase)
+[![Coverage Status](https://coveralls.io/repos/wmde/WikibaseDatabase/badge.png?branch=master)](https://coveralls.io/r/wmde/WikibaseDatabase?branch=master)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/wmde/WikibaseDatabase/badges/quality-score.png?s=a470de62a233cd5dbe29ebdf1335b55645d2f259)](https://scrutinizer-ci.com/g/wmde/WikibaseDatabase/)
 [![Dependency Status](https://www.versioneye.com/package/php--wikibase--database/badge.png)](https://www.versioneye.com/package/php--wikibase--database)
 
 On Packagist:
@@ -220,5 +220,5 @@ Contributions where also made by [several others](https://www.ohloh.net/p/wikiba
 * [Wikibase Database on Packagist](https://packagist.org/packages/wikibase/database)
 * [Wikibase Database on Ohloh](https://www.ohloh.net/p/wikibasedatabase)
 * [Wikibase Database on MediaWiki.org](https://www.mediawiki.org/wiki/Extension:Wikibase_Database)
-* [TravisCI build status](https://travis-ci.org/wikimedia/mediawiki-extensions-WikibaseDatabase)
-* [Latest version of the readme file](https://github.com/wikimedia/mediawiki-extensions-WikibaseDatabase/blob/master/README.md)
+* [TravisCI build status](https://travis-ci.org/wmde/WikibaseDatabase)
+* [Latest version of the readme file](https://github.com/wmde/WikibaseDatabase/blob/master/README.md)
