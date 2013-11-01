@@ -12,6 +12,8 @@ On Packagist:
 Wikibase Database is a simple database abstraction layer. It is inspired by the MediaWiki database
 abstraction layer and both improves and extends on it.
 
+View the [release notes](RELEASE-NOTES.md) for recent changes to Wikibase Database.
+
 ## Requirements
 
 * PHP 5.3 or later
@@ -41,11 +43,11 @@ the git repository and take care of loading yourself.
 To add this package as a local, per-project dependency to your project, simply add a
 dependency on `wikibase/database` to your project's `composer.json` file.
 Here is a minimal example of a `composer.json` file that just defines a dependency on
-Wikibase Database 1.0:
+Wikibase Database 0.1:
 
     {
         "require": {
-            "wikibase/database": "1.0.*"
+            "wikibase/database": "0.1.*"
         }
     }
 
