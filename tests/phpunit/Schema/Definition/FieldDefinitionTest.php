@@ -107,4 +107,71 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public static function invalidNameProvider(){
+		return array(
+			array( 12 ),
+			array( array() ),
+			array( null ),
+			array( true ),
+			array( new \Exception() ),
+		);
+	}
+
+	/**
+	 * @dataProvider invalidNameProvider
+	 */
+	public function testInvalidName( $name ) {
+		$this->setExpectedException( 'InvalidArgumentException' );
+		new FieldDefinition( $name, FieldDefinition::TYPE_INTEGER );
+	}
+
+	public static function invalidTypeProvider(){
+		return array(
+			array( 12 ),
+			array( array() ),
+			array( null ),
+			array( true ),
+			array( new \Exception() ),
+		);
+	}
+
+	/**
+	 * @dataProvider invalidTypeProvider
+	 */
+	public function testInvalidType( $type ) {
+		$this->setExpectedException( 'InvalidArgumentException' );
+		new FieldDefinition( 'name', $type );
+	}
+
+	public static function invalidBoolProvider(){
+		return array(
+			array( 12 ),
+			array( array() ),
+			array( null ),
+			array( new \Exception() ),
+		);
+	}
+
+	/**
+	 * @dataProvider invalidBoolProvider
+	 */
+	public function testInvalidNull( $null ) {
+		$this->setExpectedException( 'InvalidArgumentException' );
+		new FieldDefinition( 'name', FieldDefinition::TYPE_INTEGER, $null );
+	}
+
+	/**
+	 * @dataProvider invalidBoolProvider
+	 */
+	public function testInvalidAutoIncrement( $autoinc ) {
+		$this->setExpectedException( 'InvalidArgumentException' );
+		new FieldDefinition(
+			'name',
+			FieldDefinition::TYPE_INTEGER,
+			FieldDefinition::NULL,
+			FieldDefinition::NO_DEFAULT,
+			FieldDefinition::NO_ATTRIB,
+			$autoinc
+		);
+	}
 }
