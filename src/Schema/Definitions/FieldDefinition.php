@@ -87,7 +87,7 @@ class FieldDefinition {
 	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = self::NO_ATTRIB, $autoIncrement = self::NO_AUTOINCREMENT ) {
 		$this->assertIsValidName( $name );
 		$this->assertIsValidType( $type );
-		$this->assertIsValudNull( $null );
+		$this->assertIsValidNull( $null );
 		$this->assertIsValidAutoIncrement( $autoIncrement );
 
 		$this->name = $name;
@@ -182,7 +182,7 @@ class FieldDefinition {
 		//TODO: check against known types
 	}
 
-	private function assertIsValudNull( $null ) { //FIXME: "Valud"
+	private function assertIsValidNull( $null ) {
 		if ( !is_bool( $null ) ) {
 			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
 		}
