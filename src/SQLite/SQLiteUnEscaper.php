@@ -2,15 +2,14 @@
 
 namespace Wikibase\Database\SQLite;
 
-use Wikibase\Database\UnEscaper;
-
 /**
- * UnEscaper to remove the Escaping from SQLLite escaped SQL strings
+ * UnEscaper to remove the Escaping from SQLLite escaped SQL strings.
+ *
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Adam Shorland
  */
-class SQLiteUnEscaper implements UnEscaper {
+class SQLiteUnEscaper {
 
 	/**
 	 * @param string $identifier
