@@ -35,6 +35,7 @@ script:
   - if [ "$TESTSUITE" == "MediaWiki" ] ; then phpunit --coverage-clover build/logs/clover.xml ; fi
 
 after_script:
+  - composer require satooshi/php-coveralls dev-master
   - php vendor/bin/coveralls -v
 
 notifications:
