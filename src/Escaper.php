@@ -12,20 +12,6 @@ namespace Wikibase\Database;
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Adam Shorland
  */
-interface Escaper {
-
-	/**
-	 * @param mixed $value
-	 *
-	 * @return string The escaped value
-	 */
-	public function getEscapedValue( $value );
-
-	/**
-	 * @param mixed $identifier
-	 *
-	 * @return string The escaped identifier
-	 */
-	public function getEscapedIdentifier( $identifier );
+interface Escaper extends ValueEscaper, IdentifierEscaper {
 
 }

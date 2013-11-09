@@ -4,6 +4,8 @@ These are the release notes for the [Wikibase Database library](README.md).
 
 * Removed custom autoloaders is favour of using the Composer autoloader.
 * MediaWiki plugin: added compatibility with changes in MediaWiki 1.22.
+* Removed unused UnEscaper interface.
+* Split Escaper interface into ValueEscaper and IdentifierEscaper, keeping Escaper itself.
 
 ## Version 0.1 (2013-11-01)
 
