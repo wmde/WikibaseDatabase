@@ -2,15 +2,7 @@
 *~
 *.kate-swp
 
-!.gitignore
-!.gitreview
-
-!.travis.yml
-!.travis.sh
-
-!.coveralls.yml
-
-!.scrutinizer.yml
+!.*
 
 composer.phar
 composer.lock
