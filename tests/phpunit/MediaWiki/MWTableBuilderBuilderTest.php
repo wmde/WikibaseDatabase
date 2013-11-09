@@ -29,7 +29,7 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( $builder, $returnValue );
 	}
 
-	public function databaseTypeProvider(){
+	public function databaseTypeProvider() {
 		return array(
 			array( 'mysql', 'DatabaseMysql', $this->once() ),
 			array( 'sqlite', 'DatabaseSqlite', $this->never() ),
@@ -40,7 +40,7 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider databaseTypeProvider
 	 */
 	public function testGetQueryInterface( $type, $class, $getDBnameExpectsCount ) {
-		$connection =  $this->getMock( $class );
+		$connection =  $this->getMockBuilder( $class )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'getType' )
@@ -66,7 +66,7 @@ class MWTableBuilderBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testUnsupportedDbType(){
 		$this->setExpectedException( 'RuntimeException', 'Cannot build a MediaWikiQueryInterface for database type' );
 
-		$connection =  $this->getMock( 'DatabaseMysql' );
+		$connection =  $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 		$connection->expects( $this->once() )
 			->method( 'getType' )
 			->will( $this->returnValue( 'foobar' ) );

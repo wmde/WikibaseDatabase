@@ -26,7 +26,7 @@ class MediaWikiTableNameFormatterTest extends \PHPUnit_Framework_TestCase {
 		$prefix = 'prefix_';
 		$outputName = $prefix . $inputName;
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'tableName' )
@@ -61,7 +61,7 @@ class MediaWikiTableNameFormatterTest extends \PHPUnit_Framework_TestCase {
 
 		$exception = new \Exception( $exceptionMessage );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'tableName' )

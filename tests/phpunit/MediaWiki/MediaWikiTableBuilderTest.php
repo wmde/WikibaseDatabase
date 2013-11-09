@@ -19,7 +19,7 @@ use Wikibase\Database\Schema\Definitions\TableDefinition;
 class MediaWikiTableBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	protected function getBuilderAndDependencies() {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$tableSqlBuilder = $this->getMock( 'Wikibase\Database\Schema\TableSqlBuilder' );
 

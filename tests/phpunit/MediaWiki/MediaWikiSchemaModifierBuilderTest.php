@@ -41,18 +41,18 @@ class MediaWikiSchemaModifierBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( $builder, $returnValue );
 	}
 
-	public function databaseTypeProvider(){
+	public function databaseTypeProvider() {
 		return array(
 			array( 'mysql', 'DatabaseMysql' ),
-			array( 'sqlite', 'DatabaseSqlite'),
+			array( 'sqlite', 'DatabaseSqlite' ),
 		);
 	}
 
 	/**
 	 * @dataProvider databaseTypeProvider
 	 */
-	public function testGetSchemaModifier( $type, $class ){
-		$connection =  $this->getMock( $class );
+	public function testGetSchemaModifier( $type, $class ) {
+		$connection =  $this->getMockBuilder( $class )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->atLeastOnce() )
 			->method( 'getType' )
@@ -79,7 +79,7 @@ class MediaWikiSchemaModifierBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testUnsupportedDbType(){
 		$this->setExpectedException( 'RuntimeException', 'Cannot build a MediaWikiSchemaModifier for database type' );
 
-		$connection =  $this->getMock( 'DatabaseMysql' );
+		$connection =  $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 		$connection->expects( $this->once() )
 			->method( 'getType' )
 			->will( $this->returnValue( 'foobar' ) );
@@ -102,8 +102,12 @@ class MediaWikiSchemaModifierBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testSQLiteNeedsQueryInterface(){
-		$this->setExpectedException( 'RuntimeException', "Cannot build a MediaWikiSchemaModifier for database type 'SQLite' without queryInterface being defined" );
-		$connection =  $this->getMock( 'DatabaseSqlite' );
+		$this->setExpectedException(
+			'RuntimeException',
+			"Cannot build a MediaWikiSchemaModifier for database type 'SQLite' without queryInterface being defined"
+		);
+
+		$connection =  $this->getMockBuilder( 'DatabaseSqlite' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'getType' )

@@ -18,14 +18,18 @@ use Wikibase\Database\MediaWiki\MediaWikiEscaper;
 class MediaWikiEscaperTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCanConstruct() {
-		new MediaWikiEscaper( $this->getMock( 'DatabaseMysql' ) );
+		new MediaWikiEscaper( $this->newMockConnection() );
 		$this->assertTrue( true );
+	}
+
+	protected function newMockConnection() {
+		return $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 	}
 
 	public function testEscapeEmptyStringValue() {
 		$inputString = '';
 
-		$dbConnection =  $this->getMock( 'DatabaseMysql' );
+		$dbConnection =  $this->newMockConnection();
 
 		$dbConnection->expects( $this->once() )
 			->method( 'addQuotes' )
@@ -40,7 +44,7 @@ class MediaWikiEscaperTest extends \PHPUnit_Framework_TestCase {
 	public function testEscapeEmptyStringIdentifier() {
 		$inputString = '';
 
-		$dbConnection =  $this->getMock( 'DatabaseMysql' );
+		$dbConnection =  $this->newMockConnection();
 
 		$dbConnection->expects( $this->once() )
 			->method( 'addIdentifierQuotes' )

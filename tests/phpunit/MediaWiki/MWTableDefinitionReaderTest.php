@@ -40,7 +40,7 @@ class MWTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider databaseTypeProvider
 	 */
 	public function testGetDefinitionReader( $type, $class ) {
-		$connection =  $this->getMock( $class );
+		$connection =  $this->getMockBuilder( $class )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'getType' )
@@ -67,7 +67,7 @@ class MWTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function testUnsupportedDbType(){
 		$this->setExpectedException( 'RuntimeException', 'Cannot build a TableDefinitionReader for database type' );
 
-		$connection =  $this->getMock( 'DatabaseMysql' );
+		$connection =  $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 		$connection->expects( $this->once() )
 			->method( 'getType' )
 			->will( $this->returnValue( 'foobar' ) );
