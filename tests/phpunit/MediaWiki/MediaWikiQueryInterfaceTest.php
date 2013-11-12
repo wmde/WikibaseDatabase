@@ -24,7 +24,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @param string $tableName
 	 */
 	public function testTableExists( $tableName ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -52,7 +52,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider insertProvider
 	 */
 	public function testInsert( $tableName, array $fieldValues ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -76,7 +76,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider insertProvider
 	 */
 	public function testInsertFailure( $tableName, array $fieldValues ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -115,7 +115,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider updateProvider
 	 */
 	public function testUpdate( $tableName, array $newValues, array $conditions ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -141,7 +141,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider updateProvider
 	 */
 	public function testUpdateFailure( $tableName, array $newValues, array $conditions ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -203,7 +203,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider deleteProvider
 	 */
 	public function testDelete( $tableName, array $conditions ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -224,7 +224,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider deleteProvider
 	 */
 	public function testDeleteFailure( $tableName, array $conditions ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -257,7 +257,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetInsertId() {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -274,7 +274,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider selectProvider
 	 */
 	public function testSelect( $tableName, array $fields, array $conditions ) {
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$queryInterface = new MediaWikiQueryInterface(
 			new DirectConnectionProvider( $connection )
@@ -341,7 +341,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
 	public function testSelectFailure() {
 		$this->setExpectedException( 'Wikibase\Database\QueryInterface\SelectFailedException' );
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 		$connection->expects( $this->once() )
 			->method( 'select' )
 			->will( $this->returnValue( 'FOOBAR' ) );

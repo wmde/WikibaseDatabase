@@ -40,7 +40,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 			)
 			->will( $this->returnValue( $sql ) );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -69,7 +69,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 			)
 			->will( $this->returnValue( $sql ) );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -97,7 +97,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 			)
 			->will( $this->returnValue( $sql ) );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -126,7 +126,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 			)
 			->will( $this->returnValue( $sql ) );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -143,7 +143,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 	public function testRemoveFieldThrowsExceptionOnQueryFailure() {
 		$sqlBuilder = $this->getMock( 'Wikibase\Database\Schema\SchemaModificationSqlBuilder' );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -160,7 +160,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 	public function testAddFieldThrowsExceptionOnQueryFailure() {
 		$sqlBuilder = $this->getMock( 'Wikibase\Database\Schema\SchemaModificationSqlBuilder' );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -180,7 +180,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 	public function testRemoveIndexThrowsExceptionOnQueryFailure() {
 		$sqlBuilder = $this->getMock( 'Wikibase\Database\Schema\SchemaModificationSqlBuilder' );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
@@ -197,7 +197,7 @@ class MediaWikiSchemaModifierTest extends \PHPUnit_Framework_TestCase {
 	public function testAddIndexThrowsExceptionOnQueryFailure() {
 		$sqlBuilder = $this->getMock( 'Wikibase\Database\Schema\SchemaModificationSqlBuilder' );
 
-		$connection = $this->getMock( 'DatabaseMysql' );
+		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 
 		$connection->expects( $this->once() )
 			->method( 'query' )
