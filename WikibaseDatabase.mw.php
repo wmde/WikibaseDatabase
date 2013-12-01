@@ -4,16 +4,13 @@
  * MediaWiki setup for the Wikibase Database component.
  * The component should be included via its main entry point, Database.php.
  *
+ * @codeCoverageIgnore
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
 
 if ( !defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
 	die( 'Not an entry point.' );
-}
-
-if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
-	require_once( __DIR__ . '/vendor/autoload.php' );
 }
 
 $GLOBALS['wgExtensionCredits']['wikibase'][] = array(
@@ -40,8 +37,7 @@ $GLOBALS['wgExtensionMessagesFiles']['WikibaseDatabase'] = __DIR__ . '/WikibaseD
  *
  * @return boolean
  */
-$GLOBALS['wgHooks']['UnitTestsList'][]	= function( array &$files ) {
-	// @codeCoverageIgnoreStart
+$GLOBALS['wgHooks']['UnitTestsList'][] = function( array &$files ) {
 	$directoryIterator = new RecursiveDirectoryIterator( __DIR__ . '/tests' );
 
 	/**
@@ -54,5 +50,4 @@ $GLOBALS['wgHooks']['UnitTestsList'][]	= function( array &$files ) {
 	}
 
 	return true;
-	// @codeCoverageIgnoreEnd
 };

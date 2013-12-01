@@ -6,6 +6,7 @@ These are the release notes for the [Wikibase Database library](README.md).
 * MediaWiki plugin: added compatibility with changes in MediaWiki 1.22.
 * Removed unused UnEscaper interface.
 * Split Escaper interface into ValueEscaper and IdentifierEscaper, keeping Escaper itself.
+* The PHPUnit bootstrap file now automatically runs composer update.
 
 ## Version 0.1 (2013-11-01)
 

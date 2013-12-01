@@ -8,24 +8,28 @@ use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\QueryInterface\SelectFailedException;
 use Wikibase\Database\QueryInterface\UpdateFailedException;
+use Wikibase\Database\QueryInterface\ValueInserter;
 
 /**
- * @since 0.1
+ * @since 0.2
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
 class StandaloneQueryInterface implements QueryInterface {
 
+	private $inserter;
+
 	/**
-	 * @since 0.1
+	 * @since 0.2
 	 */
-	public function __construct() {
+	public function __construct( ValueInserter $inserter ) {
+		$this->inserter = $inserter;
 	}
 
 	/**
 	 * @see QueryInterface::tableExists
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
 	 * @param string $tableName
 	 *
@@ -38,7 +42,7 @@ class StandaloneQueryInterface implements QueryInterface {
 	/**
 	 * @see QueryInterface::insert
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
 	 * @param string $tableName
 	 * @param array $values
@@ -46,14 +50,13 @@ class StandaloneQueryInterface implements QueryInterface {
 	 * @throws InsertFailedException
 	 */
 	public function insert( $tableName, array $values ) {
-		// TODO
-		throw new InsertFailedException( $tableName, $values );
+		$this->inserter->insert( $tableName, $values );
 	}
 
 	/**
 	 * @see QueryInterface::update
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
 	 * @param string $tableName
 	 * @param array $values
@@ -69,7 +72,7 @@ class StandaloneQueryInterface implements QueryInterface {
 	/**
 	 * @see QueryInterface::delete
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
 	 * @param string $tableName
 	 * @param array $conditions
@@ -84,7 +87,7 @@ class StandaloneQueryInterface implements QueryInterface {
 	/**
 	 * @see QueryInterface::getInsertId
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
 	 * @return int
 	 */
@@ -95,7 +98,7 @@ class StandaloneQueryInterface implements QueryInterface {
 	/**
 	 * @see QueryInterface::select
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
 	 * @param string $tableName
 	 * @param array $fields
