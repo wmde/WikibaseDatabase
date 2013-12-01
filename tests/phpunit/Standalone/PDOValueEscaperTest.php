@@ -20,7 +20,7 @@ class PDOValueEscaperTest extends \PHPUnit_Framework_TestCase {
 	public function testCallsPdoQuote() {
 		$input = 'foo';
 
-		$pdo =$this->newPdoMock();
+		$pdo = $this->newPdoMock();
 
 		$pdo->expects( $this->once() )
 			->method( 'quote' )
