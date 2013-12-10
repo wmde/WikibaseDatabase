@@ -77,16 +77,18 @@ interface QueryInterface {
 	 * @since 0.1
 	 *
 	 * @param string $tableName
-	 * @param array $fields
+	 * @param string[] $fieldNames
 	 * @param array $conditions
 	 * @param array $options
 	 *
 	 * @return ResultIterator
 	 * @throws SelectFailedException
 	 */
-	public function select( $tableName, array $fields, array $conditions, array $options = array() );
+	public function select( $tableName, array $fieldNames, array $conditions, array $options = array() );
 
 	/**
+	 * TODO: this seems out of place here, as it deals with the schema. Hopefully it can be removed.
+	 *
 	 * @since 0.1
 	 *
 	 * @param string $tableName
