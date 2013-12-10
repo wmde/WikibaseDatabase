@@ -2,13 +2,14 @@
 
 namespace Wikibase\Database\Standalone;
 
+use PDO;
 use Wikibase\Database\QueryInterface\DeleteFailedException;
 use Wikibase\Database\QueryInterface\InsertFailedException;
+use Wikibase\Database\QueryInterface\InsertSqlBuilder;
 use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\QueryInterface\SelectFailedException;
 use Wikibase\Database\QueryInterface\UpdateFailedException;
-use Wikibase\Database\QueryInterface\ValueInserter;
 
 /**
  * @since 0.2
@@ -17,13 +18,15 @@ use Wikibase\Database\QueryInterface\ValueInserter;
  */
 class StandaloneQueryInterface implements QueryInterface {
 
-	private $inserter;
+	private $pdo;
+	private $insertBuilder;
 
 	/**
 	 * @since 0.2
 	 */
-	public function __construct( ValueInserter $inserter ) {
-		$this->inserter = $inserter;
+	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder ) {
+		$this->pdo = $pdo;
+		$this->insertBuilder = $insertBuilder;
 	}
 
 	/**
@@ -50,7 +53,11 @@ class StandaloneQueryInterface implements QueryInterface {
 	 * @throws InsertFailedException
 	 */
 	public function insert( $tableName, array $values ) {
-		$this->inserter->insert( $tableName, $values );
+		$result = $this->pdo->query( $this->insertBuilder->getInsertSql( $tableName, $values ) );
+
+		if ( $result === false ) {
+			throw new InsertFailedException( $tableName, $values );
+		}
 	}
 
 	/**

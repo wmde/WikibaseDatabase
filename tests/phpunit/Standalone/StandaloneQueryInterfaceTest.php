@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\Tests\Standalone;
 
-use Wikibase\Database\Standalone\PDOValueInserter;
 use Wikibase\Database\Standalone\StandaloneQueryInterface;
 
 /**
@@ -39,8 +38,7 @@ class StandaloneQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 			)
 			->will( $this->returnValue( true ) );
 
-		$inserter = new PDOValueInserter( $pdo, $insertBuilder );
-		$db = new StandaloneQueryInterface( $inserter );
+		$db = new StandaloneQueryInterface( $pdo, $insertBuilder );
 
 		$db->insert( $tableName, $values );
 	}
