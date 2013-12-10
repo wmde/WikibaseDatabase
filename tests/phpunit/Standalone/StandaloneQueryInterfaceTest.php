@@ -23,10 +23,20 @@ class StandaloneQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 			'awesome' => '~=[,,_,,]:3'
 		);
 
+		$db = $this->newQueryInterfaceForInsert( $tableName, $values, true );
+
+		$db->insert( $tableName, $values );
+	}
+
+	protected function newQueryInterfaceForInsert( $tableName, array $values, $insertCallReturnValue ) {
+		$stubSql = 'STEAL ALL OF THE FOOD';
+
 		$pdo = $this->newPdoMock();
 
 		$pdo->expects( $this->once() )
-			->method( 'query' );
+			->method( 'query' )
+			->with( $this->equalTo( $stubSql ) )
+			->will( $this->returnValue( $insertCallReturnValue ) );
 
 		$insertBuilder = $this->getMock( 'Wikibase\Database\QueryInterface\InsertSqlBuilder' );
 
@@ -36,15 +46,26 @@ class StandaloneQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 				$this->equalTo( $tableName ),
 				$this->equalTo( $values )
 			)
-			->will( $this->returnValue( true ) );
+			->will( $this->returnValue( $stubSql ) );
 
-		$db = new StandaloneQueryInterface( $pdo, $insertBuilder );
-
-		$db->insert( $tableName, $values );
+		return new StandaloneQueryInterface( $pdo, $insertBuilder );
 	}
 
 	protected function newPdoMock() {
 		return $this->getMock( 'Wikibase\Database\Tests\Standalone\PDOMock' );
+	}
+
+	public function testOnReceiveOfFalse_insertThrowsInsertError() {
+		$tableName = 'someTable';
+		$values = array(
+			'leet' => 3117,
+			'awesome' => '~=[,,_,,]:3'
+		);
+
+		$db = $this->newQueryInterfaceForInsert( $tableName, $values, false );
+
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\InsertFailedException' );
+		$db->insert( $tableName, $values );
 	}
 
 }
