@@ -161,7 +161,7 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testSelectCallsSqlBuilderAndPdo() {
-		$db = $this->newQueryInterfaceForSelect( true );
+		$db = $this->newQueryInterfaceForSelect( $this->getMock( 'PDOStatement' ) );
 		$db->select( $this->tableName, $this->fields, $this->conditions );
 	}
 
@@ -172,13 +172,16 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		$db->select( $this->tableName, $this->fields, $this->conditions );
 	}
 
-//	public function testOnReceivePDOStatement_selectReturnsResultIterator() {
-//		$pdoStatement = $this->getMock( 'PDOStatement' );
-//
-//		$db = $this->newQueryInterfaceForSelect( $pdoStatement );
-//
-//
-//	}
+	public function testOnReceivePDOStatement_selectReturnsIterator() {
+		$pdoStatement = $this->getMock( 'PDOStatement' );
+
+		$db = $this->newQueryInterfaceForSelect( $pdoStatement );
+		$result = $db->select( $this->tableName, $this->fields, $this->conditions );
+
+		$this->assertInstanceOf( 'Iterator', $result );
+
+		// TODO: assert contents
+	}
 
 
 }

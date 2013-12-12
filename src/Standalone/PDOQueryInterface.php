@@ -128,6 +128,8 @@ class PDOQueryInterface implements QueryInterface {
 		if ( $result === false ) {
 			throw new SelectFailedException( $tableName, $fields, $conditions );
 		}
+
+		return new PDOResult( $result );
 	}
 
 	/**
