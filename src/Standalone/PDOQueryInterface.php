@@ -10,23 +10,26 @@ use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\QueryInterface\SelectFailedException;
 use Wikibase\Database\QueryInterface\UpdateFailedException;
+use Wikibase\Database\QueryInterface\UpdateSqlBuilder;
 
 /**
  * @since 0.2
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class StandaloneQueryInterface implements QueryInterface {
+class PDOQueryInterface implements QueryInterface {
 
 	private $pdo;
 	private $insertBuilder;
+	private $updateBuilder;
 
 	/**
 	 * @since 0.2
 	 */
-	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder ) {
+	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder, UpdateSqlBuilder $updateBuilder ) {
 		$this->pdo = $pdo;
 		$this->insertBuilder = $insertBuilder;
+		$this->updateBuilder = $updateBuilder;
 	}
 
 	/**
@@ -72,8 +75,11 @@ class StandaloneQueryInterface implements QueryInterface {
 	 * @throws UpdateFailedException
 	 */
 	public function update( $tableName, array $values, array $conditions ) {
-		// TODO
-		throw new UpdateFailedException( $tableName, $values, $conditions );
+		$result = $this->pdo->query( $this->updateBuilder->getUpdateSql( $tableName, $values, $conditions ) );
+
+		if ( $result === false ) {
+			throw new UpdateFailedException( $tableName, $values, $conditions );
+		}
 	}
 
 	/**
