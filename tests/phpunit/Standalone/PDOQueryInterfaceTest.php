@@ -22,6 +22,7 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		'awesome' => '~=[,,_,,]:3'
 	);
 	protected $conditions = array( 'bar' => 'baz' );
+	protected $fields = array( 'foo', 'bar', 'bah' );
 	protected $stubSql = 'STEAL ALL OF THE FOOD';
 
 	public function testInsertCallsSqlBuilderAndPdo() {
@@ -49,6 +50,11 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
 		$this->setExpectedException( 'Wikibase\Database\QueryInterface\InsertFailedException' );
 		$db->insert( $this->tableName, $this->values );
+	}
+
+	public function testUpdateCallsSqlBuilderAndPdo() {
+		$db = $this->newQueryInterfaceForUpdate( true );
+		$db->update( $this->tableName, $this->values, $this->conditions );
 	}
 
 	public function testOnReceiveOfFalse_updateThrowsUpdateError() {
@@ -91,6 +97,8 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 			'InsertSqlBuilder' => $this->getMock( 'Wikibase\Database\QueryInterface\InsertSqlBuilder' ),
 			'UpdateSqlBuilder' => $this->getMock( 'Wikibase\Database\QueryInterface\UpdateSqlBuilder' ),
 			'DeleteSqlBuilder' => $this->getMock( 'Wikibase\Database\QueryInterface\DeleteSqlBuilder' ),
+			'SelectSqlBuilder' => $this->getMock( 'Wikibase\Database\QueryInterface\SelectSqlBuilder' ),
+			'InsertedIdSqlBuilder' => $this->getMock( 'Wikibase\Database\QueryInterface\InsertedIdSqlBuilder' ),
 		);
 
 		$sqlBuilders[$collaboratorName] = $collaboratorInstance;
@@ -98,16 +106,25 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		$insertBuilder = $sqlBuilders['InsertSqlBuilder'];
 		$updateBuilder = $sqlBuilders['UpdateSqlBuilder'];
 		$deleteBuilder = $sqlBuilders['DeleteSqlBuilder'];
+		$selectBuilder = $sqlBuilders['SelectSqlBuilder'];
+		$idBuilder = $sqlBuilders['InsertedIdSqlBuilder'];
 
-		return new PDOQueryInterface( $pdo, $insertBuilder, $updateBuilder, $deleteBuilder );
+		return new PDOQueryInterface(
+			$pdo,
+			$insertBuilder,
+			$updateBuilder,
+			$deleteBuilder,
+			$selectBuilder,
+			$idBuilder
+		);
 	}
 
-	public function testUpdateCallsSqlBuilderAndPdo() {
-		$db = $this->newQueryInterfaceForUpdate( true );
-		$db->update( $this->tableName, $this->values, $this->conditions );
+	public function testDeleteCallsSqlBuilderAndPdo() {
+		$db = $this->newQueryInterfaceForDelete( true );
+		$db->delete( $this->tableName, $this->conditions );
 	}
 
-	public function testOnReceiveOfFalse_deleteThrowsUpdateError() {
+	public function testOnReceiveOfFalse_deleteThrowsDeleteError() {
 		$db = $this->newQueryInterfaceForDelete( false );
 
 		$this->setExpectedException( 'Wikibase\Database\QueryInterface\DeleteFailedException' );
@@ -128,9 +145,40 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		return $this->newQueryInterface( $deleteCallReturnValue, 'DeleteSqlBuilder', $deleteBuilder );
 	}
 
-	public function testDeleteCallsSqlBuilderAndPdo() {
-		$db = $this->newQueryInterfaceForDelete( true );
-		$db->delete( $this->tableName, $this->conditions );
+	protected function newQueryInterfaceForSelect( $selectCallReturnValue ) {
+		$selectBuilder = $this->getMock( 'Wikibase\Database\QueryInterface\SelectSqlBuilder' );
+
+		$selectBuilder->expects( $this->once() )
+			->method( 'getSelectSql' )
+			->with(
+				$this->equalTo( $this->tableName ),
+				$this->equalTo( $this->fields ),
+				$this->equalTo( $this->conditions )
+			)
+			->will( $this->returnValue( $this->stubSql ) );
+
+		return $this->newQueryInterface( $selectCallReturnValue, 'SelectSqlBuilder', $selectBuilder );
 	}
+
+	public function testSelectCallsSqlBuilderAndPdo() {
+		$db = $this->newQueryInterfaceForSelect( true );
+		$db->select( $this->tableName, $this->fields, $this->conditions );
+	}
+
+	public function testOnReceiveOfFalse_selectThrowsSelectError() {
+		$db = $this->newQueryInterfaceForSelect( false );
+
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\SelectFailedException' );
+		$db->select( $this->tableName, $this->fields, $this->conditions );
+	}
+
+//	public function testOnReceivePDOStatement_selectReturnsResultIterator() {
+//		$pdoStatement = $this->getMock( 'PDOStatement' );
+//
+//		$db = $this->newQueryInterfaceForSelect( $pdoStatement );
+//
+//
+//	}
+
 
 }

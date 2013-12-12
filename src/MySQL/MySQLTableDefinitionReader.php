@@ -2,9 +2,9 @@
 
 namespace Wikibase\Database\MySQL;
 
+use Iterator;
 use RuntimeException;
 use Wikibase\Database\QueryInterface\QueryInterface;
-use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -74,7 +74,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @see http://dev.mysql.com/doc/refman/5.7/en/columns-table.html
 	 *
 	 * @param string $tableName
-	 * @return ResultIterator
+	 * @return Iterator
 	 */
 	private function doColumnsQuery( $tableName ) {
 		return $this->queryInterface->select(
@@ -191,7 +191,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @see http://dev.mysql.com/doc/refman/5.7/en/key-column-usage-table.html
 	 *
 	 * @param string $tableName
-	 * @return ResultIterator
+	 * @return Iterator
 	 */
 	private function doConstraintsQuery( $tableName ) {
 		return $this->queryInterface->select(
@@ -210,7 +210,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @see http://dev.mysql.com/doc/refman/5.7/en/statistics-table.html
 	 *
 	 * @param string $tableName
-	 * @return ResultIterator
+	 * @return Iterator
 	 */
 	private function doIndexesQuery( $tableName ){
 		return $this->queryInterface->select(

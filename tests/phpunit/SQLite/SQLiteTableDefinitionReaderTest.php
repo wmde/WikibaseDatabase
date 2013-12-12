@@ -2,7 +2,7 @@
 
 namespace Wikibase\Database\Tests\SQLite;
 
-use Wikibase\Database\QueryInterface\ResultIterator;
+use ArrayIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -54,7 +54,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )
 				->method( 'select' )
-				->will( $this->returnValue( new ResultIterator( $result ) ) );
+				->will( $this->returnValue( new ArrayIterator( $result ) ) );
 		}
 
 		return new SQLiteTableDefinitionReader(

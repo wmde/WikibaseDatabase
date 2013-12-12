@@ -2,8 +2,8 @@
 
 namespace Wikibase\Database\Tests\MySQL;
 
+use ArrayIterator;
 use Wikibase\Database\MySQL\MySQLTableDefinitionReader;
-use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -37,7 +37,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		foreach( $results as $key => $result ){
 			$queryInterface->expects( $this->at( $key + 1 ) )
 				->method( 'select' )
-				->will( $this->returnValue( new ResultIterator( $result ) ) );
+				->will( $this->returnValue( new ArrayIterator( $result ) ) );
 		}
 
 		$tableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );

@@ -2,6 +2,8 @@
 
 namespace Wikibase\Database\QueryInterface;
 
+use Iterator;
+
 /**
  * Interface for objects that provide a database query service.
  *
@@ -81,7 +83,7 @@ interface QueryInterface {
 	 * @param array $conditions
 	 * @param array $options
 	 *
-	 * @return ResultIterator
+	 * @return Iterator
 	 * @throws SelectFailedException
 	 */
 	public function select( $tableName, array $fieldNames, array $conditions, array $options = array() );

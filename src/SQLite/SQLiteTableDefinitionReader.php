@@ -2,9 +2,9 @@
 
 namespace Wikibase\Database\SQLite;
 
+use Iterator;
 use RuntimeException;
 use Wikibase\Database\QueryInterface\QueryInterface;
-use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -102,7 +102,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	/**
 	 * Performs a request to get the SQL needed to create the given table
 	 * @param string $tableName
-	 * @return ResultIterator
+	 * @return Iterator
 	 */
 	private function doCreateQuery( $tableName ){
 		return $this->queryInterface->select(
@@ -198,7 +198,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	/**
 	 * Performs a request to get the SQL needed to create all indexes for a table
 	 * @param string $tableName
-	 * @return ResultIterator
+	 * @return Iterator
 	 */
 	private function doIndexQuery( $tableName ){
 		return $this->queryInterface->select(
@@ -270,7 +270,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	/**
 	 * Performs a request to get the SQL needed to create the primary key for a given table
 	 * @param string $tableName
-	 * @return ResultIterator
+	 * @return Iterator
 	 */
 	private function doPrimaryKeyQuery( $tableName ) {
 		return $this->queryInterface->select(

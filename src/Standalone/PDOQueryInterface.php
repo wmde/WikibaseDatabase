@@ -2,14 +2,16 @@
 
 namespace Wikibase\Database\Standalone;
 
+use Iterator;
 use PDO;
+use Symfony\Component\Process\Exception\RuntimeException;
 use Wikibase\Database\QueryInterface\DeleteFailedException;
 use Wikibase\Database\QueryInterface\DeleteSqlBuilder;
 use Wikibase\Database\QueryInterface\InsertFailedException;
 use Wikibase\Database\QueryInterface\InsertSqlBuilder;
 use Wikibase\Database\QueryInterface\QueryInterface;
-use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\QueryInterface\SelectFailedException;
+use Wikibase\Database\QueryInterface\SelectSqlBuilder;
 use Wikibase\Database\QueryInterface\UpdateFailedException;
 use Wikibase\Database\QueryInterface\UpdateSqlBuilder;
 
@@ -29,12 +31,13 @@ class PDOQueryInterface implements QueryInterface {
 	 * @since 0.2
 	 */
 	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder, UpdateSqlBuilder $updateBuilder,
-		DeleteSqlBuilder $deleteBuilder ) {
+		DeleteSqlBuilder $deleteBuilder, SelectSqlBuilder $selectBuilder ) {
 
 		$this->pdo = $pdo;
 		$this->insertBuilder = $insertBuilder;
 		$this->updateBuilder = $updateBuilder;
 		$this->deleteBuilder = $deleteBuilder;
+		$this->selectBuilder = $selectBuilder;
 	}
 
 	/**
@@ -45,9 +48,10 @@ class PDOQueryInterface implements QueryInterface {
 	 * @param string $tableName
 	 *
 	 * @return boolean
+	 * @throws RuntimeException
 	 */
 	public function tableExists( $tableName ) {
-		// TODO
+		throw new RuntimeException( 'Not implemented: PDOQueryInterface::tableExists' );
 	}
 
 	/**
@@ -106,17 +110,6 @@ class PDOQueryInterface implements QueryInterface {
 	}
 
 	/**
-	 * @see QueryInterface::getInsertId
-	 *
-	 * @since 0.2
-	 *
-	 * @return int
-	 */
-	public function getInsertId() {
-		// TODO
-	}
-
-	/**
 	 * @see QueryInterface::select
 	 *
 	 * @since 0.2
@@ -126,12 +119,26 @@ class PDOQueryInterface implements QueryInterface {
 	 * @param array $conditions
 	 * @param array $options
 	 *
-	 * @return ResultIterator
+	 * @return Iterator
 	 * @throws SelectFailedException
 	 */
 	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
+		$result = $this->pdo->query( $this->selectBuilder->getSelectSql( $tableName, $fields, $conditions ) );
+
+		if ( $result === false ) {
+			throw new SelectFailedException( $tableName, $fields, $conditions );
+		}
+	}
+
+	/**
+	 * @see QueryInterface::getInsertId
+	 *
+	 * @since 0.2
+	 *
+	 * @return int
+	 */
+	public function getInsertId() {
 		// TODO
-		//throw new SelectFailedException( $tableName, $fields, $conditions );
 	}
 
 }

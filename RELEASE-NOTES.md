@@ -2,8 +2,22 @@ These are the release notes for the [Wikibase Database library](README.md).
 
 ## Version 0.2 (under development)
 
-* Removed custom autoloaders is favour of using the Composer autoloader.
+### Compatibility changes
+
+* Removed custom autoloaders is favour of using the Composer autoloader. The client
+is thus responsible for autoloading.
 * MediaWiki plugin: added compatibility with changes in MediaWiki 1.22.
+* Replaced ResultIterator by PHPs native Iterator interface. The interface signature is the same.
+
+### Additions
+
+* Added PDOQueryInterface, which is an adapter for QueryInterface and a facade delegating
+SQL building responsibilities to various SQL builders, which output is then fed to PDO.
+* Added InsertSqlBuilder, UpdateSqlBuilder, DeleteSqlBuilder, SelectSqlBuilder and
+InsertedIdSqlBuilder interfaces.
+
+### Improvements
+
 * Removed unused UnEscaper interface.
 * Split Escaper interface into ValueEscaper and IdentifierEscaper, keeping Escaper itself.
 * The PHPUnit bootstrap file now automatically runs composer update.

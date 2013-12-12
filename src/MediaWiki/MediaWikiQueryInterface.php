@@ -3,11 +3,11 @@
 namespace Wikibase\Database\MediaWiki;
 
 use DatabaseBase;
+use Iterator;
 use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\QueryInterface\DeleteFailedException;
 use Wikibase\Database\QueryInterface\InsertFailedException;
 use Wikibase\Database\QueryInterface\QueryInterface;
-use Wikibase\Database\QueryInterface\ResultIterator;
 use Wikibase\Database\QueryInterface\SelectFailedException;
 use Wikibase\Database\QueryInterface\UpdateFailedException;
 
@@ -144,7 +144,7 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @param array $conditions
 	 * @param array $options
 	 *
-	 * @return ResultIterator
+	 * @return Iterator
 	 * @throws SelectFailedException
 	 */
 	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
@@ -157,7 +157,7 @@ class MediaWikiQueryInterface implements QueryInterface {
 		);
 
 		if ( $selectionResult instanceof \ResultWrapper ) {
-			return new ResultIterator( iterator_to_array( $selectionResult ) );
+			return $selectionResult;
 		}
 
 		throw new SelectFailedException( $tableName, $fields, $conditions );
