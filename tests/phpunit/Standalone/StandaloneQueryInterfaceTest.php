@@ -107,4 +107,30 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		$db->update( $this->tableName, $this->values, $this->conditions );
 	}
 
+	public function testOnReceiveOfFalse_deleteThrowsUpdateError() {
+		$db = $this->newQueryInterfaceForDelete( false );
+
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\DeleteFailedException' );
+		$db->delete( $this->tableName, $this->conditions );
+	}
+
+	protected function newQueryInterfaceForDelete( $deleteCallReturnValue ) {
+		$deleteBuilder = $this->getMock( 'Wikibase\Database\QueryInterface\DeleteSqlBuilder' );
+
+		$deleteBuilder->expects( $this->once() )
+			->method( 'getDeleteSql' )
+			->with(
+				$this->equalTo( $this->tableName ),
+				$this->equalTo( $this->conditions )
+			)
+			->will( $this->returnValue( $this->stubSql ) );
+
+		return $this->newQueryInterface( $deleteCallReturnValue, 'DeleteSqlBuilder', $deleteBuilder );
+	}
+
+	public function testDeleteCallsSqlBuilderAndPdo() {
+		$db = $this->newQueryInterfaceForDelete( true );
+		$db->delete( $this->tableName, $this->conditions );
+	}
+
 }

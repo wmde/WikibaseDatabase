@@ -4,6 +4,7 @@ namespace Wikibase\Database\Standalone;
 
 use PDO;
 use Wikibase\Database\QueryInterface\DeleteFailedException;
+use Wikibase\Database\QueryInterface\DeleteSqlBuilder;
 use Wikibase\Database\QueryInterface\InsertFailedException;
 use Wikibase\Database\QueryInterface\InsertSqlBuilder;
 use Wikibase\Database\QueryInterface\QueryInterface;
@@ -22,14 +23,18 @@ class PDOQueryInterface implements QueryInterface {
 	private $pdo;
 	private $insertBuilder;
 	private $updateBuilder;
+	private $deleteBuilder;
 
 	/**
 	 * @since 0.2
 	 */
-	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder, UpdateSqlBuilder $updateBuilder ) {
+	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder, UpdateSqlBuilder $updateBuilder,
+		DeleteSqlBuilder $deleteBuilder ) {
+
 		$this->pdo = $pdo;
 		$this->insertBuilder = $insertBuilder;
 		$this->updateBuilder = $updateBuilder;
+		$this->deleteBuilder = $deleteBuilder;
 	}
 
 	/**
@@ -93,8 +98,11 @@ class PDOQueryInterface implements QueryInterface {
 	 * @throws DeleteFailedException
 	 */
 	public function delete( $tableName, array $conditions ) {
-		// TODO
-		//throw new DeleteFailedException( $tableName, $conditions );
+		$result = $this->pdo->query( $this->deleteBuilder->getDeleteSql( $tableName, $conditions ) );
+
+		if ( $result === false ) {
+			throw new DeleteFailedException( $tableName, $conditions );
+		}
 	}
 
 	/**
