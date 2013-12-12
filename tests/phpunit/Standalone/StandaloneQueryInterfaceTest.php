@@ -16,26 +16,26 @@ use Wikibase\Database\Standalone\StandaloneQueryInterface;
  */
 class StandaloneQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
+	protected $stubSql = 'STEAL ALL OF THE FOOD';
+	protected $tableName = 'someTable';
+	protected $values = array(
+		'leet' => 3117,
+		'awesome' => '~=[,,_,,]:3'
+	);
+	protected $conditions = array( 'bar' => 'baz' );
+
 	public function testInsertCallsSqlBuilderAndPdo() {
-		$tableName = 'someTable';
-		$values = array(
-			'leet' => 3117,
-			'awesome' => '~=[,,_,,]:3'
-		);
+		$db = $this->newQueryInterfaceForInsert( true );
 
-		$db = $this->newQueryInterfaceForInsert( $tableName, $values, true );
-
-		$db->insert( $tableName, $values );
+		$db->insert( $this->tableName, $this->values );
 	}
 
-	protected function newQueryInterfaceForInsert( $tableName, array $values, $insertCallReturnValue ) {
-		$stubSql = 'STEAL ALL OF THE FOOD';
-
+	protected function newQueryInterfaceForInsert( $insertCallReturnValue ) {
 		$pdo = $this->newPdoMock();
 
 		$pdo->expects( $this->once() )
 			->method( 'query' )
-			->with( $this->equalTo( $stubSql ) )
+			->with( $this->equalTo( $this->stubSql ) )
 			->will( $this->returnValue( $insertCallReturnValue ) );
 
 		$insertBuilder = $this->getMock( 'Wikibase\Database\QueryInterface\InsertSqlBuilder' );
@@ -43,10 +43,10 @@ class StandaloneQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		$insertBuilder->expects( $this->once() )
 			->method( 'getInsertSql' )
 			->with(
-				$this->equalTo( $tableName ),
-				$this->equalTo( $values )
+				$this->equalTo( $this->tableName ),
+				$this->equalTo( $this->values )
 			)
-			->will( $this->returnValue( $stubSql ) );
+			->will( $this->returnValue( $this->stubSql ) );
 
 		return new StandaloneQueryInterface( $pdo, $insertBuilder );
 	}
@@ -56,16 +56,17 @@ class StandaloneQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testOnReceiveOfFalse_insertThrowsInsertError() {
-		$tableName = 'someTable';
-		$values = array(
-			'leet' => 3117,
-			'awesome' => '~=[,,_,,]:3'
-		);
-
-		$db = $this->newQueryInterfaceForInsert( $tableName, $values, false );
+		$db = $this->newQueryInterfaceForInsert( false );
 
 		$this->setExpectedException( 'Wikibase\Database\QueryInterface\InsertFailedException' );
-		$db->insert( $tableName, $values );
+		$db->insert( $this->tableName, $this->values );
 	}
+
+//	public function testOnReceiveOfFalse_updateThrowsUpdateError() {
+//		$db = $this->newQueryInterfaceForUpdate( false );
+//
+//		$this->setExpectedException( 'Wikibase\Database\QueryInterface\UpdateFailedException' );
+//		$db->update( $this->tableName, $this->values. $this->conditions );
+//	}
 
 }
