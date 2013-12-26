@@ -4,7 +4,7 @@ namespace Wikibase\Database\Standalone;
 
 use Iterator;
 use PDO;
-use Symfony\Component\Process\Exception\RuntimeException;
+use RuntimeException;
 use Wikibase\Database\QueryInterface\DeleteFailedException;
 use Wikibase\Database\QueryInterface\DeleteSqlBuilder;
 use Wikibase\Database\QueryInterface\InsertFailedException;
