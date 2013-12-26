@@ -1,11 +1,11 @@
 <?php
 
-namespace Wikibase\Database\Tests\Standalone;
+namespace Wikibase\Database\Tests\PDO;
 
-use Wikibase\Database\Standalone\PDOValueEscaper;
+use Wikibase\Database\PDO\PDOValueEscaper;
 
 /**
- * @covers Wikibase\Database\Standalone\PDOValueEscaper
+ * @covers Wikibase\Database\PDO\PDOValueEscaper
  *
  * @group Wikibase
  * @group WikibaseDatabase
@@ -41,7 +41,7 @@ class PDOValueEscaperTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newPdoMock() {
-		return $this->getMock( 'Wikibase\Database\Tests\Standalone\PDOMock' );
+		return $this->getMock( 'Wikibase\Database\Tests\PDO\PDOMock' );
 	}
 
 }

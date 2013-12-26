@@ -1,6 +1,6 @@
 <?php
 
-namespace Wikibase\Database\Standalone;
+namespace Wikibase\Database\PDO;
 
 use Iterator;
 use PDO;

@@ -31,7 +31,7 @@
 	"autoload": {
 		"classmap": [
 			"src",
-			"tests/phpunit/Standalone/PDOMock.php"
+			"tests/phpunit/PDO/PDOMock.php"
 		],
 		"files" : [
 			"WikibaseDatabase.php"

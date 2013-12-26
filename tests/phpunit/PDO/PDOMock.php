@@ -1,6 +1,6 @@
 <?php
 
-namespace Wikibase\Database\Tests\Standalone;
+namespace Wikibase\Database\Tests\PDO;
 
 use PDO;
 

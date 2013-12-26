@@ -1,11 +1,11 @@
 <?php
 
-namespace Wikibase\Database\Tests\Standalone;
+namespace Wikibase\Database\Tests\PDO;
 
-use Wikibase\Database\Standalone\PDOQueryInterface;
+use Wikibase\Database\PDO\PDOQueryInterface;
 
 /**
- * @covers Wikibase\Database\Standalone\PDOQueryInterface
+ * @covers Wikibase\Database\PDO\PDOQueryInterface
  *
  * @group Wikibase
  * @group WikibaseDatabase
@@ -65,7 +65,7 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newPdoMock( $returnValue ) {
-		$pdo = $this->getMock( 'Wikibase\Database\Tests\Standalone\PDOMock' );
+		$pdo = $this->getMock( 'Wikibase\Database\Tests\PDO\PDOMock' );
 
 		$pdo->expects( $this->once() )
 			->method( 'query' )
