@@ -183,5 +183,30 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		// TODO: assert contents
 	}
 
+	protected function newQueryInterfaceForGetInsertId( $getIdCallReturnValue ) {
+		$insertedIdBuilder = $this->getMock( 'Wikibase\Database\QueryInterface\InsertedIdSqlBuilder' );
+
+		$insertedIdBuilder->expects( $this->once() )
+			->method( 'getSqlToGetTheInsertedId' )
+			->will( $this->returnValue( $this->stubSql ) );
+
+		return $this->newQueryInterface( $getIdCallReturnValue, 'InsertedIdSqlBuilder', $insertedIdBuilder );
+	}
+
+	public function testGetInsertIdCallsCollaboratorsAndReturnsInt() {
+		$db = $this->newQueryInterfaceForGetInsertId( '1337' );
+		$id = $db->getInsertId();
+
+		$this->assertInternalType( 'int', $id );
+		$this->assertEquals( 1337, $id );
+	}
+
+	public function testOnReceiveOfFalse_getInsertIdThrows() {
+		$db = $this->newQueryInterfaceForGetInsertId( false );
+
+		$this->setExpectedException( 'Wikibase\Database\QueryInterface\QueryInterfaceException' );
+		$db->getInsertId();
+	}
+
 
 }

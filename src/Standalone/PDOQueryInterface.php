@@ -7,9 +7,11 @@ use PDO;
 use RuntimeException;
 use Wikibase\Database\QueryInterface\DeleteFailedException;
 use Wikibase\Database\QueryInterface\DeleteSqlBuilder;
+use Wikibase\Database\QueryInterface\InsertedIdSqlBuilder;
 use Wikibase\Database\QueryInterface\InsertFailedException;
 use Wikibase\Database\QueryInterface\InsertSqlBuilder;
 use Wikibase\Database\QueryInterface\QueryInterface;
+use Wikibase\Database\QueryInterface\QueryInterfaceException;
 use Wikibase\Database\QueryInterface\SelectFailedException;
 use Wikibase\Database\QueryInterface\SelectSqlBuilder;
 use Wikibase\Database\QueryInterface\UpdateFailedException;
@@ -26,18 +28,20 @@ class PDOQueryInterface implements QueryInterface {
 	private $insertBuilder;
 	private $updateBuilder;
 	private $deleteBuilder;
+	private $insertedIdBuilder;
 
 	/**
 	 * @since 0.2
 	 */
 	public function __construct( PDO $pdo, InsertSqlBuilder $insertBuilder, UpdateSqlBuilder $updateBuilder,
-		DeleteSqlBuilder $deleteBuilder, SelectSqlBuilder $selectBuilder ) {
+		DeleteSqlBuilder $deleteBuilder, SelectSqlBuilder $selectBuilder, InsertedIdSqlBuilder $insertedIdBuilder ) {
 
 		$this->pdo = $pdo;
 		$this->insertBuilder = $insertBuilder;
 		$this->updateBuilder = $updateBuilder;
 		$this->deleteBuilder = $deleteBuilder;
 		$this->selectBuilder = $selectBuilder;
+		$this->insertedIdBuilder = $insertedIdBuilder;
 	}
 
 	/**
@@ -138,9 +142,16 @@ class PDOQueryInterface implements QueryInterface {
 	 * @since 0.2
 	 *
 	 * @return int
+	 * @throws QueryInterfaceException
 	 */
 	public function getInsertId() {
-		// TODO
+		$result = $this->pdo->query( $this->insertedIdBuilder->getSqlToGetTheInsertedId() );
+
+		if ( $result === false ) {
+			throw new QueryInterfaceException( 'Could not obtain the inserted id' );
+		}
+
+		return (int)$result;
 	}
 
 }
