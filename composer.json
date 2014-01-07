@@ -29,8 +29,10 @@
 		"php": ">=5.3.2"
 	},
 	"autoload": {
+		"psr-4": {
+			"Wikibase\\Database\\": "src/"
+		},
 		"classmap": [
-			"src",
 			"tests/phpunit/PDO/PDOMock.php"
 		],
 		"files" : [
