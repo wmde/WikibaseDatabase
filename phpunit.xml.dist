@@ -15,6 +15,7 @@
     <testsuites>
         <testsuite name="WikibaseDatabaseStandalone">
             <directory>tests/phpunit</directory>
+            <directory>tests/integration</directory>
             <exclude>tests/phpunit/MediaWiki</exclude>
             <exclude>tests/integration/MediaWiki</exclude>
         </testsuite>
