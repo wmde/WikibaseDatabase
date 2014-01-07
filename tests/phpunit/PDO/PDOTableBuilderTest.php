@@ -2,7 +2,6 @@
 
 namespace Wikibase\Database\Tests\PDO;
 
-use Wikibase\Database\PDO\PDOQueryInterface;
 use Wikibase\Database\PDO\PDOTableBuilder;
 
 /**

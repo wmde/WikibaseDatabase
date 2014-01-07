@@ -47,7 +47,11 @@ class PDOTableBuilder implements TableBuilder {
 	 * @throws TableDeletionFailedException
 	 */
 	public function dropTable( $tableName ) {
-		// TODO: Implement dropTable() method.
+		$result = $this->pdo->query( 'DROP TABLE ' . $tableName . ';' );
+
+		if ( $result === false ) {
+			throw new TableDeletionFailedException( $tableName );
+		}
 	}
 
 	/**
@@ -58,7 +62,8 @@ class PDOTableBuilder implements TableBuilder {
 	 * @return boolean
 	 */
 	public function tableExists( $tableName ) {
-		// TODO: Implement tableExists() method.
+		$result = $this->pdo->query( 'SELECT 1 FROM ' . $tableName . ' LIMIT 1;' );
+		return (bool)$result;
 	}
 
 }
