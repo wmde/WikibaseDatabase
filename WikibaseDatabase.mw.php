@@ -12,6 +12,10 @@ if ( !defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
 	die( 'Not an entry point.' );
 }
 
+if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once( __DIR__ . '/vendor/autoload.php' );
+}
+
 $GLOBALS['wgExtensionCredits']['wikibase'][] = array(
 	'path' => __DIR__,
 	'name' => 'Wikibase Database',
@@ -25,34 +29,3 @@ $GLOBALS['wgExtensionCredits']['wikibase'][] = array(
 );
 
 $GLOBALS['wgExtensionMessagesFiles']['WikibaseDatabase'] = __DIR__ . '/WikibaseDatabase.i18n.php';
-
-if ( defined( 'MW_PHPUNIT_TEST' ) ) {
-	require_once __DIR__ . '/tests/testLoader.php';
-}
-
-/**
- * Hook to add PHPUnit test cases.
- * @see https://www.mediawiki.org/wiki/Manual:Hooks/UnitTestsList
- *
- * @since 0.1
- *
- * @param array $files
- *
- * @return boolean
- */
-$GLOBALS['wgHooks']['UnitTestsList'][]	= function( array &$files ) {
-	// @codeCoverageIgnoreStart
-	$directoryIterator = new RecursiveDirectoryIterator( __DIR__ . '/tests' );
-
-	/**
-	 * @var SplFileInfo $fileInfo
-	 */
-	foreach ( new RecursiveIteratorIterator( $directoryIterator ) as $fileInfo ) {
-		if ( substr( $fileInfo->getFilename(), -8 ) === 'Test.php' ) {
-			$files[] = $fileInfo->getPathname();
-		}
-	}
-
-	return true;
-	// @codeCoverageIgnoreEnd
-};
