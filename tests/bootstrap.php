@@ -9,13 +9,20 @@
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
 
-echo exec( 'composer update' ) . "\n";
+if ( php_sapi_name() !== 'cli' ) {
+	die( 'Not an entry point' );
+}
+
+$pwd = exec( 'pwd' );
+chdir( __DIR__ . '/..' );
+passthru( 'composer update' );
+chdir( $pwd );
 
 if ( !is_readable( __DIR__ . '/../vendor/autoload.php' ) ) {
 	die( 'You need to install this package with Composer before you can run the tests' );
 }
 
-if ( !in_array( '--testsuite=WikibaseDatabaseStandalone', $GLOBALS['argv'] ) ) {
+if ( in_array( '--testsuite=WikibaseDatabaseMediaWiki', $GLOBALS['argv'] ) ) {
 	global $IP;
 	$IP = getenv( 'MW_INSTALL_PATH' );
 
