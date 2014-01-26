@@ -94,4 +94,18 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testGivenArray_returnsInClause() {
+		$this->assertTableAndConditionsResultInSql(
+			'some_table',
+			array(
+				'some_field' => array(
+					'foo',
+					42,
+					'bar'
+				)
+			),
+			'DELETE FROM some_table WHERE some_field IN (|foo|, |42|, |bar|)'
+		);
+	}
+
 }

@@ -51,7 +51,25 @@ class MySQLDeleteSqlBuilder implements DeleteSqlBuilder {
 			return $value;
 		}
 
-		return $key . '=' . $this->escaper->getEscapedValue( $value );
+		if ( is_array( $value ) ) {
+			return $this->getInClause( $key, $value );
+		}
+
+		return $this->getEqualitySql( $key, $value );
+	}
+
+	protected function getInClause( $field, array $values ) {
+		$escapedValues = array();
+
+		foreach ( $values as $value ) {
+			$escapedValues[] = $this->escaper->getEscapedValue( $value );
+		}
+
+		return $field . ' IN (' . implode( ', ', $escapedValues ) . ')';
+	}
+
+	protected function getEqualitySql( $field, $value ) {
+		return $field . '=' . $this->escaper->getEscapedValue( $value );
 	}
 
 }
