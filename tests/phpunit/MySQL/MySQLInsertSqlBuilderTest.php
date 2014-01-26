@@ -17,8 +17,20 @@ use Wikibase\Database\MySQL\MySQLInsertSqlBuilder;
  */
 class MySQLInsertSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	public function testTodo() {
-		$this->assertTrue( (bool)'TODO' );
+	/**
+	 * @var MySQLInsertSqlBuilder
+	 */
+	protected $sqlBuilder;
+
+	public function setUp() {
+		$this->sqlBuilder = new MySQLInsertSqlBuilder();
+	}
+
+	public function testGivenNoValues_returnsEmptyString() {
+		$this->assertSame(
+			'',
+			$this->sqlBuilder->getInsertSql( 'some_table', array() )
+		);
 	}
 
 }

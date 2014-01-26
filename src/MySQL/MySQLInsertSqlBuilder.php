@@ -20,7 +20,7 @@ class MySQLInsertSqlBuilder implements InsertSqlBuilder {
 	 * @return string
 	 */
 	public function getInsertSql( $tableName, array $values ) {
-		// TODO:implement
+		return '';
 	}
 
 }
