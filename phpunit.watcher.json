@@ -8,6 +8,8 @@
 		"-c",
 		"phpunit.xml.dist",
 		"--testsuite",
-		"WikibaseDatabaseStandalone"
+		"WikibaseDatabaseStandalone",
+		"--bootstrap",
+		"tests/simpleBootstrap.php"
 	]
 }
