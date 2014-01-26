@@ -3,6 +3,7 @@
 namespace Wikibase\Database\MySQL;
 
 use Wikibase\Database\QueryInterface\InsertSqlBuilder;
+use Wikibase\Database\ValueEscaper;
 
 /**
  * @since 0.2
@@ -10,6 +11,12 @@ use Wikibase\Database\QueryInterface\InsertSqlBuilder;
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
 class MySQLInsertSqlBuilder implements InsertSqlBuilder {
+
+	protected $escaper;
+
+	public function __construct( ValueEscaper $escaper ) {
+		$this->escaper = $escaper;
+	}
 
 	/**
 	 * @see InsertSqlBuilder::getInsertSql
@@ -20,7 +27,37 @@ class MySQLInsertSqlBuilder implements InsertSqlBuilder {
 	 * @return string
 	 */
 	public function getInsertSql( $tableName, array $values ) {
-		return '';
+		if ( empty( $values ) ) {
+			return '';
+		}
+
+		return $this->getTablePart( $tableName )
+			. ' ' . $this->getFieldPart( $values )
+			. ' ' . $this->getValuesPart( $values );
+	}
+
+	protected function getTablePart( $tableName ) {
+		return 'INSERT INTO ' . $tableName;
+	}
+
+	protected function getFieldPart( array $values ) {
+		$fieldNames = array();
+
+		foreach ( array_keys( $values ) as $fieldName ) {
+			$fieldNames[] = $fieldName;
+		}
+
+		return '(' . implode( ', ', $fieldNames ) . ')';
+	}
+
+	protected function getValuesPart( array $values ) {
+		$escapedValues = array();
+
+		foreach ( $values as $value ) {
+			$escapedValues[] = $this->escaper->getEscapedValue( $value );
+		}
+
+		return 'VALUES (' . implode( ', ', $escapedValues ) . ')';
 	}
 
 }

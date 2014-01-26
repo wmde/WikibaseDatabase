@@ -23,13 +23,47 @@ class MySQLInsertSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	protected $sqlBuilder;
 
 	public function setUp() {
-		$this->sqlBuilder = new MySQLInsertSqlBuilder();
+		$escaper = $this->getMock( 'Wikibase\Database\ValueEscaper' );
+
+		$escaper->expects( $this->any() )
+			->method( 'getEscapedValue' )
+			->will( $this->returnCallback( function( $value ) {
+				return '|' . $value . '|';
+			} ) );
+
+		$this->sqlBuilder = new MySQLInsertSqlBuilder( $escaper );
 	}
 
 	public function testGivenNoValues_returnsEmptyString() {
+		$this->assertTableAndValuesResultInSql( 'some_table', array(), '' );
+	}
+
+	protected function assertTableAndValuesResultInSql( $tableName, array $values, $sql ) {
 		$this->assertSame(
-			'',
-			$this->sqlBuilder->getInsertSql( 'some_table', array() )
+			$sql,
+			$this->sqlBuilder->getInsertSql( $tableName, $values )
+		);
+	}
+
+	public function testInsertOneValueForOneField() {
+		$this->assertTableAndValuesResultInSql(
+			'some_table',
+			array(
+				'some_field' => 'foobar'
+			),
+			"INSERT INTO some_table (some_field) VALUES (|foobar|)"
+		);
+	}
+
+	public function testInsertOneValueForMultipleFields() {
+		$this->assertTableAndValuesResultInSql(
+			'some_table',
+			array(
+				'some_field' => 'foobar',
+				'another_field' => 42,
+				'last_field' => 'o_O',
+			),
+			"INSERT INTO some_table (some_field, another_field, last_field) VALUES (|foobar|, |42|, |o_O|)"
 		);
 	}
 
