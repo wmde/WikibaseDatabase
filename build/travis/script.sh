@@ -47,7 +47,7 @@ function installWikibaseDatabaseAsExtension {
 }
 
 function runPhpUnit {
-	php vendor/bin/phpunit --testsuite=WikibaseDatabase$TESTSUITE
+	phpunit --testsuite=WikibaseDatabase$TESTSUITE
 }
 
 function doComposerInstall {
