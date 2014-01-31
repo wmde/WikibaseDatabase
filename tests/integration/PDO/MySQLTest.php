@@ -4,7 +4,6 @@ namespace Wikibase\Database\Tests;
 
 use PDO;
 use Wikibase\Database\MySQL\MySQLDeleteSqlBuilder;
-use Wikibase\Database\MySQL\MySQLInsertedIdSqlBuilder;
 use Wikibase\Database\MySQL\MySQLInsertSqlBuilder;
 use Wikibase\Database\MySQL\MySQLSelectSqlBuilder;
 use Wikibase\Database\MySQL\MySQLUpdateSqlBuilder;
@@ -57,8 +56,7 @@ class MySQLTest extends \PHPUnit_Framework_TestCase {
 			new MySQLInsertSqlBuilder(),
 			new MySQLUpdateSqlBuilder(),
 			new MySQLDeleteSqlBuilder(),
-			new MySQLSelectSqlBuilder(),
-			new MySQLInsertedIdSqlBuilder()
+			new MySQLSelectSqlBuilder()
 		);
 
 //		$queryInterface->insert(  );

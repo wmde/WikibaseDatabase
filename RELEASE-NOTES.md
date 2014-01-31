@@ -13,8 +13,7 @@ is thus responsible for autoloading.
 
 * Added PDOQueryInterface, which is an adapter for QueryInterface and a facade delegating
 SQL building responsibilities to various SQL builders, which output is then fed to PDO.
-* Added InsertSqlBuilder, UpdateSqlBuilder, DeleteSqlBuilder, SelectSqlBuilder and
-InsertedIdSqlBuilder interfaces.
+* Added InsertSqlBuilder, UpdateSqlBuilder, DeleteSqlBuilder and SelectSqlBuilder interfaces.
 
 ### Improvements
 
