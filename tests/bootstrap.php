@@ -38,4 +38,4 @@ if ( in_array( '--testsuite=WikibaseDatabaseMediaWiki', $GLOBALS['argv'] ) ) {
 	}
 }
 
-require_once( __DIR__ . '/../vendor/autoload.php' );
+require_once( 'simpleBootstrap.php' );

@@ -36,9 +36,6 @@
 		"psr-4": {
 			"Wikibase\\Database\\": "src/"
 		},
-		"classmap": [
-			"tests/phpunit/PDO/PDOMock.php"
-		],
 		"files" : [
 			"WikibaseDatabase.php"
 		]
