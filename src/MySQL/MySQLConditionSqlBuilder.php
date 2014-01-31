@@ -29,7 +29,7 @@ class MySQLConditionSqlBuilder {
 			$expandedConditions[] = $this->expandCondition( $key, $value );
 		}
 
-		return 'WHERE ' . implode( ' AND ', $expandedConditions );
+		return implode( ' AND ', $expandedConditions );
 	}
 
 	protected function expandCondition( $key, $value ) {

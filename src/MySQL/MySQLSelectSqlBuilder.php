@@ -13,9 +13,11 @@ use Wikibase\Database\QueryInterface\SelectSqlBuilder;
 class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 
 	private $identifierEscaper;
+	private $conditionBuilder;
 
-	public function __construct( IdentifierEscaper $identifierEscaper ) {
+	public function __construct( IdentifierEscaper $identifierEscaper, MySQLConditionSqlBuilder $conditionBuilder ) {
 		$this->identifierEscaper = $identifierEscaper;
+		$this->conditionBuilder = $conditionBuilder;
 	}
 
 	/**
@@ -31,8 +33,8 @@ class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 	public function getSelectSql( $tableName, array $fieldNames, array $conditions, array $options = array() ) {
 
 		return $this->getSelectClause( $fieldNames )
-				. ' ' . $this->getFromClause( $tableName )
-				. '';
+				. $this->getFromClause( $tableName )
+				. $this->getWhereClause( $conditions );
 	}
 
 	private function getSelectClause( $fieldNames ) {
@@ -49,7 +51,15 @@ class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 	}
 
 	private function getFromClause( $tableName ) {
-		return 'FROM ' . $this->identifierEscaper->getEscapedIdentifier( $tableName );
+		return ' FROM ' . $this->identifierEscaper->getEscapedIdentifier( $tableName );
+	}
+
+	private function getWhereClause( array $conditions ) {
+		if ( empty( $conditions ) ) {
+			return '';
+		}
+
+		return ' WHERE ' . $this->conditionBuilder->getConditionSql( $conditions );
 	}
 
 }

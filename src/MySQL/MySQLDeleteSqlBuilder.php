@@ -32,7 +32,7 @@ class MySQLDeleteSqlBuilder implements DeleteSqlBuilder {
 		$sql = 'DELETE FROM ' . $this->identifierEscaper->getEscapedIdentifier( $tableName );
 
 		if ( !empty( $conditions ) ) {
-			$sql .= ' ' . $this->conditionBuilder->getConditionSql( $conditions );
+			$sql .= ' WHERE ' . $this->conditionBuilder->getConditionSql( $conditions );
 		}
 
 		return $sql;
