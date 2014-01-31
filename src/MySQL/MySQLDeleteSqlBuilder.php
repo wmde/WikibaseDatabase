@@ -12,10 +12,10 @@ use Wikibase\Database\ValueEscaper;
  */
 class MySQLDeleteSqlBuilder implements DeleteSqlBuilder {
 
-	protected $escaper;
+	private $conditionBuilder;
 
-	public function __construct( ValueEscaper $escaper ) {
-		$this->escaper = $escaper;
+	public function __construct( MySQLConditionSqlBuilder $conditionBuilder ) {
+		$this->conditionBuilder = $conditionBuilder;
 	}
 
 	/**
@@ -30,46 +30,10 @@ class MySQLDeleteSqlBuilder implements DeleteSqlBuilder {
 		$sql = 'DELETE FROM ' . $tableName;
 
 		if ( !empty( $conditions ) ) {
-			$sql .= ' ' . $this->getConditionSql( $conditions );
+			$sql .= ' ' . $this->conditionBuilder->getConditionSql( $conditions );
 		}
 
 		return $sql;
-	}
-
-	protected function getConditionSql( array $conditions ) {
-		$expandedConditions = array();
-
-		foreach ( $conditions as $key => $value ) {
-			$expandedConditions[] = $this->expandCondition( $key, $value );
-		}
-
-		return 'WHERE ' . implode( ' AND ', $expandedConditions );
-	}
-
-	protected function expandCondition( $key, $value ) {
-		if ( is_numeric( $key ) ) {
-			return $value;
-		}
-
-		if ( is_array( $value ) ) {
-			return $this->getInClause( $key, $value );
-		}
-
-		return $this->getEqualitySql( $key, $value );
-	}
-
-	protected function getInClause( $field, array $values ) {
-		$escapedValues = array();
-
-		foreach ( $values as $value ) {
-			$escapedValues[] = $this->escaper->getEscapedValue( $value );
-		}
-
-		return $field . ' IN (' . implode( ', ', $escapedValues ) . ')';
-	}
-
-	protected function getEqualitySql( $field, $value ) {
-		return $field . '=' . $this->escaper->getEscapedValue( $value );
 	}
 
 }

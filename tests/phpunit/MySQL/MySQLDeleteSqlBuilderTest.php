@@ -2,10 +2,12 @@
 
 namespace Wikibase\Database\Tests\MySQL;
 
+use Wikibase\Database\MySQL\MySQLConditionSqlBuilder;
 use Wikibase\Database\MySQL\MySQLDeleteSqlBuilder;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLDeleteSqlBuilder
+ * @covers Wikibase\Database\MySQL\MySQLConditionSqlBuilder
  *
  * @group Wikibase
  * @group WikibaseDatabase
@@ -31,7 +33,7 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '|' . $value . '|';
 			} ) );
 
-		$this->sqlBuilder = new MySQLDeleteSqlBuilder( $escaper );
+		$this->sqlBuilder = new MySQLDeleteSqlBuilder( new MySQLConditionSqlBuilder( $escaper ) );
 	}
 
 	public function testGivenNoConditions_noConditionsAreInSql() {

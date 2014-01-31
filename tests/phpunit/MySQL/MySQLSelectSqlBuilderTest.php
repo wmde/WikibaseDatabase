@@ -17,8 +17,28 @@ use Wikibase\Database\MySQL\MySQLSelectSqlBuilder;
  */
 class MySQLSelectSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
-	public function testTodo() {
-		$this->assertTrue( (bool)'TODO' );
+	/**
+	 * @var MySQLSelectSqlBuilder
+	 */
+	private $selectBuilder;
+
+	public function setUp() {
+		$this->selectBuilder = new MySQLSelectSqlBuilder();
+	}
+
+	public function testSelectOneFieldWithoutConditions() {
+		$sql = $this->selectBuilder->getSelectSql(
+			'some_table',
+			array(
+				'some_field',
+			),
+			array()
+		);
+
+		$this->assertEquals(
+			'',
+			$sql
+		);
 	}
 
 }
