@@ -13,7 +13,7 @@ if ( php_sapi_name() !== 'cli' ) {
 	die( 'Not an entry point' );
 }
 
-$pwd = exec( 'pwd' );
+$pwd = getcwd();
 chdir( __DIR__ . '/..' );
 passthru( 'composer update' );
 chdir( $pwd );
@@ -38,4 +38,4 @@ if ( in_array( '--testsuite=WikibaseDatabaseMediaWiki', $GLOBALS['argv'] ) ) {
 	}
 }
 
-require_once( 'simpleBootstrap.php' );
+require_once( 'testLoader.php' );

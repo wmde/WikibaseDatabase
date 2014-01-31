@@ -4,7 +4,7 @@ namespace Wikibase\Database\Tests\PDO;
 
 use PDO;
 
-class PDOMock extends PDO {
+class PDOStub extends PDO {
 
 	public function __construct() {
 	}

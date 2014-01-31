@@ -31,7 +31,7 @@ class PDOTableBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	private function newMockPdo( $stubSql, $queryReturnValue ) {
-		$pdo = $this->getMock( 'Wikibase\Database\Tests\PDO\PDOMock' );
+		$pdo = $this->getMock( 'Wikibase\Database\Tests\PDO\PDOStub' );
 
 		$pdo->expects( $this->once() )
 			->method( 'query' )

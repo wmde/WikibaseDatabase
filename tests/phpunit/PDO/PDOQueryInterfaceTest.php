@@ -65,7 +65,7 @@ class PDOQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function newPdoMock( $returnValue ) {
-		$pdo = $this->getMock( 'Wikibase\Database\Tests\PDO\PDOMock' );
+		$pdo = $this->getMock( 'Wikibase\Database\Tests\PDO\PDOStub' );
 
 		$pdo->expects( $this->once() )
 			->method( 'query' )
