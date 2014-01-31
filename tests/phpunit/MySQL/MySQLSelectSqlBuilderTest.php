@@ -3,6 +3,7 @@
 namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLSelectSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeIdentifierEscaper;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLSelectSqlBuilder
@@ -23,7 +24,9 @@ class MySQLSelectSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	private $selectBuilder;
 
 	public function setUp() {
-		$this->selectBuilder = new MySQLSelectSqlBuilder();
+		$this->selectBuilder = new MySQLSelectSqlBuilder(
+			new FakeIdentifierEscaper()
+		);
 	}
 
 	public function testSelectOneFieldWithoutConditions() {
@@ -36,7 +39,7 @@ class MySQLSelectSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$this->assertEquals(
-			'SELECT some_field FROM some_table',
+			'SELECT ~some_field~ FROM ~some_table~',
 			$sql
 		);
 	}
@@ -53,7 +56,7 @@ class MySQLSelectSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$this->assertEquals(
-			'SELECT some_field, another_field, ThirdFieldName FROM some_table',
+			'SELECT ~some_field~, ~another_field~, ~ThirdFieldName~ FROM ~some_table~',
 			$sql
 		);
 	}
