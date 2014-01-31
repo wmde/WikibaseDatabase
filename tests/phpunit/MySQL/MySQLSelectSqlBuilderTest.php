@@ -36,7 +36,24 @@ class MySQLSelectSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$this->assertEquals(
-			'',
+			'SELECT some_field FROM some_table',
+			$sql
+		);
+	}
+
+	public function testSelectMultipleFieldsWithoutConditions() {
+		$sql = $this->selectBuilder->getSelectSql(
+			'some_table',
+			array(
+				'some_field',
+				'another_field',
+				'ThirdFieldName',
+			),
+			array()
+		);
+
+		$this->assertEquals(
+			'SELECT some_field, another_field, ThirdFieldName FROM some_table',
 			$sql
 		);
 	}

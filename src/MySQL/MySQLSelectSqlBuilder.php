@@ -22,7 +22,16 @@ class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 	 * @return string
 	 */
 	public function getSelectSql( $tableName, array $fieldNames, array $conditions, array $options = array() ) {
-		return '';
+
+		return
+			'SELECT '
+				. $this->getFieldListSql( $fieldNames )
+				. ' FROM ' . $tableName
+				. '';
+	}
+
+	private function getFieldListSql( array $fieldNames ) {
+		return implode( ', ', $fieldNames );
 	}
 
 }
