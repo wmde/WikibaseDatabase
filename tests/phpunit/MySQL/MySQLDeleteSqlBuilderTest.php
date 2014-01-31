@@ -4,6 +4,8 @@ namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLConditionSqlBuilder;
 use Wikibase\Database\MySQL\MySQLDeleteSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeIdentifierEscaper;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeValueEscaper;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLDeleteSqlBuilder
@@ -25,22 +27,20 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	protected $sqlBuilder;
 
 	public function setUp() {
-		$escaper = $this->getMock( 'Wikibase\Database\ValueEscaper' );
-
-		$escaper->expects( $this->any() )
-			->method( 'getEscapedValue' )
-			->will( $this->returnCallback( function( $value ) {
-				return '|' . $value . '|';
-			} ) );
-
-		$this->sqlBuilder = new MySQLDeleteSqlBuilder( new MySQLConditionSqlBuilder( $escaper ) );
+		$this->sqlBuilder = new MySQLDeleteSqlBuilder(
+			new FakeIdentifierEscaper(),
+			new MySQLConditionSqlBuilder(
+				new FakeValueEscaper(),
+				new FakeIdentifierEscaper()
+			)
+		);
 	}
 
 	public function testGivenNoConditions_noConditionsAreInSql() {
 		$this->assertTableAndConditionsResultInSql(
 			'some_table',
 			array(),
-			'DELETE FROM some_table'
+			'DELETE FROM ~some_table~'
 		);
 	}
 
@@ -57,7 +57,7 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			array(
 				'some_field' => 'foobar'
 			),
-			'DELETE FROM some_table WHERE some_field=|foobar|'
+			'DELETE FROM ~some_table~ WHERE ~some_field~=|foobar|'
 		);
 	}
 
@@ -68,7 +68,7 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'some_field' => 'foobar',
 				'another_field' => 42
 			),
-			'DELETE FROM some_table WHERE some_field=|foobar| AND another_field=|42|'
+			'DELETE FROM ~some_table~ WHERE ~some_field~=|foobar| AND ~another_field~=|42|'
 		);
 	}
 
@@ -80,7 +80,7 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'another_field' => 42,
 				'third_field' => ''
 			),
-			'DELETE FROM some_table WHERE some_field=|foobar| AND another_field=|42| AND third_field=||'
+			'DELETE FROM ~some_table~ WHERE ~some_field~=|foobar| AND ~another_field~=|42| AND ~third_field~=||'
 		);
 	}
 
@@ -92,7 +92,7 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'another_field' => 42,
 				'third_field > 9000'
 			),
-			'DELETE FROM some_table WHERE some_field=foobar AND another_field=|42| AND third_field > 9000'
+			'DELETE FROM ~some_table~ WHERE some_field=foobar AND ~another_field~=|42| AND third_field > 9000'
 		);
 	}
 
@@ -106,7 +106,7 @@ class MySQLDeleteSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					'bar'
 				)
 			),
-			'DELETE FROM some_table WHERE some_field IN (|foo|, |42|, |bar|)'
+			'DELETE FROM ~some_table~ WHERE ~some_field~ IN (|foo|, |42|, |bar|)'
 		);
 	}
 

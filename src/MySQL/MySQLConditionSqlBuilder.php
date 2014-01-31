@@ -2,9 +2,12 @@
 
 namespace Wikibase\Database\MySQL;
 
+use Wikibase\Database\IdentifierEscaper;
 use Wikibase\Database\ValueEscaper;
 
 /**
+ * This class is tested via MySQLDeleteSqlBuilderTest.
+ *
  * @since 0.2
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
@@ -12,9 +15,11 @@ use Wikibase\Database\ValueEscaper;
 class MySQLConditionSqlBuilder {
 
 	private $escaper;
+	private $identifierEscaper;
 
-	public function __construct( ValueEscaper $escaper ) {
+	public function __construct( ValueEscaper $escaper, IdentifierEscaper $identifierEscaper ) {
 		$this->escaper = $escaper;
+		$this->identifierEscaper = $identifierEscaper;
 	}
 
 	public function getConditionSql( array $conditions ) {
@@ -46,11 +51,15 @@ class MySQLConditionSqlBuilder {
 			$escapedValues[] = $this->escaper->getEscapedValue( $value );
 		}
 
-		return $field . ' IN (' . implode( ', ', $escapedValues ) . ')';
+		return $this->identifierEscaper->getEscapedIdentifier( $field )
+			. ' IN (' . implode( ', ', $escapedValues ) . ')';
 	}
 
 	protected function getEqualitySql( $field, $value ) {
-		return $field . '=' . $this->escaper->getEscapedValue( $value );
+		return
+			$this->identifierEscaper->getEscapedIdentifier( $field )
+			. '='
+			. $this->escaper->getEscapedValue( $value );
 	}
 
 }

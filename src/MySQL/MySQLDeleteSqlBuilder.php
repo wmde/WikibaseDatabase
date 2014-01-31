@@ -2,8 +2,8 @@
 
 namespace Wikibase\Database\MySQL;
 
+use Wikibase\Database\IdentifierEscaper;
 use Wikibase\Database\QueryInterface\DeleteSqlBuilder;
-use Wikibase\Database\ValueEscaper;
 
 /**
  * @since 0.2
@@ -13,9 +13,11 @@ use Wikibase\Database\ValueEscaper;
 class MySQLDeleteSqlBuilder implements DeleteSqlBuilder {
 
 	private $conditionBuilder;
+	private $identifierEscaper;
 
-	public function __construct( MySQLConditionSqlBuilder $conditionBuilder ) {
+	public function __construct( IdentifierEscaper $identifierEscaper, MySQLConditionSqlBuilder $conditionBuilder ) {
 		$this->conditionBuilder = $conditionBuilder;
+		$this->identifierEscaper = $identifierEscaper;
 	}
 
 	/**
@@ -27,7 +29,7 @@ class MySQLDeleteSqlBuilder implements DeleteSqlBuilder {
 	 * @return string
 	 */
 	public function getDeleteSql( $tableName, array $conditions ) {
-		$sql = 'DELETE FROM ' . $tableName;
+		$sql = 'DELETE FROM ' . $this->identifierEscaper->getEscapedIdentifier( $tableName );
 
 		if ( !empty( $conditions ) ) {
 			$sql .= ' ' . $this->conditionBuilder->getConditionSql( $conditions );
