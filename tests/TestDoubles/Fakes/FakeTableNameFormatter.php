@@ -11,13 +11,6 @@ use Wikibase\Database\TableNameFormatter;
  */
 class FakeTableNameFormatter implements TableNameFormatter {
 
-	/**
-	 * @see TableNameFormatter::formatTableName
-	 *
-	 * @param string $tableName
-	 *
-	 * @return string
-	 */
 	public function formatTableName( $tableName ) {
 		return 'prefix_' . $tableName;
 	}

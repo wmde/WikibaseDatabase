@@ -3,6 +3,7 @@
 namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLInsertSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeValueEscaper;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLInsertSqlBuilder
@@ -23,15 +24,7 @@ class MySQLInsertSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	protected $sqlBuilder;
 
 	public function setUp() {
-		$escaper = $this->getMock( 'Wikibase\Database\ValueEscaper' );
-
-		$escaper->expects( $this->any() )
-			->method( 'getEscapedValue' )
-			->will( $this->returnCallback( function( $value ) {
-				return '|' . $value . '|';
-			} ) );
-
-		$this->sqlBuilder = new MySQLInsertSqlBuilder( $escaper );
+		$this->sqlBuilder = new MySQLInsertSqlBuilder( new FakeValueEscaper() );
 	}
 
 	public function testGivenNoValues_returnsEmptyString() {
