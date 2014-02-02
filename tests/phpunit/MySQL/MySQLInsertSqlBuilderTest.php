@@ -3,6 +3,9 @@
 namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLInsertSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeEscaper;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeIdentifierEscaper;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 use Wikibase\Database\Tests\TestDoubles\Fakes\FakeValueEscaper;
 
 /**
@@ -24,7 +27,10 @@ class MySQLInsertSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	protected $sqlBuilder;
 
 	public function setUp() {
-		$this->sqlBuilder = new MySQLInsertSqlBuilder( new FakeValueEscaper() );
+		$this->sqlBuilder = new MySQLInsertSqlBuilder(
+			new FakeEscaper(),
+			new FakeTableNameFormatter()
+		);
 	}
 
 	public function testGivenNoValues_returnsEmptyString() {
@@ -44,7 +50,7 @@ class MySQLInsertSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			array(
 				'some_field' => 'foobar'
 			),
-			"INSERT INTO some_table (some_field) VALUES (|foobar|)"
+			"INSERT INTO ~prefix_some_table~ (~some_field~) VALUES (|foobar|)"
 		);
 	}
 
@@ -56,7 +62,7 @@ class MySQLInsertSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'another_field' => 42,
 				'last_field' => 'o_O',
 			),
-			"INSERT INTO some_table (some_field, another_field, last_field) VALUES (|foobar|, |42|, |o_O|)"
+			"INSERT INTO ~prefix_some_table~ (~some_field~, ~another_field~, ~last_field~) VALUES (|foobar|, |42|, |o_O|)"
 		);
 	}
 
