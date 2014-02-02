@@ -7,6 +7,7 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\SQLite\SQLiteTableDefinitionReader;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\SQLite\SQLiteTableDefinitionReader
@@ -44,12 +45,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				return substr( $value, 1, -1 );
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $tableName ) {
-				return 'prefix_' . $tableName;
-			} ) );
+		$mockTableNameFormatter = new FakeTableNameFormatter();
 
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )

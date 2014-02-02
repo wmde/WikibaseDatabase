@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLIndexSqlBuilder;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLIndexSqlBuilder
@@ -29,12 +30,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $tableName ) {
-				return 'prefix_' . $tableName;
-			} ) );
+		$mockTableNameFormatter = new FakeTableNameFormatter();
 
 		$sqlBuilder = new MySQLIndexSqlBuilder( $mockEscaper, $mockTableNameFormatter );
 		$sql = $sqlBuilder->getIndexSQL( $index, 'tableName' );

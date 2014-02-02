@@ -7,6 +7,7 @@ use Wikibase\Database\MySQL\MySQLTableDefinitionReader;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLTableDefinitionReader
@@ -40,13 +41,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				->will( $this->returnValue( new ArrayIterator( $result ) ) );
 		}
 
-		$tableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-
-		$tableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $tableName ) {
-				return '|' . $tableName . '|';
-			} ) );
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		return new MySQLTableDefinitionReader( $queryInterface, $tableNameFormatter );
 	}

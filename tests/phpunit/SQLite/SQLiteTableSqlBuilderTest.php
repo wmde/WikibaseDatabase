@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\SQLite\SQLiteTableSqlBuilder
@@ -32,12 +33,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $input ) {
-				return "||$input||";
-			} ) );
+		$mockTableNameFormatter = new FakeTableNameFormatter();
 
 		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteFieldSqlBuilder' )
 			->disableOriginalConstructor()
@@ -100,7 +96,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				'tableName',
 				array( $this->newMockField( 'foo' ) )
 			),
-			'CREATE TABLE -||tableName||- (<FIELDSQL>);'
+			'CREATE TABLE -prefix_tableName- (<FIELDSQL>);'
 		);
 
 		$argLists[] = array(
@@ -109,7 +105,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
 				array( $this->newMockIndex( 'ham' ) )
 			),
-			'CREATE TABLE -||tableName||- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
+			'CREATE TABLE -prefix_tableName- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
 			. '<INDEXSQL>'
 		);
 
@@ -119,7 +115,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
 				array( $this->newMockIndex( 'ham' ), $this->newMockIndex( 'egg' ) )
 			),
-			'CREATE TABLE -||tableName||- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
+			'CREATE TABLE -prefix_tableName- (<FIELDSQL>, <FIELDSQL>, <FIELDSQL>);' . PHP_EOL
 			. '<INDEXSQL>' . PHP_EOL
 			. '<INDEXSQL>'
 		);
