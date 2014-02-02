@@ -42,7 +42,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = new FakeTableNameFormatter();
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\MySQL\MySQLFieldSqlBuilder' )
 			->disableOriginalConstructor()
@@ -54,7 +54,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return new MySQLTableSqlBuilder(
 			self::DB_NAME,
 			$mockEscaper,
-			$mockTableNameFormatter,
+			$tableNameFormatter,
 			$mockFieldSqlBuilder
 		);
 	}

@@ -35,9 +35,9 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = new FakeTableNameFormatter();
+		$tableNameFormatter = new FakeTableNameFormatter();
 
-		return new MySQLSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter );
+		return new MySQLSchemaSqlBuilder( $mockEscaper, $tableNameFormatter );
 	}
 
 	public function testGetRemoveFieldSql(){

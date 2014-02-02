@@ -45,7 +45,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				return substr( $value, 1, -1 );
 			} ) );
 
-		$mockTableNameFormatter = new FakeTableNameFormatter();
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		foreach( $results as $key => $result ){
 			$mockQueryInterface->expects( $this->at( $key + 1 ) )
@@ -56,7 +56,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		return new SQLiteTableDefinitionReader(
 			$mockQueryInterface,
 			$mockUnEscaper,
-			$mockTableNameFormatter
+			$tableNameFormatter
 		);
 	}
 

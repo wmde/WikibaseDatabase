@@ -34,7 +34,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = new FakeTableNameFormatter();
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		$mockQueryInterface = $this
 			->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteTableDefinitionReader' )
@@ -44,7 +44,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'readDefinition' )
 			->will( $this->returnValue( $existingDefinition ) );
 
-		return new SQLiteSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter, $mockQueryInterface );
+		return new SQLiteSchemaSqlBuilder( $mockEscaper, $tableNameFormatter, $mockQueryInterface );
 	}
 
 	public function testGetRemoveFieldSql(){

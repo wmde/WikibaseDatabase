@@ -33,7 +33,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = new FakeTableNameFormatter();
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteFieldSqlBuilder' )
 			->disableOriginalConstructor()
@@ -51,7 +51,7 @@ class SQLiteTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		return new SQLiteTableSqlBuilder(
 			$mockEscaper,
-			$mockTableNameFormatter,
+			$tableNameFormatter,
 			$mockFieldSqlBuilder,
 			$mockIndexSqlBuilder
 		);

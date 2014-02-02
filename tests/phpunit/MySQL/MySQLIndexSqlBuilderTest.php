@@ -30,9 +30,9 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = new FakeTableNameFormatter();
+		$tableNameFormatter = new FakeTableNameFormatter();
 
-		$sqlBuilder = new MySQLIndexSqlBuilder( $mockEscaper, $mockTableNameFormatter );
+		$sqlBuilder = new MySQLIndexSqlBuilder( $mockEscaper, $tableNameFormatter );
 		$sql = $sqlBuilder->getIndexSQL( $index, 'tableName' );
 		$this->assertEquals( $expectedSQL, $sql );
 	}
