@@ -31,6 +31,7 @@ class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 	 * @return string
 	 */
 	public function getSelectSql( $tableName, array $fieldNames, array $conditions, array $options = array() ) {
+		// TODO: implement options
 
 		return $this->getSelectClause( $fieldNames )
 				. $this->getFromClause( $tableName )
