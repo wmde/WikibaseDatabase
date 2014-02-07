@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\MySQL;
 use Wikibase\Database\MySQL\MySQLSchemaSqlBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLSchemaSqlBuilder
@@ -34,39 +35,34 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->atLeastOnce() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $input ) {
-				return "||$input||";
-			} ) );
+		$tableNameFormatter = new FakeTableNameFormatter();
 
-		return new MySQLSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter );
+		return new MySQLSchemaSqlBuilder( $mockEscaper, $tableNameFormatter );
 	}
 
 	public function testGetRemoveFieldSql(){
 		$instance = $this->newInstance();
 		$sql = $instance->getRemoveFieldSql( 'tableName', 'fieldName' );
-		$this->assertEquals( "ALTER TABLE -||tableName||- DROP -fieldName-", $sql );
+		$this->assertEquals( "ALTER TABLE -prefix_tableName- DROP -fieldName-", $sql );
 	}
 
 	public function testGetAddFieldSql(){
 		$instance = $this->newInstance();
 		$field = new FieldDefinition( 'intField', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 );
 		$sql = $instance->getAddFieldSql( 'tableName', $field );
-		$this->assertEquals( 'ALTER TABLE -||tableName||- ADD -intField- INT DEFAULT |42| NOT NULL', $sql );
+		$this->assertEquals( 'ALTER TABLE -prefix_tableName- ADD -intField- INT DEFAULT |42| NOT NULL', $sql );
 	}
 
 	public function testGetRemoveIndexSql(){
 		$instance = $this->newInstance();
 		$sql = $instance->getRemoveIndexSql( 'tableName', 'indexName' );
-		$this->assertEquals( "DROP INDEX -indexName- ON -||tableName||-", $sql );
+		$this->assertEquals( "DROP INDEX -indexName- ON -prefix_tableName-", $sql );
 	}
 
 	public function testGetAddIndexSql(){
 		$instance = $this->newInstance();
 		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'indexName', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
-		$this->assertEquals( "CREATE INDEX -indexName- ON -||tableName||- (-a-,-b-)", $sql );
+		$this->assertEquals( "CREATE INDEX -indexName- ON -prefix_tableName- (-a-,-b-)", $sql );
 	}
 
 }

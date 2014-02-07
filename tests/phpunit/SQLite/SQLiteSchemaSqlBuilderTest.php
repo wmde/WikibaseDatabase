@@ -6,6 +6,7 @@ use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder
@@ -33,12 +34,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $tableName ) {
-				return 'prefix_' . $tableName;
-			} ) );
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		$mockQueryInterface = $this
 			->getMockBuilder( 'Wikibase\Database\SQLite\SQLiteTableDefinitionReader' )
@@ -48,7 +44,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			->method( 'readDefinition' )
 			->will( $this->returnValue( $existingDefinition ) );
 
-		return new SQLiteSchemaSqlBuilder( $mockEscaper, $mockTableNameFormatter, $mockQueryInterface );
+		return new SQLiteSchemaSqlBuilder( $mockEscaper, $tableNameFormatter, $mockQueryInterface );
 	}
 
 	public function testGetRemoveFieldSql(){

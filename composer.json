@@ -29,9 +29,9 @@
 		"php": ">=5.3.2"
 	},
 	"autoload": {
-		"classmap": [
-			"src"
-		],
+		"psr-4": {
+			"Wikibase\\Database\\": "src/"
+		},
 		"files" : [
 			"WikibaseDatabase.php"
 		]

@@ -1,20 +1,29 @@
 <?php
 
-namespace Wikibase\Database\QueryInterface;
+namespace Wikibase\Database\PDO;
+
+use PDOStatement;
 
 /**
- * Iterator for selection results.
- * Each item is an object that has as properties the field names.
+ * TODO: test
  *
- * @since 0.1
+ * @since 0.2
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class ResultIterator implements \Iterator {
+class PDOResult implements \Iterator {
 
 	protected $iterator;
 
-	public function __construct( array $rows ) {
+	public function __construct( PDOStatement $pdoResult ) {
+		// This is currently implemented without much regard to performance.
+		// A more efficient adaptation from Traversable to Iterator can be made.
+		$rows = array();
+
+		foreach ( $pdoResult as $row ) {
+			$rows[] = $row;
+		}
+
 		$this->iterator = new \ArrayIterator( $rows );
 	}
 

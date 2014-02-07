@@ -1,51 +1,23 @@
 language: php
 
-php:
-  - 5.3
-  - 5.5
-
 env:
-  - DBTYPE=mysql TESTSUITE=Standalone
-  - DBTYPE=sqlite TESTSUITE=Standalone
-  - DBTYPE=postgres TESTSUITE=Standalone
-  - DBTYPE=mysql TESTSUITE=MediaWiki
-  - DBTYPE=sqlite TESTSUITE=MediaWiki
-  - DBTYPE=postgres TESTSUITE=MediaWiki
+  - THENEEDFORTHIS=FAIL
 
 matrix:
-  allow_failures:
-    - env: DBTYPE=postgres TESTSUITE=MediaWiki
-    - env: DBTYPE=postgres TESTSUITE=Standalone
+  include:
+    - env: DBTYPE=mysql; TESTSUITE=Standalone
+      php: 5.3
+    - env: DBTYPE=sqlite; TESTSUITE=Standalone
+      php: 5.5
+    - env: DBTYPE=mysql; TESTSUITE=MediaWiki; MW=master
+      php: 5.5
+    - env: DBTYPE=sqlite; TESTSUITE=MediaWiki; MW=1.22.0
+      php: 5.3
+    - env: DBTYPE=mysql; TESTSUITE=PDO
+      php: 5.5
   exclude:
-    - php: 5.3
-      env: DBTYPE=postgres TESTSUITE=Standalone
-    - php: 5.3
-      env: DBTYPE=postgres TESTSUITE=MediaWiki
-    - php: 5.3
-      env: DBTYPE=mysql TESTSUITE=Standalone
-    - php: 5.3
-      env: DBTYPE=sqlite TESTSUITE=Standalone
+    - env: THENEEDFORTHIS=FAIL
 
+before_script: composer self-update
 
-before_script: bash .travis.sh $TESTSUITE
-
-script:
-  - if [ "$TESTSUITE" == "MediaWiki" ] ; then cd ../phase3/extensions/WikibaseDatabase ; fi
-  - phpunit --testsuite=WikibaseDatabase$TESTSUITE
-  - if [ "$TESTSUITE" == "MediaWiki" ] ; then phpunit --coverage-clover build/logs/clover.xml ; fi
-
-after_script:
-  - composer require satooshi/php-coveralls dev-master
-  - php vendor/bin/coveralls -v
-
-notifications:
-  email:
-    recipients:
-      - jeroendedauw@gmail.com
-    on_success: change
-    on_failure: always
-  irc:
-    channels:
-      - "chat.freenode.net#wikidata"
-    on_success: change
-    on_failure: always
+script: bash ./build/travis/script.sh

@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\MySQL;
 use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLTableSqlBuilder
@@ -41,12 +42,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $value ) {
-				return 'prefix_' . $value;
-			} ) );
+		$tableNameFormatter = new FakeTableNameFormatter();
 
 		$mockFieldSqlBuilder = $this->getMockBuilder( 'Wikibase\Database\MySQL\MySQLFieldSqlBuilder' )
 			->disableOriginalConstructor()
@@ -58,7 +54,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return new MySQLTableSqlBuilder(
 			self::DB_NAME,
 			$mockEscaper,
-			$mockTableNameFormatter,
+			$tableNameFormatter,
 			$mockFieldSqlBuilder
 		);
 	}

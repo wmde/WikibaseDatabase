@@ -2,18 +2,10 @@
 *~
 *.kate-swp
 
-!.gitignore
-!.gitreview
-
-!.travis.yml
-!.travis.sh
-
-!.coveralls.yml
-
-!.scrutinizer.yml
+!.*
+.idea/
 
 composer.phar
 composer.lock
 
 vendor/
-build/

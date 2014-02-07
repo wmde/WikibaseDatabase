@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\SQLite\SQLiteIndexSqlBuilder;
+use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
  * @covers Wikibase\Database\SQLite\SQLiteIndexSqlBuilder
@@ -29,14 +30,9 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				return '-' . $value . '-';
 			} ) );
 
-		$mockTableNameFormatter = $this->getMock( 'Wikibase\Database\TableNameFormatter' );
-		$mockTableNameFormatter->expects( $this->any() )
-			->method( 'formatTableName' )
-			->will( $this->returnCallback( function( $tableName ) {
-				return 'prefix_' . $tableName;
-			} ) );
+		$tableNameFormatter = new FakeTableNameFormatter();
 
-		$sqlBuilder = new SQLiteIndexSqlBuilder( $mockEscaper, $mockTableNameFormatter );
+		$sqlBuilder = new SQLiteIndexSqlBuilder( $mockEscaper, $tableNameFormatter );
 		$sql = $sqlBuilder->getIndexSQL( $index, 'tableName' );
 		$this->assertEquals( $expectedSQL, $sql );
 	}
