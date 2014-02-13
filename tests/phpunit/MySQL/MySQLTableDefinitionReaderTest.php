@@ -58,6 +58,9 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function testReadDefinition( $results, TableDefinition $expectedDefinition ) {
 		$reader = $this->newInstance( $results );
 		$definition = $reader->readDefinition( 'dbNametableName' );
+		if( $definition != $expectedDefinition ) {
+			var_dump( $definition );var_dump( $expectedDefinition );
+		}
 		$this->assertEquals( $definition, $expectedDefinition );
 	}
 

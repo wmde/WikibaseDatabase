@@ -46,7 +46,7 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 	protected function getDefault( $default, $type ) {
 		if ( $default !== null ) {
 			//TODO ints shouldn't have quotes added to them so we can not use the escaper used for strings below???
-			if( $type === FieldDefinition::TYPE_INTEGER ){
+			if( $type === FieldDefinition::TYPE_INTEGER || $type === FieldDefinition::TYPE_BIGINT ){
 				return ' DEFAULT ' . $default;
 			}
 			return ' DEFAULT ' . $this->escaper->getEscapedValue( $default );
@@ -76,6 +76,8 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		switch ( $fieldType ) {
 			case FieldDefinition::TYPE_INTEGER:
 				return 'INTEGER';
+			case FieldDefinition::TYPE_BIGINT:
+				return 'BIGINT';
 			case FieldDefinition::TYPE_FLOAT:
 				return 'FLOAT'; // SQLite uses REAL, not FLOAT
 			case FieldDefinition::TYPE_TEXT:

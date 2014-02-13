@@ -33,6 +33,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'o', FieldDefinition::TYPE_TEXT ),
 				new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
 				new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+				new FieldDefinition( 'bi', FieldDefinition::TYPE_BIGINT, FieldDefinition::NOT_NULL, 42 ),
 			)
 		);
 

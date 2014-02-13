@@ -55,6 +55,20 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			'foo',
 			array(
 				new FieldDefinition(
+					'field',
+					FieldDefinition::TYPE_BOOLEAN
+				),
+				new FieldDefinition(
+					'field2',
+					FieldDefinition::TYPE_BIGINT
+				),
+			)
+		);
+
+		$definitions[] = new TableDefinition(
+			'foo',
+			array(
+				new FieldDefinition(
 					'bool',
 					FieldDefinition::TYPE_BOOLEAN
 				),
