@@ -46,7 +46,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition(
 					'field',
-					FieldDefinition::TYPE_BOOLEAN
+					FieldDefinition::TYPE_TINYINT
 				)
 			)
 		);
@@ -56,7 +56,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition(
 					'field',
-					FieldDefinition::TYPE_BOOLEAN
+					FieldDefinition::TYPE_TINYINT
 				),
 				new FieldDefinition(
 					'field2',
@@ -69,8 +69,8 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			'foo',
 			array(
 				new FieldDefinition(
-					'bool',
-					FieldDefinition::TYPE_BOOLEAN
+					'tinyint',
+					FieldDefinition::TYPE_TINYINT
 				),
 				new FieldDefinition(
 					'int',

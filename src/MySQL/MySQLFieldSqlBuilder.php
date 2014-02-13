@@ -78,7 +78,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 			//todo define max length of text fields?
 			case FieldDefinition::TYPE_TEXT:
 				return 'BLOB'; // This is 64k max. And: MySQL also has a TEXT type.
-			case FieldDefinition::TYPE_BOOLEAN:
+			case FieldDefinition::TYPE_TINYINT:
 				return 'TINYINT';
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );

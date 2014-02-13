@@ -73,13 +73,13 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => 'foo', 'extra' => '' ),
 					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
-					(object)array( 'name' => 'boolField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'tinyintField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 				),
 				array(
 					(object)array( 'name' => 'PRIMARY', 'columnName' => 'intField' ),
 					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'floatField' ),
-					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'boolField' ),
+					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'tinyintField' ),
 				),
 				array( (object)array( 'name' => 'indexName', 'columns' => 'intField,textField' ) )
 			),
@@ -104,8 +104,8 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 						FieldDefinition::NOT_NULL
 					),
 					new FieldDefinition(
-						'boolField',
-						FieldDefinition::TYPE_BOOLEAN
+						'tinyintField',
+						FieldDefinition::TYPE_TINYINT
 					),
 					new FieldDefinition(
 						'floatField',
@@ -115,7 +115,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				array(
 					new IndexDefinition(
 						'uniqueIndexName',
-						array( 'floatField' => 0, 'boolField' => 0 ),
+						array( 'floatField' => 0, 'tinyintField' => 0 ),
 						IndexDefinition::TYPE_UNIQUE
 					),
 					new IndexDefinition(

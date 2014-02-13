@@ -8,6 +8,7 @@ These are the release notes for the [Wikibase Database library](README.md).
 is thus responsible for autoloading.
 * MediaWiki plugin: added compatibility with changes in MediaWiki 1.22.
 * Replaced ResultIterator by PHPs native Iterator interface. The interface signature is the same.
+* FieldDefinition::TYPE_BOOL has been changed to FieldDefinition::TYPE_TINYINT
 
 ### Additions
 

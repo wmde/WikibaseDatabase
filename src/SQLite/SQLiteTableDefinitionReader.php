@@ -130,7 +130,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	private function getFieldType( $type ) {
 		switch ( $type ) {
 			case 'TINYINT':
-				return 'bool';
+				return 'tinyint';
 			case 'BLOB':
 				return 'str';
 			case 'INT':

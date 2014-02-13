@@ -55,7 +55,7 @@ class FieldDefinition {
 	 */
 	private $autoIncrement;
 
-	const TYPE_BOOLEAN = 'bool';
+	const TYPE_TINYINT = 'tinyint';
 	const TYPE_TEXT = 'str'; // need at least short sting vs text vs blob
 	const TYPE_INTEGER = 'int';
 	const TYPE_BIGINT = 'bigint';

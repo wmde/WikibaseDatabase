@@ -81,7 +81,7 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
 				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
 				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
-				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
+				new FieldDefinition( 'tinyintfield', FieldDefinition::TYPE_TINYINT ),
 			)
 		);
 
@@ -103,7 +103,7 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 3 ),
 				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NULL ),
-				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, FieldDefinition::NOT_NULL, true ),
+				new FieldDefinition( 'tinyintfield', FieldDefinition::TYPE_TINYINT, FieldDefinition::NOT_NULL, true ),
 			),
 			array(
 				new IndexDefinition( 'PRIMARY', array( 'intfield' => 0 ), IndexDefinition::TYPE_PRIMARY ),

@@ -157,7 +157,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 		$fields = array(
 			new FieldDefinition( 'h', FieldDefinition::TYPE_TEXT ),
-			new FieldDefinition( 'a', FieldDefinition::TYPE_BOOLEAN ),
+			new FieldDefinition( 'a', FieldDefinition::TYPE_TINYINT ),
 			new FieldDefinition( 'x', FieldDefinition::TYPE_INTEGER ),
 		);
 
@@ -301,7 +301,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 			array( 'o',
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
 					array(
 						new IndexDefinition( 'o', array( 'a' => 1 ), IndexDefinition::TYPE_INDEX ),
 						new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ),
@@ -309,19 +309,19 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				),
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
 					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 			),
 			array( 'o',
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
 					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_BOOLEAN ) ),
+					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
 					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 			),

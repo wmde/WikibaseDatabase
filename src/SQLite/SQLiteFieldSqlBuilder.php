@@ -82,7 +82,7 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 				return 'FLOAT'; // SQLite uses REAL, not FLOAT
 			case FieldDefinition::TYPE_TEXT:
 				return 'BLOB';  // could/should be TEXT?
-			case FieldDefinition::TYPE_BOOLEAN:
+			case FieldDefinition::TYPE_TINYINT:
 				return 'TINYINT';
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );

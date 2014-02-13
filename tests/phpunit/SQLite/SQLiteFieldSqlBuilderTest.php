@@ -48,7 +48,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_BOOLEAN
+				FieldDefinition::TYPE_TINYINT
 			),
 			'-fieldName- TINYINT NULL'
 		);
@@ -82,7 +82,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_BOOLEAN,
+				FieldDefinition::TYPE_TINYINT,
 				FieldDefinition::NOT_NULL,
 				'1'
 			),

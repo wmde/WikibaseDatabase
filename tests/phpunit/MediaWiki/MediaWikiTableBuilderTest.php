@@ -68,7 +68,7 @@ class MediaWikiTableBuilderTest extends \PHPUnit_Framework_TestCase {
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
 			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
 			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
-			new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
+			new FieldDefinition( 'tinyintfield', FieldDefinition::TYPE_TINYINT ),
 		) );
 
 		$tables[] = new TableDefinition( 'defaultfieldvalues', array(
