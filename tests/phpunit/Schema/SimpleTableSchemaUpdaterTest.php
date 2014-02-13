@@ -82,7 +82,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 				),
 				new FieldDefinition(
 					'text',
-					FieldDefinition::TYPE_TEXT
+					FieldDefinition::TYPE_BLOB
 				)
 			),
 			array(
@@ -180,7 +180,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 
 		$updater = new SimpleTableSchemaUpdater( $schema );
 
-		$field = new FieldDefinition( 'rewtwery', FieldDefinition::TYPE_TEXT );
+		$field = new FieldDefinition( 'rewtwery', FieldDefinition::TYPE_BLOB );
 
 		$this->setExpectedException( 'Wikibase\Database\Schema\TableSchemaUpdateException' );
 

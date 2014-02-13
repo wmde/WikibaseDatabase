@@ -96,7 +96,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_TEXT,
+				FieldDefinition::TYPE_BLOB,
 				FieldDefinition::NOT_NULL,
 				'foo'
 			),

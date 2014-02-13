@@ -94,7 +94,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					),
 					new FieldDefinition(
 						'textField',
-						FieldDefinition::TYPE_TEXT,
+						FieldDefinition::TYPE_BLOB,
 						FieldDefinition::NULL,
 						'foo'
 					),

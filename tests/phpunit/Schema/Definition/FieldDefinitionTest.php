@@ -21,7 +21,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 		$constructorArgs[] = array(
 			'names',
-			FieldDefinition::TYPE_TEXT
+			FieldDefinition::TYPE_BLOB
 		);
 
 		$constructorArgs[] = array(

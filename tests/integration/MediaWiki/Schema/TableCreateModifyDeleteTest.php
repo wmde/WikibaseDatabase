@@ -81,7 +81,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
+				new FieldDefinition( 'startField', FieldDefinition::TYPE_BLOB )
 			)
 		);
 		$this->setupTestTable( $table );
@@ -111,8 +111,8 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField1', FieldDefinition::TYPE_TEXT ),
-				new FieldDefinition( 'startField2', FieldDefinition::TYPE_TEXT ),
+				new FieldDefinition( 'startField1', FieldDefinition::TYPE_BLOB ),
+				new FieldDefinition( 'startField2', FieldDefinition::TYPE_BLOB ),
 			)
 		);
 		$this->setupTestTable( $table );
@@ -145,7 +145,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$startTable = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
+				new FieldDefinition( 'startField', FieldDefinition::TYPE_BLOB )
 			)
 		);
 		$this->setupTestTable( $startTable );

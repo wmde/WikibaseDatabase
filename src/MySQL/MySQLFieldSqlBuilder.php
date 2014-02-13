@@ -77,9 +77,9 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 				return 'BIGINT';
 			case FieldDefinition::TYPE_FLOAT:
 				return 'FLOAT';
-			//todo define max length of text fields?
-			case FieldDefinition::TYPE_TEXT:
-				return 'BLOB'; // This is 64k max. And: MySQL also has a TEXT type.
+			//todo define max length of blob fields?
+			case FieldDefinition::TYPE_BLOB:
+				return 'BLOB'; // This is 64k max.
 			case FieldDefinition::TYPE_TINYINT:
 				return 'TINYINT';
 			default:

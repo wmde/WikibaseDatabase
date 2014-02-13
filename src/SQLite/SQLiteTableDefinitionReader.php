@@ -132,7 +132,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			case 'TINYINT':
 				return 'tinyint';
 			case 'BLOB':
-				return 'str';
+				return 'blob';
 			case 'INT':
 			case 'INTEGER':
 				return 'int';

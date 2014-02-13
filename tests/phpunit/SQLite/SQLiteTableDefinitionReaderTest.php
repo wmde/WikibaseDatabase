@@ -87,7 +87,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 			new TableDefinition(
 				'underscore_name',
 				array(
-					new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
+					new FieldDefinition( 'startField', FieldDefinition::TYPE_BLOB )
 				)
 			),
 		);
@@ -116,7 +116,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					),
 					new FieldDefinition(
 						'textField',
-						FieldDefinition::TYPE_TEXT
+						FieldDefinition::TYPE_BLOB
 					),
 					new FieldDefinition(
 						'decimalField',

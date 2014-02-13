@@ -67,7 +67,7 @@ class MediaWikiTableBuilderTest extends \PHPUnit_Framework_TestCase {
 		$tables[] = new TableDefinition( 'differentfieldtypes', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
 			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
+			new FieldDefinition( 'textfield', FieldDefinition::TYPE_BLOB ),
 			new FieldDefinition( 'tinyintfield', FieldDefinition::TYPE_TINYINT ),
 		) );
 
@@ -83,7 +83,7 @@ class MediaWikiTableBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		$tables[] = new TableDefinition( 'notnullfields', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
+			new FieldDefinition( 'textfield', FieldDefinition::TYPE_BLOB, false ),
 		) );
 
 		$argLists = array();

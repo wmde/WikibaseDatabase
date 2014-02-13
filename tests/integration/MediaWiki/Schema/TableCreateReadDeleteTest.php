@@ -80,7 +80,7 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		$tables[] = new TableDefinition( 'different_field_types', array(
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
 				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
-				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
+				new FieldDefinition( 'textfield', FieldDefinition::TYPE_BLOB ),
 				new FieldDefinition( 'tinyintfield', FieldDefinition::TYPE_TINYINT ),
 			)
 		);
@@ -95,12 +95,12 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 
 		$tables[] = new TableDefinition( 'not_null_fields', array(
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
-				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'textfield', FieldDefinition::TYPE_BLOB, FieldDefinition::NOT_NULL ),
 			)
 		);
 
 		$tables[] = new TableDefinition( 'default_field_values_and_indexes', array(
-				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'textfield', FieldDefinition::TYPE_BLOB, FieldDefinition::NOT_NULL ),
 				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 3 ),
 				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NULL ),
 				new FieldDefinition( 'tinyintfield', FieldDefinition::TYPE_TINYINT, FieldDefinition::NOT_NULL, true ),

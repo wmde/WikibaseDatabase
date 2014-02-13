@@ -100,7 +100,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getDataType( $dataType ) {
 		if( stristr( $dataType, 'blob' ) ) {
-			return FieldDefinition::TYPE_TEXT;
+			return FieldDefinition::TYPE_BLOB;
 		} else if ( stristr( $dataType, 'tinyint' ) ) {
 			return FieldDefinition::TYPE_TINYINT;
 		} else if ( stristr( $dataType, 'int' ) ) {

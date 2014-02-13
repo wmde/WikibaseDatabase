@@ -56,7 +56,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 					FieldDefinition::NO_DEFAULT
 				),
 				new FieldDefinition( 'textField',
-					FieldDefinition::TYPE_TEXT
+					FieldDefinition::TYPE_BLOB
 				),
 				new FieldDefinition( 'intField',
 					FieldDefinition::TYPE_INTEGER,
