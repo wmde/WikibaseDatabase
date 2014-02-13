@@ -58,8 +58,9 @@ class FieldDefinition {
 	const TYPE_TINYINT = 'tinyint';
 	const TYPE_TEXT = 'str'; // need at least short sting vs text vs blob
 	const TYPE_INTEGER = 'int';
+	const TYPE_DECIMAL = 'decimal';
 	const TYPE_BIGINT = 'bigint';
-	const TYPE_FLOAT = 'float'; // need decimal vs. float
+	const TYPE_FLOAT = 'float';
 
 	const NOT_NULL = false;
 	const NULL = true;

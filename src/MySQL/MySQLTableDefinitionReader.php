@@ -105,6 +105,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 			return FieldDefinition::TYPE_TINYINT;
 		} else if ( stristr( $dataType, 'int' ) ) {
 			return FieldDefinition::TYPE_INTEGER;
+		} else if ( stristr( $dataType, 'decimal' ) ) {
+			return FieldDefinition::TYPE_DECIMAL;
 		} else if ( stristr( $dataType, 'bigint' ) ) {
 			return FieldDefinition::TYPE_BIGINT;
 		} else if ( stristr( $dataType, 'float' ) ) {

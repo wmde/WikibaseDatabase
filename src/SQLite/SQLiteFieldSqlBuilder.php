@@ -76,6 +76,8 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 		switch ( $fieldType ) {
 			case FieldDefinition::TYPE_INTEGER:
 				return 'INTEGER';
+			case FieldDefinition::TYPE_DECIMAL:
+				return 'DECIMAL';
 			case FieldDefinition::TYPE_BIGINT:
 				return 'BIGINT';
 			case FieldDefinition::TYPE_FLOAT:

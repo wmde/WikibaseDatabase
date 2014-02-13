@@ -46,6 +46,14 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$constructorArgs[] = array(
+			'decimal stuffs',
+			FieldDefinition::TYPE_DECIMAL,
+			FieldDefinition::NOT_NULL,
+			42,
+			FieldDefinition::ATTRIB_UNSIGNED
+		);
+
+		$constructorArgs[] = array(
 			'stuffs',
 			FieldDefinition::TYPE_INTEGER,
 			FieldDefinition::NULL,

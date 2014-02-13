@@ -62,6 +62,10 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 					'field2',
 					FieldDefinition::TYPE_BIGINT
 				),
+				new FieldDefinition(
+					'field3',
+					FieldDefinition::TYPE_DECIMAL
+				),
 			)
 		);
 

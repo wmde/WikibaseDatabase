@@ -104,6 +104,11 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 						FieldDefinition::NOT_NULL
 					),
 					new FieldDefinition(
+						'decimalField',
+						FieldDefinition::TYPE_DECIMAL,
+						FieldDefinition::NOT_NULL
+					),
+					new FieldDefinition(
 						'tinyintField',
 						FieldDefinition::TYPE_TINYINT
 					),

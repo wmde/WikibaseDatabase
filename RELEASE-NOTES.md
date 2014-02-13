@@ -21,6 +21,7 @@ SQL building responsibilities to various SQL builders, which output is then fed 
 * Added trivial fake escapes and table name formatter in the namespace to improve test
 readability and consistency.
 * Added support for BIGINTs in both Mysql and Sqlite
+* Added support for DECIMAL in both Mysql and Sqlite
 
 ### Improvements
 

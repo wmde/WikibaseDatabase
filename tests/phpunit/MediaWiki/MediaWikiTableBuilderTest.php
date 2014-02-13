@@ -78,6 +78,7 @@ class MediaWikiTableBuilderTest extends \PHPUnit_Framework_TestCase {
 		$tables[] = new TableDefinition( 'defaultfieldvalues', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, true, 42 ),
 			new FieldDefinition( 'bigintfield', FieldDefinition::TYPE_BIGINT, true, 42 ),
+			new FieldDefinition( 'decimalfield', FieldDefinition::TYPE_DECIMAL, true, 0.42 ),
 		) );
 
 		$tables[] = new TableDefinition( 'notnullfields', array(
