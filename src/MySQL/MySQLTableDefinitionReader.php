@@ -105,6 +105,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 			return FieldDefinition::TYPE_BOOLEAN;
 		} else if ( stristr( $dataType, 'int' ) ) {
 			return FieldDefinition::TYPE_INTEGER;
+		} else if ( stristr( $dataType, 'bigint' ) ) {
+			return FieldDefinition::TYPE_BIGINT;
 		} else if ( stristr( $dataType, 'float' ) ) {
 			return FieldDefinition::TYPE_FLOAT;
 		} else {

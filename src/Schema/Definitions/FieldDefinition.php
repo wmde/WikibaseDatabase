@@ -58,6 +58,7 @@ class FieldDefinition {
 	const TYPE_BOOLEAN = 'bool';
 	const TYPE_TEXT = 'str'; // need at least short sting vs text vs blob
 	const TYPE_INTEGER = 'int';
+	const TYPE_BIGINT = 'bigint';
 	const TYPE_FLOAT = 'float'; // need decimal vs. float
 
 	const NOT_NULL = false;

@@ -54,6 +54,11 @@ class ReportingTableBuilderTest extends \PHPUnit_Framework_TestCase {
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, true, 42 ),
 		) );
 
+		$tables[] = new TableDefinition( 'defaultfieldvalues', array(
+			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, true, 42 ),
+			new FieldDefinition( 'bigintfield', FieldDefinition::TYPE_BIGINT, true, 42 ),
+		) );
+
 		$tables[] = new TableDefinition( 'notnullfields', array(
 			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
 			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),

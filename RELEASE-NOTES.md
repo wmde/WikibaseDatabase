@@ -17,8 +17,9 @@ SQL building responsibilities to various SQL builders, which output is then fed 
 * Added UpdateSqlBuilder interface and MySQLUpdateSqlBuilder implementation.
 * Added DeleteSqlBuilder interface and MySQLDeleteSqlBuilder implementation.
 * Added SelectSqlBuilder interface and MySQLSelectSqlBuilder implementation.
-* Added trivial fake ecapers and table name formatter in the namespace to improve test
+* Added trivial fake escapes and table name formatter in the namespace to improve test
 readability and consistency.
+* Added support for BIGINTs in both Mysql and Sqlite
 
 ### Improvements
 
