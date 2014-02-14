@@ -58,9 +58,6 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function testReadDefinition( $results, TableDefinition $expectedDefinition ) {
 		$reader = $this->newInstance( $results );
 		$definition = $reader->readDefinition( 'dbNametableName' );
-		if( $definition != $expectedDefinition ) {
-			var_dump( $definition );var_dump( $expectedDefinition );
-		}
 		$this->assertEquals( $definition, $expectedDefinition );
 	}
 
@@ -73,6 +70,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => 'foo', 'extra' => '' ),
 					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'decimalField', 'type' => 'DECIMAL', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'tinyintField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 				),

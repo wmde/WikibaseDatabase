@@ -95,7 +95,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			array(
 				//create sql
-				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName ("primaryField" INT NOT NULL, "textField" BLOB NULL, "decimalField" DECIMAL NULL, "intField" INT DEFAULT 42 NOT NULL, PRIMARY KEY ("textField", "primaryField"))' ) ),
+				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName ("primaryField" INT NOT NULL, "textField" BLOB NULL, "decimalField" DECIMAL NULL, "bigintField" BIGINT NULL, "intField" INT DEFAULT 42 NOT NULL, PRIMARY KEY ("textField", "primaryField"))' ) ),
 				//indexes sql
 				array(
 					(object)array( 'sql' => 'CREATE UNIQUE INDEX "uniqueName" ON dbNametableName ("textField")' ),
@@ -121,6 +121,10 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					new FieldDefinition(
 						'decimalField',
 						FieldDefinition::TYPE_DECIMAL
+					),
+					new FieldDefinition(
+						'bigintField',
+						FieldDefinition::TYPE_BIGINT
 					),
 					new FieldDefinition(
 						'intField',

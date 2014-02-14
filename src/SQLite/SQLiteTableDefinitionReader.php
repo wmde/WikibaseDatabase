@@ -131,6 +131,10 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		switch ( $type ) {
 			case 'TINYINT':
 				return 'tinyint';
+			case 'BIGINT':
+				return 'bigint';
+			case 'DECIMAL':
+				return 'decimal';
 			case 'BLOB':
 				return 'blob';
 			case 'INT':
