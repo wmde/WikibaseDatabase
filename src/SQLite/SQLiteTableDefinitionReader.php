@@ -8,6 +8,7 @@ use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\SchemaReadingException;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
@@ -116,7 +117,8 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$type = $this->getFieldType( $fieldParts[2] );
 		$default = $this->getFieldDefault( $fieldParts[4] );
 		$null = $this->getFieldCanNull( $fieldParts[6] );
-		$attr = FieldDefinition::NO_ATTRIB; //todo read ATTRIBS
+		$attr = TypeDefinition::NO_ATTRIB; //todo read ATTRIBS
+		$size = TypeDefinition::NO_SIZE; //todo read SIZE
 
 		if( array_key_exists( 9, $fieldParts ) ){
 			$autoInc = $this->getAutoInc( $fieldParts[9] );
@@ -124,7 +126,16 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			$autoInc = FieldDefinition::NO_AUTOINCREMENT;
 		}
 
-		return new FieldDefinition( $name, $type, $null, $default, $attr, $autoInc );
+		return new FieldDefinition(
+			$name,
+			new TypeDefinition(
+				$type,
+				$size,
+				$attr
+			),
+			$null,
+			$default,
+			$autoInc );
 	}
 
 	private function getFieldType( $type ) {

@@ -7,6 +7,7 @@ use Wikibase\Database\MySQL\MySQLTableDefinitionReader;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
@@ -86,33 +87,33 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				array(
 					new FieldDefinition(
 						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL,
 						FieldDefinition::NO_DEFAULT
 					),
 					new FieldDefinition(
 						'textField',
-						FieldDefinition::TYPE_BLOB,
+						new TypeDefinition( TypeDefinition::TYPE_BLOB ),
 						FieldDefinition::NULL,
 						'foo'
 					),
 					new FieldDefinition(
 						'intField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL
 					),
 					new FieldDefinition(
 						'decimalField',
-						FieldDefinition::TYPE_DECIMAL,
+						new TypeDefinition( TypeDefinition::TYPE_DECIMAL ),
 						FieldDefinition::NOT_NULL
 					),
 					new FieldDefinition(
 						'tinyintField',
-						FieldDefinition::TYPE_TINYINT
+						new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 					),
 					new FieldDefinition(
 						'floatField',
-						FieldDefinition::TYPE_FLOAT
+						new TypeDefinition( TypeDefinition::TYPE_FLOAT )
 					)
 				),
 				array(

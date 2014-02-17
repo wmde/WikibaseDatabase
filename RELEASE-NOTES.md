@@ -10,6 +10,8 @@ is thus responsible for autoloading.
 * Replaced ResultIterator by PHPs native Iterator interface. The interface signature is the same.
 * FieldDefinition::TYPE_BOOL has been changed to FieldDefinition::TYPE_TINYINT
 * FieldDefinition::TYPE_TEXT has been changed to FieldDefinition::TYPE_BLOB
+* FieldDefinition constructor now takes a TypeDefinition object for param 2 $type.
+* FieldDefinition constructor no longer accepts $attributes, this should be passed to a TypeDefinition object
 
 ### Additions
 
@@ -23,6 +25,7 @@ SQL building responsibilities to various SQL builders, which output is then fed 
 readability and consistency.
 * Added support for BIGINTs in both Mysql and Sqlite
 * Added support for DECIMAL in both Mysql and Sqlite
+* Added support for specifying maz sizes of fields in TypeDefinition s
 
 ### Improvements
 

@@ -6,6 +6,7 @@ use ArrayIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\SQLite\SQLiteTableDefinitionReader;
 use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
@@ -87,7 +88,10 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 			new TableDefinition(
 				'underscore_name',
 				array(
-					new FieldDefinition( 'startField', FieldDefinition::TYPE_BLOB )
+					new FieldDefinition(
+						'startField',
+						new TypeDefinition( TypeDefinition::TYPE_BLOB )
+					)
 				)
 			),
 		);
@@ -109,26 +113,25 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				array(
 					new FieldDefinition(
 						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL,
-						FieldDefinition::NO_DEFAULT,
-						FieldDefinition::NO_ATTRIB
+						FieldDefinition::NO_DEFAULT
 					),
 					new FieldDefinition(
 						'textField',
-						FieldDefinition::TYPE_BLOB
+						new TypeDefinition( TypeDefinition::TYPE_BLOB )
 					),
 					new FieldDefinition(
 						'decimalField',
-						FieldDefinition::TYPE_DECIMAL
+						new TypeDefinition( TypeDefinition::TYPE_DECIMAL )
 					),
 					new FieldDefinition(
 						'bigintField',
-						FieldDefinition::TYPE_BIGINT
+						new TypeDefinition( TypeDefinition::TYPE_BIGINT )
 					),
 					new FieldDefinition(
 						'intField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL, 42
 					),
 				),

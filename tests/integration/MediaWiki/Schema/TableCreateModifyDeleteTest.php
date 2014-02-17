@@ -10,6 +10,7 @@ use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 
 /**
  * @since 0.1
@@ -81,12 +82,12 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_BLOB )
+				new FieldDefinition( 'startField', new TypeDefinition( TypeDefinition::TYPE_BLOB ) )
 			)
 		);
 		$this->setupTestTable( $table );
 
-		$newField = new FieldDefinition( 'secondField', FieldDefinition::TYPE_INTEGER );
+		$newField = new FieldDefinition( 'secondField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) );
 		$this->newSchemaModifier()->addField( $table->getName(), $newField );
 		$table = $table->mutateFields( array_merge( $table->getFields(), array( $newField ) ) );
 		$this->assertTableExistsAsDefined( $table, 'assert field added' );
@@ -96,7 +97,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_INTEGER )
+				new FieldDefinition( 'startField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) )
 			)
 		);
 		$this->setupTestTable( $table );
@@ -111,13 +112,13 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField1', FieldDefinition::TYPE_BLOB ),
-				new FieldDefinition( 'startField2', FieldDefinition::TYPE_BLOB ),
+				new FieldDefinition( 'startField1', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+				new FieldDefinition( 'startField2', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
 			)
 		);
 		$this->setupTestTable( $table );
 
-		$removeField = new FieldDefinition( 'startField2', FieldDefinition::TYPE_INTEGER );
+		$removeField = new FieldDefinition( 'startField2', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) );
 		$this->newSchemaModifier()->removeField( $table->getName(), $removeField->getName() );
 		$table = $table->mutateFieldAway( $removeField->getName() );
 		$this->assertTableExistsAsDefined( $table, 'assert field removed' );
@@ -127,7 +128,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$table = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_INTEGER )
+				new FieldDefinition( 'startField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) )
 			),
 			array(
 				new IndexDefinition( 'indexName', array( 'startField' => 0 ) )
@@ -145,11 +146,11 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$startTable = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_BLOB )
+				new FieldDefinition( 'startField', new TypeDefinition( TypeDefinition::TYPE_BLOB ) )
 			)
 		);
 		$this->setupTestTable( $startTable );
-		$field = new FieldDefinition( 'secondField', FieldDefinition::TYPE_INTEGER );
+		$field = new FieldDefinition( 'secondField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) );
 
 		$this->newSchemaModifier()->addField( $startTable->getName(), $field );
 		$newTable = $startTable->mutateFields( array_merge( $startTable->getFields(), array( $field ) ) );
@@ -163,7 +164,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		$startTable = new TableDefinition(
 			'modify_table_test',
 			array(
-				new FieldDefinition( 'startField', FieldDefinition::TYPE_INTEGER )
+				new FieldDefinition( 'startField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) )
 			)
 		);
 		$this->setupTestTable( $startTable );

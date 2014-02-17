@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\SQLite;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\SQLite\SQLiteSchemaSqlBuilder;
 use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
@@ -51,15 +52,15 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$existingDefinition = new TableDefinition( 'tableName',
 			array(
 				new FieldDefinition( 'primaryField',
-					FieldDefinition::TYPE_INTEGER,
+					new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 					FieldDefinition::NOT_NULL,
 					FieldDefinition::NO_DEFAULT
 				),
 				new FieldDefinition( 'textField',
-					FieldDefinition::TYPE_BLOB
+					new TypeDefinition( TypeDefinition::TYPE_BLOB )
 				),
 				new FieldDefinition( 'intField',
-					FieldDefinition::TYPE_INTEGER,
+					new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 					FieldDefinition::NOT_NULL, 42
 				),
 			),
@@ -84,7 +85,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetAddFieldSql(){
 		$instance = $this->newInstance( );
-		$sql = $instance->getAddFieldSql( 'tableName', new FieldDefinition( 'intField',FieldDefinition::TYPE_INTEGER) );
+		$sql = $instance->getAddFieldSql( 'tableName', new FieldDefinition( 'intField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) ) );
 		$this->assertEquals( "ALTER TABLE -prefix_tableName- ADD COLUMN -intField- INTEGER NULL", $sql );
 	}
 

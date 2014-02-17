@@ -8,6 +8,7 @@ use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\SchemaReadingException;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
@@ -58,10 +59,13 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 			$fields[] = new FieldDefinition(
 				$field->name,
-				$this->getDataType( $field->type ),
+				new TypeDefinition(
+					$this->getDataType( $field->type ),
+					TypeDefinition::NO_SIZE, //todo READ SIZE
+					TypeDefinition::NO_ATTRIB //todo READ ATTRIBUTES
+				),
 				$this->getNullable( $field->cannull ),
 				$field->defaultvalue,
-				FieldDefinition::NO_ATTRIB, //todo READ ATTRIBUTES
 				$this->getAutoInc( $field->extra )
 			);
 		}
@@ -100,17 +104,17 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getDataType( $dataType ) {
 		if( stristr( $dataType, 'blob' ) ) {
-			return FieldDefinition::TYPE_BLOB;
+			return TypeDefinition::TYPE_BLOB;
 		} else if ( stristr( $dataType, 'tinyint' ) ) {
-			return FieldDefinition::TYPE_TINYINT;
+			return TypeDefinition::TYPE_TINYINT;
 		} else if ( stristr( $dataType, 'int' ) ) {
-			return FieldDefinition::TYPE_INTEGER;
+			return TypeDefinition::TYPE_INTEGER;
 		} else if ( stristr( $dataType, 'decimal' ) ) {
-			return FieldDefinition::TYPE_DECIMAL;
+			return TypeDefinition::TYPE_DECIMAL;
 		} else if ( stristr( $dataType, 'bigint' ) ) {
-			return FieldDefinition::TYPE_BIGINT;
+			return TypeDefinition::TYPE_BIGINT;
 		} else if ( stristr( $dataType, 'float' ) ) {
-			return FieldDefinition::TYPE_FLOAT;
+			return TypeDefinition::TYPE_FLOAT;
 		} else {
 			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $dataType );
 		}

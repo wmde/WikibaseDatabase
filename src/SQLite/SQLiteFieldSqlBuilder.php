@@ -5,6 +5,7 @@ namespace Wikibase\Database\SQLite;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\FieldSqlBuilder;
 
 /**
@@ -42,11 +43,17 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 
 	/**
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#column-constraint
+	 *
+	 * @param mixed $default
+	 * @param TypeDefinition $type
+	 *
+	 * @returns string
 	 */
 	protected function getDefault( $default, $type ) {
 		if ( $default !== null ) {
 			//TODO ints shouldn't have quotes added to them so we can not use the escaper used for strings below???
-			if( $type === FieldDefinition::TYPE_INTEGER || $type === FieldDefinition::TYPE_BIGINT ){
+			$typeName = $type->getName();
+			if( $typeName === TypeDefinition::TYPE_INTEGER || $typeName === TypeDefinition::TYPE_BIGINT || $typeName === TypeDefinition::TYPE_TINYINT ){
 				return ' DEFAULT ' . $default;
 			}
 			return ' DEFAULT ' . $this->escaper->getEscapedValue( $default );
@@ -67,27 +74,28 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 	 *
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#type-name
 	 *
-	 * @param string $fieldType
+	 * @param FieldDefinition $fieldType
 	 *
 	 * @return string
 	 * @throws RuntimeException
 	 */
 	protected function getFieldType( $fieldType ) {
-		switch ( $fieldType ) {
-			case FieldDefinition::TYPE_INTEGER:
+		$fieldTypeName = $fieldType->getName();
+		switch ( $fieldTypeName ) {
+			case TypeDefinition::TYPE_INTEGER:
 				return 'INTEGER';
-			case FieldDefinition::TYPE_DECIMAL:
+			case TypeDefinition::TYPE_DECIMAL:
 				return 'DECIMAL';
-			case FieldDefinition::TYPE_BIGINT:
+			case TypeDefinition::TYPE_BIGINT:
 				return 'BIGINT';
-			case FieldDefinition::TYPE_FLOAT:
+			case TypeDefinition::TYPE_FLOAT:
 				return 'FLOAT'; // SQLite uses REAL, not FLOAT
-			case FieldDefinition::TYPE_BLOB:
+			case TypeDefinition::TYPE_BLOB:
 				return 'BLOB';
-			case FieldDefinition::TYPE_TINYINT:
+			case TypeDefinition::TYPE_TINYINT:
 				return 'TINYINT';
 			default:
-				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
+				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldTypeName );
 		}
 	}
 

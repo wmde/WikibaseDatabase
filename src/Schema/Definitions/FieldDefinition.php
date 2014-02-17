@@ -10,6 +10,7 @@ use InvalidArgumentException;
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class FieldDefinition {
 
@@ -21,9 +22,9 @@ class FieldDefinition {
 	private $name;
 
 	/**
-	 * @since 0.1
+	 * @since 0.2
 	 *
-	 * @var string
+	 * @var TypeDefinition
 	 */
 	private $type;
 
@@ -33,13 +34,6 @@ class FieldDefinition {
 	 * @var mixed
 	 */
 	private $default;
-
-	/**
-	 * @since 0.1
-	 *
-	 * @var string|null
-	 */
-	private $attributes;
 
 	/**
 	 * @since 0.1
@@ -55,21 +49,10 @@ class FieldDefinition {
 	 */
 	private $autoIncrement;
 
-	const TYPE_TINYINT = 'tinyint';
-	const TYPE_BLOB = 'blob'; // need at least short sting vs text vs blob
-	const TYPE_INTEGER = 'int';
-	const TYPE_DECIMAL = 'decimal';
-	const TYPE_BIGINT = 'bigint';
-	const TYPE_FLOAT = 'float';
-
 	const NOT_NULL = false;
 	const NULL = true;
 
 	const NO_DEFAULT = null;
-
-	const NO_ATTRIB = null;
-	const ATTRIB_BINARY = 'binary';
-	const ATTRIB_UNSIGNED = 'unsigned';
 
 	const AUTOINCREMENT = true;
 	const NO_AUTOINCREMENT = false;
@@ -78,15 +61,14 @@ class FieldDefinition {
 	 * @since 0.1
 	 *
 	 * @param string $name
-	 * @param string $type
+	 * @param TypeDefinition $type
 	 * @param boolean $null
 	 * @param mixed $default
-	 * @param string|null $attributes
 	 * @param boolean $autoIncrement
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = self::NO_ATTRIB, $autoIncrement = self::NO_AUTOINCREMENT ) {
+	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $autoIncrement = self::NO_AUTOINCREMENT ) {
 		$this->assertIsValidName( $name );
 		$this->assertIsValidType( $type );
 		$this->assertIsValidNull( $null );
@@ -95,7 +77,6 @@ class FieldDefinition {
 		$this->name = $name;
 		$this->type = $type;
 		$this->default = $default;
-		$this->attributes = $attributes;
 		$this->null = $null;
 		$this->autoIncrement = $autoIncrement;
 	}
@@ -113,11 +94,10 @@ class FieldDefinition {
 
 	/**
 	 * Returns the type of the field.
-	 * This is one of the TYPE_ constants.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
-	 * @return string
+	 * @return TypeDefinition
 	 */
 	public function getType() {
 		return $this->type;
@@ -133,18 +113,6 @@ class FieldDefinition {
 	 */
 	public function getDefault() {
 		return $this->default;
-	}
-
-	/**
-	 * Returns the attributes of the field.
-	 * This is one of the ATTRIB_ constants or null.
-	 *
-	 * @since 0.1
-	 *
-	 * @return string|null
-	 */
-	public function getAttributes() {
-		return $this->attributes;
 	}
 
 	/**
@@ -178,10 +146,9 @@ class FieldDefinition {
 	}
 
 	private function assertIsValidType( $type ) {
-		if ( !is_string( $type ) ) {
-			throw new InvalidArgumentException( 'The field $type needs to be a string' );
+		if ( !$type instanceof TypeDefinition ) {
+			throw new InvalidArgumentException( 'The field $type needs to be a TypeDefinition instance' );
 		}
-		//TODO: check against known types
 	}
 
 	private function assertIsValidNull( $null ) {

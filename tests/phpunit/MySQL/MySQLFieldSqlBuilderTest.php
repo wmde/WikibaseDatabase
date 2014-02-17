@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\MySQL;
 
 use Wikibase\Database\MySQL\MySQLFieldSqlBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 
 /**
  * @covers Wikibase\Database\MySQL\MySQLFieldSqlBuilder
@@ -49,7 +50,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_INTEGER
+				new TypeDefinition( TypeDefinition::TYPE_INTEGER )
 			),
 			'-fieldName- INT NULL'
 		);
@@ -57,7 +58,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_BIGINT
+				new TypeDefinition( TypeDefinition::TYPE_BIGINT )
 			),
 			'-fieldName- BIGINT NULL'
 		);
@@ -65,10 +66,9 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_INTEGER,
+				new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 				FieldDefinition::NULL,
 				FieldDefinition::NO_DEFAULT,
-				FieldDefinition::NO_ATTRIB,
 				FieldDefinition::AUTOINCREMENT
 			),
 			'-fieldName- INT NULL AUTO_INCREMENT'
@@ -77,7 +77,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_FLOAT,
+				new TypeDefinition( TypeDefinition::TYPE_FLOAT ),
 				FieldDefinition::NOT_NULL
 			),
 			'-fieldName- FLOAT NOT NULL'
@@ -86,7 +86,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_TINYINT,
+				new TypeDefinition( TypeDefinition::TYPE_TINYINT ),
 				FieldDefinition::NOT_NULL,
 				'1'
 			),
@@ -96,7 +96,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_BLOB,
+				new TypeDefinition( TypeDefinition::TYPE_BLOB ),
 				FieldDefinition::NOT_NULL,
 				'foo'
 			),
@@ -109,7 +109,7 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testUnsupportedType() {
 		$this->setExpectedException( 'RuntimeException', 'does not support db fields of type' );
 		$sqlBuilder = new MySQLFieldSqlBuilder( $this->getMock( 'Wikibase\Database\Escaper' ) );
-		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', 'foobar' ) );
+		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', new TypeDefinition( 'foobar' ) ) );
 	}
 
 }

@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\Schema\Definition;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 
 /**
  * @covers Wikibase\Database\Schema\Definitions\TableDefinition
@@ -23,27 +24,27 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		$instances[] = new TableDefinition(
 			'snaks',
 			array(
-				new FieldDefinition( 'omnomnom', FieldDefinition::TYPE_BLOB )
+				new FieldDefinition( 'omnomnom', new TypeDefinition( TypeDefinition::TYPE_BLOB ) )
 			)
 		);
 
 		$instances[] = new TableDefinition(
 			'spam',
 			array(
-				new FieldDefinition( 'o', FieldDefinition::TYPE_BLOB ),
-				new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
-				new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
-				new FieldDefinition( 'bi', FieldDefinition::TYPE_BIGINT, FieldDefinition::NOT_NULL, 42 ),
-				new FieldDefinition( 'd', FieldDefinition::TYPE_DECIMAL ),
+				new FieldDefinition( 'o', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+				new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+				new FieldDefinition( 'i', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 42 ),
+				new FieldDefinition( 'bi', new TypeDefinition( TypeDefinition::TYPE_BIGINT ), FieldDefinition::NOT_NULL, 42 ),
+				new FieldDefinition( 'd', new TypeDefinition( TypeDefinition::TYPE_DECIMAL ) ),
 			)
 		);
 
 		$instances[] = new TableDefinition(
 			'spam',
 			array(
-				new FieldDefinition( 'o', FieldDefinition::TYPE_BLOB ),
-				new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
-				new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+				new FieldDefinition( 'o', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+				new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+				new FieldDefinition( 'i', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 42 ),
 			),
 			array(
 				new IndexDefinition( 'o', array( 'o' => 0 ) ),
@@ -53,7 +54,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		$instances[] = new TableDefinition(
 			'spam',
 			array(
-				new FieldDefinition( 'o', FieldDefinition::TYPE_BLOB ),
+				new FieldDefinition( 'o', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
 			),
 			array(
 				new IndexDefinition( 'o', array( 'o' => 0 ) ),
@@ -157,9 +158,9 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( $table, $newTable );
 
 		$fields = array(
-			new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
-			new FieldDefinition( 'a', FieldDefinition::TYPE_TINYINT ),
-			new FieldDefinition( 'x', FieldDefinition::TYPE_INTEGER ),
+			new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+			new FieldDefinition( 'a', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ),
+			new FieldDefinition( 'x', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) ),
 		);
 
 		$newTable = $table->mutateFields( $fields );
@@ -194,7 +195,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 		new TableDefinition(
 			'foo',
-			array( new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ) ),
+			array( new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ) ),
 			$invalidIndexList
 		);
 	}
@@ -243,16 +244,16 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				new TableDefinition(
 					'spam',
 					array(
-						new FieldDefinition( 'o', FieldDefinition::TYPE_BLOB ),
-						new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
-						new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+						new FieldDefinition( 'o', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+						new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+						new FieldDefinition( 'i', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 42 ),
 					)
 				),
 				new TableDefinition(
 					'spam',
 					array(
-						new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
-						new FieldDefinition( 'i', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
+						new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+						new FieldDefinition( 'i', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 42 ),
 					)
 				),
 			),
@@ -260,13 +261,13 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				new TableDefinition(
 					'spam',
 					array(
-						new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
+						new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
 					)
 				),
 				new TableDefinition(
 					'spam',
 					array(
-						new FieldDefinition( 'h', FieldDefinition::TYPE_BLOB ),
+						new FieldDefinition( 'h', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
 					)
 				),
 			),
@@ -302,7 +303,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 			array( 'o',
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
+					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
 					array(
 						new IndexDefinition( 'o', array( 'a' => 1 ), IndexDefinition::TYPE_INDEX ),
 						new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ),
@@ -310,19 +311,19 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				),
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
+					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
 					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 			),
 			array( 'o',
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
+					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
 					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 				new TableDefinition(
 					'spam',
-					array( new FieldDefinition( 'foo', FieldDefinition::TYPE_TINYINT ) ),
+					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
 					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 			),

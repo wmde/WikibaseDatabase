@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\Schema;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\FieldRemovalFailedException;
 use Wikibase\Database\Schema\SimpleTableSchemaUpdater;
 
@@ -46,7 +47,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition(
 					'field',
-					FieldDefinition::TYPE_TINYINT
+					new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 				)
 			)
 		);
@@ -56,15 +57,15 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition(
 					'field',
-					FieldDefinition::TYPE_TINYINT
+					new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 				),
 				new FieldDefinition(
 					'field2',
-					FieldDefinition::TYPE_BIGINT
+					new TypeDefinition( TypeDefinition::TYPE_BIGINT )
 				),
 				new FieldDefinition(
 					'field3',
-					FieldDefinition::TYPE_DECIMAL
+					new TypeDefinition( TypeDefinition::TYPE_DECIMAL )
 				),
 			)
 		);
@@ -74,15 +75,15 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition(
 					'tinyint',
-					FieldDefinition::TYPE_TINYINT
+					new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 				),
 				new FieldDefinition(
 					'int',
-					FieldDefinition::TYPE_INTEGER
+					new TypeDefinition( TypeDefinition::TYPE_INTEGER )
 				),
 				new FieldDefinition(
 					'text',
-					FieldDefinition::TYPE_BLOB
+					new TypeDefinition( TypeDefinition::TYPE_BLOB )
 				)
 			),
 			array(
@@ -180,7 +181,10 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 
 		$updater = new SimpleTableSchemaUpdater( $schema );
 
-		$field = new FieldDefinition( 'rewtwery', FieldDefinition::TYPE_BLOB );
+		$field = new FieldDefinition(
+			'rewtwery',
+			new TypeDefinition( TypeDefinition::TYPE_BLOB )
+		);
 
 		$this->setExpectedException( 'Wikibase\Database\Schema\TableSchemaUpdateException' );
 
