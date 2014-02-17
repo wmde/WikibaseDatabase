@@ -74,6 +74,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					(object)array( 'name' => 'decimalField', 'type' => 'DECIMAL', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'tinyintField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'varcharField', 'type' => 'VARCHAR(255)', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 				),
 				array(
 					(object)array( 'name' => 'PRIMARY', 'columnName' => 'intField' ),
@@ -114,6 +115,10 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					new FieldDefinition(
 						'floatField',
 						new TypeDefinition( TypeDefinition::TYPE_FLOAT )
+					),
+					new FieldDefinition(
+						'varcharField',
+						new TypeDefinition( TypeDefinition::TYPE_VARCHAR, 255 )
 					)
 				),
 				array(

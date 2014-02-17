@@ -26,6 +26,7 @@ readability and consistency.
 * Added support for BIGINTs in both Mysql and Sqlite
 * Added support for DECIMAL in both Mysql and Sqlite
 * Added support for specifying maz sizes of fields in TypeDefinition s
+* Added support for VARCHARs in both Mysql and Sqlite
 
 ### Improvements
 

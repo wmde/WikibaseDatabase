@@ -45,6 +45,10 @@ class TypeDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$constructorArgs[] = array(
+			TypeDefinition::TYPE_VARCHAR
+		);
+
+		$constructorArgs[] = array(
 			TypeDefinition::TYPE_INTEGER,
 			TypeDefinition::NO_SIZE,
 			TypeDefinition::NO_ATTRIB
@@ -65,6 +69,11 @@ class TypeDefinitionTest extends \PHPUnit_Framework_TestCase {
 		$constructorArgs[] = array(
 			TypeDefinition::TYPE_BLOB,
 			255
+		);
+
+		$constructorArgs[] = array(
+			TypeDefinition::TYPE_VARCHAR,
+			10
 		);
 
 		$argLists = array();

@@ -106,6 +106,16 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			'-fieldName- BLOB DEFAULT |foo| NOT NULL'
 		);
 
+		$argLists[] = array(
+			new FieldDefinition(
+				'fieldName',
+				new TypeDefinition( TypeDefinition::TYPE_VARCHAR, 255 ),
+				FieldDefinition::NOT_NULL,
+				'foo'
+			),
+			'-fieldName- VARCHAR(255) DEFAULT |foo| NOT NULL'
+		);
+
 		return $argLists;
 	}
 

@@ -60,7 +60,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	}
 
 	/**
-	 * Returns the MySQL field type for a given FieldDefinition type constant.
+	 * Returns the MySQL field type for a given TypeDefinition
 	 *
 	 * @param TypeDefinition $fieldType
 	 *
@@ -84,9 +84,27 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 				return 'BLOB'; // This is 64k max.
 			case TypeDefinition::TYPE_TINYINT:
 				return 'TINYINT';
+			case TypeDefinition::TYPE_VARCHAR:
+				return 'VARCHAR' . $this->getFieldSize( $fieldType );
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldTypeName );
 		}
+	}
+
+	/**
+	 * Returns the MySQL field type size for a given TypeDefinition
+	 *
+	 * @param TypeDefinition $fieldType
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	private function getFieldSize( $fieldType ) {
+		$size = $fieldType->getSize();
+		if( $size === null ) {
+			throw new RuntimeException( __CLASS__ . ' requires fieldType of  ' . $fieldType->getName() . ' to have a size defined' );
+		}
+		return "({$size})";
 	}
 
 }

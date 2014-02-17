@@ -59,11 +59,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 			$fields[] = new FieldDefinition(
 				$field->name,
-				new TypeDefinition(
-					$this->getDataType( $field->type ),
-					TypeDefinition::NO_SIZE, //todo READ SIZE
-					TypeDefinition::NO_ATTRIB //todo READ ATTRIBUTES
-				),
+				$this->getTypeDefinition( $field->type ),
 				$this->getNullable( $field->cannull ),
 				$field->defaultvalue,
 				$this->getAutoInc( $field->extra )
@@ -95,29 +91,58 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	/**
-	 * Simplifies the datatype and returns something a FieldDefinition can expect
+	 * @param string $type
 	 *
-	 * @param $dataType string
+	 * @return TypeDefinition
+	 */
+	private function getTypeDefinition( $type ) {
+		return new TypeDefinition(
+			$this->getTypeName( $type ),
+			$this->getTypeSize( $type ),
+			TypeDefinition::NO_ATTRIB //todo READ ATTRIBUTES
+		);
+	}
+
+	/**
+	 * Simplifies the datatype and returns something a TypeDefinition can expect
+	 *
+	 * @param string $type
 	 *
 	 * @throws RuntimeException
 	 * @return string
 	 */
-	private function getDataType( $dataType ) {
-		if( stristr( $dataType, 'blob' ) ) {
+	private function getTypeName( $type ) {
+		if( stristr( $type, 'blob' ) ) {
 			return TypeDefinition::TYPE_BLOB;
-		} else if ( stristr( $dataType, 'tinyint' ) ) {
+		} else if ( stristr( $type, 'tinyint' ) ) {
 			return TypeDefinition::TYPE_TINYINT;
-		} else if ( stristr( $dataType, 'int' ) ) {
+		} else if ( stristr( $type, 'int' ) ) {
 			return TypeDefinition::TYPE_INTEGER;
-		} else if ( stristr( $dataType, 'decimal' ) ) {
+		} else if ( stristr( $type, 'decimal' ) ) {
 			return TypeDefinition::TYPE_DECIMAL;
-		} else if ( stristr( $dataType, 'bigint' ) ) {
+		} else if ( stristr( $type, 'bigint' ) ) {
 			return TypeDefinition::TYPE_BIGINT;
-		} else if ( stristr( $dataType, 'float' ) ) {
+		} else if ( stristr( $type, 'float' ) ) {
 			return TypeDefinition::TYPE_FLOAT;
+		} else if ( stristr( $type, 'varchar' ) ) {
+			return TypeDefinition::TYPE_VARCHAR;
 		} else {
-			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $dataType );
+			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
 		}
+	}
+
+	/**
+	 * Gets the size from a type
+	 *
+	 * @param string $type
+	 *
+	 * @return int|null
+	 */
+	private function getTypeSize( $type ) {
+		if( preg_match( '/^\w+\((\d+)\)$/', $type, $matches ) ) {
+			return intval( $matches[1] );
+		}
+		return TypeDefinition::NO_SIZE;
 	}
 
 	/**

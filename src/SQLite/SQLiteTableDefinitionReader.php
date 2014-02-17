@@ -55,11 +55,14 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 		$formattedTableName = $this->tableNameFormatter->formatTableName( $tableName );
 
-		$fields = $this->getFields( $formattedTableName );
-		$indexes = $this->getIndexes( $formattedTableName );
-		$keys = $this->getPrimaryKeys( $formattedTableName );
-
-		return new TableDefinition( $tableName, $fields, array_merge( $indexes, $keys ) );
+		return new TableDefinition(
+			$tableName,
+			$this->getFields( $formattedTableName ),
+			array_merge(
+				$this->getIndexes( $formattedTableName ),
+				$this->getPrimaryKeys( $formattedTableName )
+			)
+		);
 	}
 
 	/**
@@ -89,7 +92,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			}
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
-				$matchedParts = preg_match( '/([^ ]+) ([^ ]+)( DEFAULT ([^ ]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts );
+				$matchedParts = preg_match( '/([^\s]+) ([^\s]+)( DEFAULT ([^\s]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts );
 				if( $matchedParts !== 1 ){
 					throw new SchemaReadingException( "Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql );
 				} else if( $fieldParts[0] !== 'PRIMARY KEY' ) {
@@ -114,11 +117,20 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	private function getField( $fieldParts ) {
 		$name = $this->unEscaper->getUnEscapedIdentifier( $fieldParts[1] );
-		$type = $this->getFieldType( $fieldParts[2] );
-		$default = $this->getFieldDefault( $fieldParts[4] );
-		$null = $this->getFieldCanNull( $fieldParts[6] );
-		$attr = TypeDefinition::NO_ATTRIB; //todo read ATTRIBS
-		$size = TypeDefinition::NO_SIZE; //todo read SIZE
+		$type = $this->getTypeDefinition( $fieldParts[2] );
+
+		if( !array_key_exists( 4, $fieldParts ) ) {
+			$default = $this->getFieldDefault( '' );
+		} else {
+			$default = $this->getFieldDefault( $fieldParts[4] );
+			$default = $this->getDefaultForTypeName( $default, $type->getName() );
+		}
+
+		if( !array_key_exists( 6, $fieldParts ) ) {
+			$null = $this->getFieldCanNull( '' );
+		} else {
+			$null = $this->getFieldCanNull( $fieldParts[6] );
+		}
 
 		if( array_key_exists( 9, $fieldParts ) ){
 			$autoInc = $this->getAutoInc( $fieldParts[9] );
@@ -128,34 +140,67 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 		return new FieldDefinition(
 			$name,
-			new TypeDefinition(
-				$type,
-				$size,
-				$attr
-			),
+			$type,
 			$null,
 			$default,
 			$autoInc );
 	}
 
-	private function getFieldType( $type ) {
+	/**
+	 * @param string $type
+	 *
+	 * @return TypeDefinition
+	 */
+	public function getTypeDefinition( $type ) {
+		return new TypeDefinition(
+			$this->getTypeName( $type ),
+			$this->getTypeSize( $type ),
+			TypeDefinition::NO_ATTRIB //todo read ATTRIBS
+		);
+	}
+
+	/**
+	 * @param string $type
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	private function getTypeName( $type ) {
 		switch ( $type ) {
 			case 'TINYINT':
-				return 'tinyint';
+				return TypeDefinition::TYPE_TINYINT;
 			case 'BIGINT':
-				return 'bigint';
+				return TypeDefinition::TYPE_BIGINT;
 			case 'DECIMAL':
-				return 'decimal';
+				return TypeDefinition::TYPE_DECIMAL;
 			case 'BLOB':
-				return 'blob';
+				return TypeDefinition::TYPE_BLOB;
 			case 'INT':
 			case 'INTEGER':
-				return 'int';
+				return TypeDefinition::TYPE_INTEGER;
 			case 'FLOAT':
-				return 'float';
-			default:
-				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
+				return TypeDefinition::TYPE_FLOAT;
 		}
+
+		if( strpos( $type , 'VARCHAR' ) === 0 ) {
+			return TypeDefinition::TYPE_VARCHAR;
+		}
+
+		throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
+	}
+
+	/**
+	 * Gets the size from a type
+	 *
+	 * @param string $type
+	 *
+	 * @return int|null
+	 */
+	private function getTypeSize( $type ) {
+		if( preg_match( '/^\w+\((\d+)\)?$/', $type, $matches ) ) {
+			return intval( $matches[1] );
+		}
+		return TypeDefinition::NO_SIZE;
 	}
 
 	private function getFieldDefault( $default ) {
@@ -164,6 +209,23 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		} else {
 			return FieldDefinition::NO_DEFAULT;
 		}
+	}
+
+	/**
+	 * @param string $default
+	 * @param string $typeName
+	 *
+	 * @return mixed
+	 */
+	private function getDefaultForTypeName( $default, $typeName ) {
+		if( ( $typeName === TypeDefinition::TYPE_INTEGER
+				|| $typeName === TypeDefinition::TYPE_BIGINT
+				|| $typeName === TypeDefinition::TYPE_TINYINT )
+			&& $default !== FieldDefinition::NO_DEFAULT
+		) {
+			return intval( $default );
+		}
+		return $default;
 	}
 
 	private function getFieldCanNull( $canNull ) {
@@ -197,6 +259,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		return $indexes;
 	}
 
+	/**
+	 * @param string $sql
+	 *
+	 * @return IndexDefinition
+	 */
 	private function getIndex( $sql ){
 		preg_match( '/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
 		$parsedColumns = explode( ',', $createParts[4] );

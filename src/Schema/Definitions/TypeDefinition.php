@@ -40,6 +40,7 @@ class TypeDefinition {
 	const TYPE_DECIMAL = 'decimal';
 	const TYPE_BIGINT = 'bigint';
 	const TYPE_FLOAT = 'float';
+	const TYPE_VARCHAR = 'varchar';
 
 	const NO_SIZE = null;
 

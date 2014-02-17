@@ -94,6 +94,8 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 				return 'BLOB';
 			case TypeDefinition::TYPE_TINYINT:
 				return 'TINYINT';
+			case TypeDefinition::TYPE_VARCHAR:
+				return 'VARCHAR' . $this->getFieldSize( $fieldType );
 			default:
 				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldTypeName );
 		}
@@ -107,6 +109,27 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 			return ' PRIMARY KEY AUTOINCREMENT';
 		}
 		return '';
+	}
+
+	/**
+	 * Returns the SQLite field type size for a given TypeDefinition
+	 *
+	 * @see http://www.sqlite.org/datatype3.html
+	 * @note "Note that numeric arguments in parentheses that following the type name (ex: "VARCHAR(255)") are ignored by SQLite"
+	 *       "SQLite does not impose any length restrictions (other than the large global SQLITE_MAX_LENGTH limit)"
+	 *       We still add this to the SQL to ensure we can read back the exact definition and to be consistent!
+	 *
+	 * @param TypeDefinition $fieldType
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	private function getFieldSize( $fieldType ) {
+		$size = $fieldType->getSize();
+		if( $size === null ) {
+			throw new RuntimeException( __CLASS__ . ' requires fieldType of  ' . $fieldType->getName() . ' to have a size defined' );
+		}
+		return "({$size})";
 	}
 
 }
