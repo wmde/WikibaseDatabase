@@ -145,7 +145,7 @@ class TypeDefinitionTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testInvalidType( $size ) {
 		$this->setExpectedException( 'InvalidArgumentException' );
-		new FieldDefinition( TypeDefinition::TYPE_BLOB, $size );
+		new TypeDefinition( TypeDefinition::TYPE_BLOB, $size );
 	}
 
 }

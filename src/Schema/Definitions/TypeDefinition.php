@@ -64,6 +64,19 @@ class TypeDefinition {
 		$this->attributes = $attributes;
 	}
 
+	private function assertIsValidName( $type ) {
+		if ( !is_string( $type ) ) {
+			throw new InvalidArgumentException( 'The field $type needs to be a string' );
+		}
+		//TODO: check against known types
+	}
+
+	private function assertIsValidSize( $size ) {
+		if ( !is_int( $size ) && $size !== self::NO_SIZE ) {
+			throw new InvalidArgumentException( 'The field $size needs to be an int or TypeDefinition::::NO_SIZE' );
+		}
+	}
+
 	/**
 	 * Returns the identifier for the type
 	 * This is one of the Type_ constants
@@ -82,7 +95,7 @@ class TypeDefinition {
 	 *
 	 * @since 0.2
 	 *
-	 * @return int|null
+	 * @return int|self::NO_SIZE
 	 */
 	public function getSize() {
 		return $this->size;
@@ -94,23 +107,10 @@ class TypeDefinition {
 	 *
 	 * @since 0.2
 	 *
-	 * @return string|null
+	 * @return string|self::NO_ATTRIB
 	 */
 	public function getAttributes() {
 		return $this->attributes;
-	}
-
-	private function assertIsValidName( $type ) {
-		if ( !is_string( $type ) ) {
-			throw new InvalidArgumentException( 'The field $type needs to be a string' );
-		}
-		//TODO: check against known types
-	}
-
-	private function assertIsValidSize( $size ) {
-		if ( !is_int( $size ) && $size !== self::NO_SIZE ) {
-			throw new InvalidArgumentException( 'The field $size needs to be an int or TypeDefinition::::NO_SIZE' );
-		}
 	}
 
 } 

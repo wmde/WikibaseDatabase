@@ -67,7 +67,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	 * @return string
 	 * @throws RuntimeException
 	 */
-	protected function getFieldType( $fieldType ) {
+	protected function getFieldType( TypeDefinition $fieldType ) {
 		$fieldTypeName = $fieldType->getName();
 		switch ( $fieldTypeName ) {
 			// No datatype for short strings, i.e. VARCHAR? TEXT or BLOB fields should not be used for that.
@@ -99,7 +99,7 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	 * @return string
 	 * @throws RuntimeException
 	 */
-	private function getFieldSize( $fieldType ) {
+	private function getFieldSize( TypeDefinition $fieldType ) {
 		$size = $fieldType->getSize();
 		if( $size === null ) {
 			throw new RuntimeException( __CLASS__ . ' requires fieldType of  ' . $fieldType->getName() . ' to have a size defined' );
