@@ -27,6 +27,8 @@ readability and consistency.
 * Added support for DECIMAL in both Mysql and Sqlite
 * Added support for specifying maz sizes of fields in TypeDefinition s
 * Added support for VARCHARs in both Mysql and Sqlite
+* Added support for reading back Index size limits in Mysql
+* Various select interfaces now allow accept an array of table names
 
 ### Improvements
 

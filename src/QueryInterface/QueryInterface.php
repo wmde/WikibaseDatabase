@@ -78,7 +78,7 @@ interface QueryInterface {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $tableName
+	 * @param string|string[] $tableName
 	 * @param string[] $fieldNames
 	 * @param array $conditions
 	 * @param array $options

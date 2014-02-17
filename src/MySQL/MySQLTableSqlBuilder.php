@@ -117,14 +117,16 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 			$sql .= ' ' . $this->escaper->getEscapedIdentifier( $index->getName() );
 		}
 
-		$columnNames = array();
-		//TODO FIXME Error: 1170 BLOB/TEXT column 'textfield' used in key specification without a key length (localhost)
-		//todo $intSize here needs to specify the length of the key for text fields.
+		$cols = array();
 		foreach( $index->getColumns() as $columnName => $intSize ){
-			$columnNames[] = $this->escaper->getEscapedIdentifier( $columnName );
+			$colName =  $this->escaper->getEscapedIdentifier( $columnName );
+			if( $intSize !== 0 ) {
+				$colName .= "({$intSize})";
+			}
+			$cols[] = $colName;
 		}
 
-		$sql .= ' (' . implode( ',', $columnNames ) . ')';
+		$sql .= ' (' . implode( ',', $cols ) . ')';
 
 		return $sql;
 	}

@@ -59,7 +59,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function testReadDefinition( $results, TableDefinition $expectedDefinition ) {
 		$reader = $this->newInstance( $results );
 		$definition = $reader->readDefinition( 'dbNametableName' );
-		$this->assertEquals( $definition, $expectedDefinition );
+		$this->assertEquals( $expectedDefinition, $definition );
 	}
 
 	public function sqlAndDefinitionProvider() {
@@ -77,11 +77,14 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					(object)array( 'name' => 'varcharField', 'type' => 'VARCHAR(255)', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 				),
 				array(
-					(object)array( 'name' => 'PRIMARY', 'columnName' => 'intField' ),
-					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'floatField' ),
-					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'tinyintField' ),
+					(object)array( 'name' => 'PRIMARY', 'columnName' => 'intField', 'subPart' => null ),
+					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'floatField', 'subPart' => null ),
+					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'tinyintField', 'subPart' => null ),
 				),
-				array( (object)array( 'name' => 'indexName', 'columns' => 'intField,textField' ) )
+				array(
+					(object)array( 'indexName' => 'indexName', 'colName' => 'intField', 'subPart' => null ),
+					(object)array( 'indexName' => 'indexName', 'colName' => 'textField', 'subPart' => 10 ),
+				)
 			),
 			new TableDefinition(
 				'dbNametableName',
@@ -134,7 +137,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					),
 					new IndexDefinition(
 						'indexName',
-						array( 'intField' => 0, 'textField' => 0 ),
+						array( 'intField' => 0, 'textField' => 10 ),
 						IndexDefinition::TYPE_INDEX
 					),
 				)

@@ -57,11 +57,13 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		$fields = array();
 		foreach( $fieldResults as $field ){
 
+			$type = $this->getTypeDefinition( $field->type );
+
 			$fields[] = new FieldDefinition(
 				$field->name,
-				$this->getTypeDefinition( $field->type ),
+				$type,
 				$this->getNullable( $field->cannull ),
-				$field->defaultvalue,
+				$this->getDefaultForTypeName( $field->defaultvalue, $type->getName() ),
 				$this->getAutoInc( $field->extra )
 			);
 		}
@@ -158,6 +160,23 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	/**
+	 * @param string $default
+	 * @param string $typeName
+	 *
+	 * @return mixed
+	 */
+	private function getDefaultForTypeName( $default, $typeName ) {
+		if( ( $typeName === TypeDefinition::TYPE_INTEGER
+				|| $typeName === TypeDefinition::TYPE_BIGINT
+				|| $typeName === TypeDefinition::TYPE_TINYINT )
+			&& $default !== FieldDefinition::NO_DEFAULT
+		) {
+			return intval( $default );
+		}
+		return $default;
+	}
+
+	/**
 	 * @param string $extra
 	 * @return bool
 	 */
@@ -174,32 +193,42 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @TODO support currently don't notice FULLTEXT or SPATIAL indexes
 	 */
 	private function getIndexes( $tableName ) {
-		$indexes = array();
+		$resultingIndexes = array();
 
 		$constraintsResult =  $this->doConstraintsQuery( $tableName );
-		$constraints = array();
+		$constraintsArray = array();
 
 		foreach( $constraintsResult as $constraint ) {
-			//todo we should try to detect the index length here and use that instead of default 0
-			$constraints[ $constraint->name ][ $constraint->columnName ] = 0;
+			$constraintsArray[ $constraint->name ][ $constraint->columnName ] = $this->getIndexSizeFromSubPart( $constraint->subPart );
 		}
 
-		foreach( $constraints as $name => $cols ){
-			$indexes[] = $this->getConstraint( $name, $cols );
+		foreach( $constraintsArray as $name => $cols ){
+			$resultingIndexes[] = $this->getConstraint( $name, $cols );
 		}
 
 		$indexesResult = $this->doIndexesQuery( $tableName );
+		$indexesArray = array();
 
 		foreach( $indexesResult as $index ) {
-			$indexDef =  $this->getIndex( $index );
-
-			// Ignore any indexes we already have (primary and unique).
-			if( !array_key_exists( $indexDef->getName(), $constraints ) ){
-				$indexes[] = $indexDef;
+			// Ignore any Indexes we already have (primary and unique).
+			if( !array_key_exists( $index->indexName, $constraintsArray ) ){
+				$indexesArray[ $index->indexName ][ $index->colName ] = $this->getIndexSizeFromSubPart( $index->subPart );
 			}
 		}
 
-		return $indexes;
+		foreach( $indexesArray as $name => $cols ){
+			$resultingIndexes[] = $this->getIndex( $name, $cols );
+		}
+
+		return $resultingIndexes;
+	}
+
+	private function getIndexSizeFromSubPart( $subPart ) {
+		if( is_null($subPart ) ) {
+			return 0;
+		} else {
+			return intval( $subPart );
+		}
 	}
 
 	private function getConstraint( $name, $columns ) {
@@ -210,12 +239,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		}
 	}
 
-	private function getIndex( $index ){
-		$cols = array();
-		foreach( explode( ',', $index->columns ) as $col ){
-			$cols[ $col ] = 0;
-		}
-		return new IndexDefinition( $index->name, $cols , IndexDefinition::TYPE_INDEX );
+	private function getIndex( $name, $columns ) {
+		return new IndexDefinition( $name, $columns , IndexDefinition::TYPE_INDEX );
 	}
 
 	/**
@@ -228,12 +253,19 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function doConstraintsQuery( $tableName ) {
 		return $this->queryInterface->select(
-			'INFORMATION_SCHEMA.KEY_COLUMN_USAGE',
+			array( 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE', 'INFORMATION_SCHEMA.STATISTICS' ),
 			array(
-				'name' => 'CONSTRAINT_NAME',
-				'columnName' => 'COLUMN_NAME'
+				'name' => 'KEY_COLUMN_USAGE.CONSTRAINT_NAME',
+				'columnName' => 'KEY_COLUMN_USAGE.COLUMN_NAME',
+				'subPart' => 'STATISTICS.SUB_PART',
 			),
-			$this->tableNameIs( $tableName )
+			array_merge(
+				$this->tableNameIs( $tableName, 'KEY_COLUMN_USAGE.TABLE_NAME' ),
+				array(
+					'KEY_COLUMN_USAGE.COLUMN_NAME = STATISTICS.COLUMN_NAME',
+					'STATISTICS.INDEX_NAME = KEY_COLUMN_USAGE.CONSTRAINT_NAME',
+				)
+			)
 		);
 	}
 
@@ -249,18 +281,23 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		return $this->queryInterface->select(
 			'INFORMATION_SCHEMA.STATISTICS',
 			array(
-				'COLUMN_NAME',
-				'SEQ_IN_INDEX',
-				'name' => 'INDEX_NAME',
-				'columns' => 'GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX)' ),
-			$this->tableNameIs( $tableName ),
-			array( 'GROUP BY' => 'name' )
+				'colName' => 'COLUMN_NAME',
+				'indexName' => 'INDEX_NAME',
+				'subPart' => 'SUB_PART',
+			),
+			$this->tableNameIs( $tableName )
 		);
 	}
 
-	protected function tableNameIs( $tableName ) {
+	/**
+	 * @param string $tableName table name value we are looking for
+	 * @param string $sourceTable table name of the table col we are querying
+	 *
+	 * @return array
+	 */
+	protected function tableNameIs( $tableName, $sourceTable = 'TABLE_NAME' ) {
 		return array(
-			'TABLE_NAME' => $this->tableNameFormatter->formatTableName( $tableName )
+			$sourceTable => $this->tableNameFormatter->formatTableName( $tableName )
 		);
 	}
 
