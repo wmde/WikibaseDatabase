@@ -133,7 +133,6 @@ class TypeDefinitionTest extends \PHPUnit_Framework_TestCase {
 	public static function invalidSizeProvider(){
 		return array(
 			array( array() ),
-			array( null ),
 			array( true ),
 			array( new \Exception() ),
 			array( 'adsfdg' ),

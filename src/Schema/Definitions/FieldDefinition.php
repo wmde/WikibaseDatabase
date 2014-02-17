@@ -61,7 +61,7 @@ class FieldDefinition {
 	 * @since 0.1
 	 *
 	 * @param string $name
-	 * @param TypeDefinition $type
+	 * @param TypeDefinition|string $type
 	 * @param boolean $null
 	 * @param mixed $default
 	 * @param boolean $autoIncrement
@@ -74,11 +74,40 @@ class FieldDefinition {
 		$this->assertIsValidNull( $null );
 		$this->assertIsValidAutoIncrement( $autoIncrement );
 
+		if( is_string( $type ) ) {
+			$type = new TypeDefinition( $type );
+		}
+
 		$this->name = $name;
 		$this->type = $type;
 		$this->default = $default;
 		$this->null = $null;
 		$this->autoIncrement = $autoIncrement;
+	}
+
+	private function assertIsValidName( $name ) {
+		if ( !is_string( $name ) ) {
+			throw new InvalidArgumentException( 'The field $name needs to be a string' );
+		}
+		//TODO: fail on crazy names (containing e.g. spaces) even if the DB supports that.
+	}
+
+	private function assertIsValidType( $type ) {
+		if ( !$type instanceof TypeDefinition && !is_string( $type ) ) {
+			throw new InvalidArgumentException( 'The field $type needs to be a TypeDefinition instance or a string' );
+		}
+	}
+
+	private function assertIsValidNull( $null ) {
+		if ( !is_bool( $null ) ) {
+			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
+		}
+	}
+
+	private function assertIsValidAutoIncrement( $autoIncrement ) {
+		if ( !is_bool( $autoIncrement ) ) {
+			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
+		}
 	}
 
 	/**
@@ -136,31 +165,6 @@ class FieldDefinition {
 	 */
 	public function hasAutoIncrement() {
 		return $this->autoIncrement;
-	}
-
-	private function assertIsValidName( $name ) {
-		if ( !is_string( $name ) ) {
-			throw new InvalidArgumentException( 'The field $name needs to be a string' );
-		}
-		//TODO: fail on crazy names (containing e.g. spaces) even if the DB supports that.
-	}
-
-	private function assertIsValidType( $type ) {
-		if ( !$type instanceof TypeDefinition ) {
-			throw new InvalidArgumentException( 'The field $type needs to be a TypeDefinition instance' );
-		}
-	}
-
-	private function assertIsValidNull( $null ) {
-		if ( !is_bool( $null ) ) {
-			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
-		}
-	}
-
-	private function assertIsValidAutoIncrement( $autoIncrement ) {
-		if ( !is_bool( $autoIncrement ) ) {
-			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
-		}
 	}
 
 }
