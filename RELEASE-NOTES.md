@@ -8,8 +8,9 @@ These are the release notes for the [Wikibase Database library](README.md).
 is thus responsible for autoloading.
 * MediaWiki plugin: added compatibility with changes in MediaWiki 1.22.
 * Replaced ResultIterator by PHPs native Iterator interface. The interface signature is the same.
-* FieldDefinition::TYPE_BOOL has been changed to FieldDefinition::TYPE_TINYINT
-* FieldDefinition::TYPE_TEXT has been changed to FieldDefinition::TYPE_BLOB
+* All FieldDefinition::TYPE_ constants are now TypeDefinition::TYPE_ constants
+* FieldDefinition::TYPE_BOOL has been changed to TypeDefinition::TYPE_TINYINT
+* FieldDefinition::TYPE_TEXT has been changed to TypeDefinition::TYPE_BLOB
 * FieldDefinition constructor now takes a TypeDefinition object for param 2 $type.
 * FieldDefinition constructor no longer accepts $attributes, this should be passed to a TypeDefinition object
 

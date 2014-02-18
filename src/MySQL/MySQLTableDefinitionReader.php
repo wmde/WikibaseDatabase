@@ -114,23 +114,24 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return string
 	 */
 	private function getTypeName( $type ) {
-		if( stristr( $type, 'blob' ) ) {
-			return TypeDefinition::TYPE_BLOB;
-		} else if ( stristr( $type, 'tinyint' ) ) {
-			return TypeDefinition::TYPE_TINYINT;
-		} else if ( stristr( $type, 'int' ) ) {
-			return TypeDefinition::TYPE_INTEGER;
-		} else if ( stristr( $type, 'decimal' ) ) {
-			return TypeDefinition::TYPE_DECIMAL;
-		} else if ( stristr( $type, 'bigint' ) ) {
-			return TypeDefinition::TYPE_BIGINT;
-		} else if ( stristr( $type, 'float' ) ) {
-			return TypeDefinition::TYPE_FLOAT;
-		} else if ( stristr( $type, 'varchar' ) ) {
-			return TypeDefinition::TYPE_VARCHAR;
-		} else {
-			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
+		list( $typePart ) = explode( '(', $type );
+		switch( strtolower( $typePart ) ) {
+			case 'blob':
+				return TypeDefinition::TYPE_BLOB;
+			case 'tinyint':
+				return TypeDefinition::TYPE_TINYINT;
+			case 'int':
+				return TypeDefinition::TYPE_INTEGER;
+			case 'decimal':
+				return TypeDefinition::TYPE_DECIMAL;
+			case 'bigint':
+				return TypeDefinition::TYPE_BIGINT;
+			case 'float':
+				return TypeDefinition::TYPE_FLOAT;
+			case 'varchar':
+				return TypeDefinition::TYPE_VARCHAR;
 		}
+		throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
 	}
 
 	/**
@@ -223,8 +224,13 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		return $resultingIndexes;
 	}
 
+	/**
+	 * @param string $subPart value of STATISTICS.SUB_PART
+	 *
+	 * @return int
+	 */
 	private function getIndexSizeFromSubPart( $subPart ) {
-		if( is_null($subPart ) ) {
+		if( is_null( $subPart ) ) {
 			return 0;
 		} else {
 			return intval( $subPart );

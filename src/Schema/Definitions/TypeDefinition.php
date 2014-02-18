@@ -64,11 +64,11 @@ class TypeDefinition {
 		$this->attributes = $attributes;
 	}
 
-	private function assertIsValidName( $type ) {
-		if ( !is_string( $type ) ) {
-			throw new InvalidArgumentException( 'The field $type needs to be a string' );
+	private function assertIsValidName( $name ) {
+		if ( !is_string( $name ) ) {
+			throw new InvalidArgumentException( 'The field $name needs to be a string' );
 		}
-		//TODO: check against known types
+		//TODO: check against known type names
 	}
 
 	private function assertIsValidSize( $size ) {
