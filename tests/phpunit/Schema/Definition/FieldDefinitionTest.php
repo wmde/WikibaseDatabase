@@ -27,11 +27,6 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$constructorArgs[] = array(
-			'names',
-			TypeDefinition::TYPE_BLOB
-		);
-
-		$constructorArgs[] = array(
 			'stuffs',
 			new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 			FieldDefinition::NOT_NULL,
@@ -68,10 +63,6 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 	public function testConstructorSetsValues( array $constructorArgs ) {
 		$class = new ReflectionClass( 'Wikibase\Database\Schema\Definitions\FieldDefinition' );
 		$field = $class->newInstanceArgs( $constructorArgs );
-
-		if( is_string( $constructorArgs[1] ) ) {
-			$constructorArgs[1] = new TypeDefinition( $constructorArgs[1] );
-		}
 
 		$this->assertEquals(
 			$constructorArgs[0],
@@ -171,6 +162,13 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testWhenConstructorJustGivenTypeName_getTypeReturnsTypeObject() {
+		$field = new FieldDefinition( 'fieldName', 'someType' );
 
+		$this->assertEquals(
+			new TypeDefinition( 'someType' ),
+			$field->getType()
+		);
+	}
 
 }
