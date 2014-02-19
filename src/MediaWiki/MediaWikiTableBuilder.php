@@ -53,8 +53,13 @@ class MediaWikiTableBuilder implements TableBuilder {
 	 * @param string $tableName
 	 *
 	 * @return boolean
+	 * @throws InvalidArgumentException
 	 */
 	public function tableExists( $tableName ) {
+		if ( !is_string( $tableName ) ) {
+			throw new InvalidArgumentException( '$tableName should be a string' );
+		}
+		
 		return $this->getDB()->tableExists( $tableName, __METHOD__ );
 	}
 
