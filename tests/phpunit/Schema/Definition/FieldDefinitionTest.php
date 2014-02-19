@@ -103,7 +103,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public static function invalidNameProvider(){
+	public static function invalidNameProvider() {
 		return array(
 			array( 12 ),
 			array( array() ),
@@ -121,7 +121,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		new FieldDefinition( $name, new TypeDefinition( TypeDefinition::TYPE_INTEGER ) );
 	}
 
-	public static function invalidTypeProvider(){
+	public static function invalidTypeProvider() {
 		return array(
 			array( 12 ),
 			array( array() ),
@@ -139,7 +139,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		new FieldDefinition( 'name', $type );
 	}
 
-	public static function invalidBoolProvider(){
+	public static function invalidBoolProvider() {
 		return array(
 			array( 12 ),
 			array( array() ),
