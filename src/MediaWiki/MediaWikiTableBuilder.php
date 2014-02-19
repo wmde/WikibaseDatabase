@@ -75,6 +75,10 @@ class MediaWikiTableBuilder implements TableBuilder {
 	 * @throws TableCreationFailedException
 	 */
 	public function createTable( TableDefinition $table ) {
+		if ( $this->tableExists( $table->getName() ) ) {
+			throw new TableCreationFailedException( $table, 'Table already exists' );
+		}
+		
 		$sql = $this->tableSqlBuilder->getCreateTableSql( $table );
 
 		foreach( explode( PHP_EOL, $sql ) as $query ) {
