@@ -1,10 +1,6 @@
 These are the release notes for the [Wikibase Database library](README.md).
 
-## Version 0.3 (under development)
-
-* ...
-
-## Version 0.2 (2014-02-18)
+## Version 0.2 (under development)
 
 ### Compatibility changes
 
