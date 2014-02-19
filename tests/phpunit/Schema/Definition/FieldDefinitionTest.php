@@ -14,6 +14,7 @@ use Wikibase\Database\Schema\Definitions\TypeDefinition;
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
@@ -169,4 +170,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 			$autoinc
 		);
 	}
+
+
+
 }
