@@ -10,6 +10,7 @@ use InvalidArgumentException;
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Adam Shorland
  */
 class FieldDefinition {
 
@@ -21,9 +22,9 @@ class FieldDefinition {
 	private $name;
 
 	/**
-	 * @since 0.1
+	 * @since 0.2
 	 *
-	 * @var string
+	 * @var TypeDefinition
 	 */
 	private $type;
 
@@ -33,13 +34,6 @@ class FieldDefinition {
 	 * @var mixed
 	 */
 	private $default;
-
-	/**
-	 * @since 0.1
-	 *
-	 * @var string|null
-	 */
-	private $attributes;
 
 	/**
 	 * @since 0.1
@@ -55,19 +49,10 @@ class FieldDefinition {
 	 */
 	private $autoIncrement;
 
-	const TYPE_BOOLEAN = 'bool';
-	const TYPE_TEXT = 'str'; // need at least short sting vs text vs blob
-	const TYPE_INTEGER = 'int';
-	const TYPE_FLOAT = 'float'; // need decimal vs. float
-
 	const NOT_NULL = false;
 	const NULL = true;
 
 	const NO_DEFAULT = null;
-
-	const NO_ATTRIB = null;
-	const ATTRIB_BINARY = 'binary';
-	const ATTRIB_UNSIGNED = 'unsigned';
 
 	const AUTOINCREMENT = true;
 	const NO_AUTOINCREMENT = false;
@@ -76,26 +61,53 @@ class FieldDefinition {
 	 * @since 0.1
 	 *
 	 * @param string $name
-	 * @param string $type
+	 * @param TypeDefinition|string $type
 	 * @param boolean $null
 	 * @param mixed $default
-	 * @param string|null $attributes
 	 * @param boolean $autoIncrement
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $attributes = self::NO_ATTRIB, $autoIncrement = self::NO_AUTOINCREMENT ) {
+	public function __construct( $name, $type, $null = self::NULL, $default = self::NO_DEFAULT, $autoIncrement = self::NO_AUTOINCREMENT ) {
 		$this->assertIsValidName( $name );
 		$this->assertIsValidType( $type );
 		$this->assertIsValidNull( $null );
 		$this->assertIsValidAutoIncrement( $autoIncrement );
 
+		if( is_string( $type ) ) {
+			$type = new TypeDefinition( $type );
+		}
+
 		$this->name = $name;
 		$this->type = $type;
 		$this->default = $default;
-		$this->attributes = $attributes;
 		$this->null = $null;
 		$this->autoIncrement = $autoIncrement;
+	}
+
+	private function assertIsValidName( $name ) {
+		if ( !is_string( $name ) ) {
+			throw new InvalidArgumentException( 'The field $name needs to be a string' );
+		}
+		//TODO: fail on crazy names (containing e.g. spaces) even if the DB supports that.
+	}
+
+	private function assertIsValidType( $type ) {
+		if ( !$type instanceof TypeDefinition && !is_string( $type ) ) {
+			throw new InvalidArgumentException( 'The field $type needs to be a TypeDefinition instance or a string' );
+		}
+	}
+
+	private function assertIsValidNull( $null ) {
+		if ( !is_bool( $null ) ) {
+			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
+		}
+	}
+
+	private function assertIsValidAutoIncrement( $autoIncrement ) {
+		if ( !is_bool( $autoIncrement ) ) {
+			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
+		}
 	}
 
 	/**
@@ -111,11 +123,10 @@ class FieldDefinition {
 
 	/**
 	 * Returns the type of the field.
-	 * This is one of the TYPE_ constants.
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 *
-	 * @return string
+	 * @return TypeDefinition
 	 */
 	public function getType() {
 		return $this->type;
@@ -131,18 +142,6 @@ class FieldDefinition {
 	 */
 	public function getDefault() {
 		return $this->default;
-	}
-
-	/**
-	 * Returns the attributes of the field.
-	 * This is one of the ATTRIB_ constants or null.
-	 *
-	 * @since 0.1
-	 *
-	 * @return string|null
-	 */
-	public function getAttributes() {
-		return $this->attributes;
 	}
 
 	/**
@@ -166,32 +165,6 @@ class FieldDefinition {
 	 */
 	public function hasAutoIncrement() {
 		return $this->autoIncrement;
-	}
-
-	private function assertIsValidName( $name ) {
-		if ( !is_string( $name ) ) {
-			throw new InvalidArgumentException( 'The field $name needs to be a string' );
-		}
-		//TODO: fail on crazy names (containing e.g. spaces) even if the DB supports that.
-	}
-
-	private function assertIsValidType( $type ) {
-		if ( !is_string( $type ) ) {
-			throw new InvalidArgumentException( 'The field $type needs to be a string' );
-		}
-		//TODO: check against known types
-	}
-
-	private function assertIsValidNull( $null ) {
-		if ( !is_bool( $null ) ) {
-			throw new InvalidArgumentException( 'The $null parameter needs to be a boolean' );
-		}
-	}
-
-	private function assertIsValidAutoIncrement( $autoIncrement ) {
-		if ( !is_bool( $autoIncrement ) ) {
-			throw new InvalidArgumentException( 'The $autoIncrement parameter needs to be a boolean' );
-		}
 	}
 
 }

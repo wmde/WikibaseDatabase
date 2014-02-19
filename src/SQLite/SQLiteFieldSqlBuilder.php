@@ -5,6 +5,7 @@ namespace Wikibase\Database\SQLite;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\FieldSqlBuilder;
 
 /**
@@ -42,11 +43,17 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 
 	/**
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#column-constraint
+	 *
+	 * @param mixed $default
+	 * @param TypeDefinition $type
+	 *
+	 * @returns string
 	 */
 	protected function getDefault( $default, $type ) {
 		if ( $default !== null ) {
 			//TODO ints shouldn't have quotes added to them so we can not use the escaper used for strings below???
-			if( $type === FieldDefinition::TYPE_INTEGER ){
+			$typeName = $type->getName();
+			if( $typeName === TypeDefinition::TYPE_INTEGER || $typeName === TypeDefinition::TYPE_BIGINT || $typeName === TypeDefinition::TYPE_TINYINT ){
 				return ' DEFAULT ' . $default;
 			}
 			return ' DEFAULT ' . $this->escaper->getEscapedValue( $default );
@@ -67,23 +74,30 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 	 *
 	 * @see http://www.sqlite.org/syntaxdiagrams.html#type-name
 	 *
-	 * @param string $fieldType
+	 * @param FieldDefinition $fieldType
 	 *
 	 * @return string
 	 * @throws RuntimeException
 	 */
 	protected function getFieldType( $fieldType ) {
-		switch ( $fieldType ) {
-			case FieldDefinition::TYPE_INTEGER:
+		$fieldTypeName = $fieldType->getName();
+		switch ( $fieldTypeName ) {
+			case TypeDefinition::TYPE_INTEGER:
 				return 'INTEGER';
-			case FieldDefinition::TYPE_FLOAT:
+			case TypeDefinition::TYPE_DECIMAL:
+				return 'DECIMAL';
+			case TypeDefinition::TYPE_BIGINT:
+				return 'BIGINT';
+			case TypeDefinition::TYPE_FLOAT:
 				return 'FLOAT'; // SQLite uses REAL, not FLOAT
-			case FieldDefinition::TYPE_TEXT:
-				return 'BLOB';  // could/should be TEXT?
-			case FieldDefinition::TYPE_BOOLEAN:
+			case TypeDefinition::TYPE_BLOB:
+				return 'BLOB';
+			case TypeDefinition::TYPE_TINYINT:
 				return 'TINYINT';
+			case TypeDefinition::TYPE_VARCHAR:
+				return 'VARCHAR' . $this->getFieldSize( $fieldType );
 			default:
-				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
+				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldTypeName );
 		}
 	}
 
@@ -95,6 +109,27 @@ class SQLiteFieldSqlBuilder extends FieldSqlBuilder {
 			return ' PRIMARY KEY AUTOINCREMENT';
 		}
 		return '';
+	}
+
+	/**
+	 * Returns the SQLite field type size for a given TypeDefinition
+	 *
+	 * @see http://www.sqlite.org/datatype3.html
+	 * @note "Note that numeric arguments in parentheses that following the type name (ex: "VARCHAR(255)") are ignored by SQLite"
+	 *       "SQLite does not impose any length restrictions (other than the large global SQLITE_MAX_LENGTH limit)"
+	 *       We still add this to the SQL to ensure we can read back the exact definition and to be consistent!
+	 *
+	 * @param TypeDefinition $fieldType
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	private function getFieldSize( $fieldType ) {
+		$size = $fieldType->getSize();
+		if( $size === null ) {
+			throw new RuntimeException( __CLASS__ . ' requires fieldType of  ' . $fieldType->getName() . ' to have a size defined' );
+		}
+		return "({$size})";
 	}
 
 }

@@ -1,6 +1,10 @@
 These are the release notes for the [Wikibase Database library](README.md).
 
-## Version 0.2 (under development)
+## Version 0.3 (under development)
+
+* ...
+
+## Version 0.2 (2014-02-18)
 
 ### Compatibility changes
 
@@ -8,6 +12,11 @@ These are the release notes for the [Wikibase Database library](README.md).
 is thus responsible for autoloading.
 * MediaWiki plugin: added compatibility with changes in MediaWiki 1.22.
 * Replaced ResultIterator by PHPs native Iterator interface. The interface signature is the same.
+* All FieldDefinition::TYPE_ constants are now TypeDefinition::TYPE_ constants
+* FieldDefinition::TYPE_BOOL has been changed to TypeDefinition::TYPE_TINYINT
+* FieldDefinition::TYPE_TEXT has been changed to TypeDefinition::TYPE_BLOB
+* FieldDefinition constructor now takes a TypeDefinition object for param 2 $type.
+* FieldDefinition constructor no longer accepts $attributes, this should be passed to a TypeDefinition object
 
 ### Additions
 
@@ -17,8 +26,14 @@ SQL building responsibilities to various SQL builders, which output is then fed 
 * Added UpdateSqlBuilder interface and MySQLUpdateSqlBuilder implementation.
 * Added DeleteSqlBuilder interface and MySQLDeleteSqlBuilder implementation.
 * Added SelectSqlBuilder interface and MySQLSelectSqlBuilder implementation.
-* Added trivial fake ecapers and table name formatter in the namespace to improve test
+* Added trivial fake escapes and table name formatter in the namespace to improve test
 readability and consistency.
+* Added support for BIGINTs in both Mysql and Sqlite
+* Added support for DECIMAL in both Mysql and Sqlite
+* Added support for specifying maz sizes of fields in TypeDefinition s
+* Added support for VARCHARs in both Mysql and Sqlite
+* Added support for reading back Index size limits in Mysql
+* Various select interfaces now allow accept an array of table names
 
 ### Improvements
 

@@ -5,6 +5,7 @@ namespace Wikibase\Database\Tests\Schema;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\FieldRemovalFailedException;
 use Wikibase\Database\Schema\SimpleTableSchemaUpdater;
 
@@ -46,7 +47,7 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new FieldDefinition(
 					'field',
-					FieldDefinition::TYPE_BOOLEAN
+					new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 				)
 			)
 		);
@@ -55,16 +56,34 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 			'foo',
 			array(
 				new FieldDefinition(
-					'bool',
-					FieldDefinition::TYPE_BOOLEAN
+					'field',
+					new TypeDefinition( TypeDefinition::TYPE_TINYINT )
+				),
+				new FieldDefinition(
+					'field2',
+					new TypeDefinition( TypeDefinition::TYPE_BIGINT )
+				),
+				new FieldDefinition(
+					'field3',
+					new TypeDefinition( TypeDefinition::TYPE_DECIMAL )
+				),
+			)
+		);
+
+		$definitions[] = new TableDefinition(
+			'foo',
+			array(
+				new FieldDefinition(
+					'tinyint',
+					new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 				),
 				new FieldDefinition(
 					'int',
-					FieldDefinition::TYPE_INTEGER
+					new TypeDefinition( TypeDefinition::TYPE_INTEGER )
 				),
 				new FieldDefinition(
 					'text',
-					FieldDefinition::TYPE_TEXT
+					new TypeDefinition( TypeDefinition::TYPE_BLOB )
 				)
 			),
 			array(
@@ -162,7 +181,10 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 
 		$updater = new SimpleTableSchemaUpdater( $schema );
 
-		$field = new FieldDefinition( 'rewtwery', FieldDefinition::TYPE_TEXT );
+		$field = new FieldDefinition(
+			'rewtwery',
+			new TypeDefinition( TypeDefinition::TYPE_BLOB )
+		);
 
 		$this->setExpectedException( 'Wikibase\Database\Schema\TableSchemaUpdateException' );
 

@@ -8,6 +8,7 @@ use Wikibase\Database\QueryInterface\QueryInterface;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\SchemaReadingException;
 use Wikibase\Database\Schema\TableDefinitionReader;
 use Wikibase\Database\TableNameFormatter;
@@ -56,12 +57,13 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		$fields = array();
 		foreach( $fieldResults as $field ){
 
+			$type = $this->getTypeDefinition( $field->type );
+
 			$fields[] = new FieldDefinition(
 				$field->name,
-				$this->getDataType( $field->type ),
+				$type,
 				$this->getNullable( $field->cannull ),
-				$field->defaultvalue,
-				FieldDefinition::NO_ATTRIB, //todo READ ATTRIBUTES
+				$this->getDefaultForTypeName( $field->defaultvalue, $type->getName() ),
 				$this->getAutoInc( $field->extra )
 			);
 		}
@@ -91,25 +93,59 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	/**
-	 * Simplifies the datatype and returns something a FieldDefinition can expect
+	 * @param string $type
 	 *
-	 * @param $dataType string
+	 * @return TypeDefinition
+	 */
+	private function getTypeDefinition( $type ) {
+		return new TypeDefinition(
+			$this->getTypeName( $type ),
+			$this->getTypeSize( $type ),
+			TypeDefinition::NO_ATTRIB //todo READ ATTRIBUTES
+		);
+	}
+
+	/**
+	 * Simplifies the datatype and returns something a TypeDefinition can expect
+	 *
+	 * @param string $type
 	 *
 	 * @throws RuntimeException
 	 * @return string
 	 */
-	private function getDataType( $dataType ) {
-		if( stristr( $dataType, 'blob' ) ) {
-			return FieldDefinition::TYPE_TEXT;
-		} else if ( stristr( $dataType, 'tinyint' ) ) {
-			return FieldDefinition::TYPE_BOOLEAN;
-		} else if ( stristr( $dataType, 'int' ) ) {
-			return FieldDefinition::TYPE_INTEGER;
-		} else if ( stristr( $dataType, 'float' ) ) {
-			return FieldDefinition::TYPE_FLOAT;
-		} else {
-			throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $dataType );
+	private function getTypeName( $type ) {
+		list( $typePart ) = explode( '(', $type );
+		switch( strtolower( $typePart ) ) {
+			case 'blob':
+				return TypeDefinition::TYPE_BLOB;
+			case 'tinyint':
+				return TypeDefinition::TYPE_TINYINT;
+			case 'int':
+				return TypeDefinition::TYPE_INTEGER;
+			case 'decimal':
+				return TypeDefinition::TYPE_DECIMAL;
+			case 'bigint':
+				return TypeDefinition::TYPE_BIGINT;
+			case 'float':
+				return TypeDefinition::TYPE_FLOAT;
+			case 'varchar':
+				return TypeDefinition::TYPE_VARCHAR;
 		}
+		throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
+	}
+
+	/**
+	 * Gets the size from a type
+	 *
+	 * @param string $type
+	 *
+	 * @return int|null
+	 */
+	private function getTypeSize( $type ) {
+		if( preg_match( '/^\w+\((\d+)\)$/', $type, $matches ) ) {
+			return intval( $matches[1] );
+		}
+		return TypeDefinition::NO_SIZE;
 	}
 
 	/**
@@ -122,6 +158,23 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * @param string $default
+	 * @param string $typeName
+	 *
+	 * @return mixed
+	 */
+	private function getDefaultForTypeName( $default, $typeName ) {
+		if( ( $typeName === TypeDefinition::TYPE_INTEGER
+				|| $typeName === TypeDefinition::TYPE_BIGINT
+				|| $typeName === TypeDefinition::TYPE_TINYINT )
+			&& $default !== FieldDefinition::NO_DEFAULT
+		) {
+			return intval( $default );
+		}
+		return $default;
 	}
 
 	/**
@@ -141,32 +194,47 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @TODO support currently don't notice FULLTEXT or SPATIAL indexes
 	 */
 	private function getIndexes( $tableName ) {
-		$indexes = array();
+		$resultingIndexes = array();
 
 		$constraintsResult =  $this->doConstraintsQuery( $tableName );
-		$constraints = array();
+		$constraintsArray = array();
 
 		foreach( $constraintsResult as $constraint ) {
-			//todo we should try to detect the index length here and use that instead of default 0
-			$constraints[ $constraint->name ][ $constraint->columnName ] = 0;
+			$constraintsArray[ $constraint->name ][ $constraint->columnName ] = $this->getIndexSizeFromSubPart( $constraint->subPart );
 		}
 
-		foreach( $constraints as $name => $cols ){
-			$indexes[] = $this->getConstraint( $name, $cols );
+		foreach( $constraintsArray as $name => $cols ){
+			$resultingIndexes[] = $this->getConstraint( $name, $cols );
 		}
 
 		$indexesResult = $this->doIndexesQuery( $tableName );
+		$indexesArray = array();
 
 		foreach( $indexesResult as $index ) {
-			$indexDef =  $this->getIndex( $index );
-
-			// Ignore any indexes we already have (primary and unique).
-			if( !array_key_exists( $indexDef->getName(), $constraints ) ){
-				$indexes[] = $indexDef;
+			// Ignore any Indexes we already have (primary and unique).
+			if( !array_key_exists( $index->indexName, $constraintsArray ) ){
+				$indexesArray[ $index->indexName ][ $index->colName ] = $this->getIndexSizeFromSubPart( $index->subPart );
 			}
 		}
 
-		return $indexes;
+		foreach( $indexesArray as $name => $cols ){
+			$resultingIndexes[] = $this->getIndex( $name, $cols );
+		}
+
+		return $resultingIndexes;
+	}
+
+	/**
+	 * @param string $subPart value of STATISTICS.SUB_PART
+	 *
+	 * @return int
+	 */
+	private function getIndexSizeFromSubPart( $subPart ) {
+		if( is_null( $subPart ) ) {
+			return 0;
+		} else {
+			return intval( $subPart );
+		}
 	}
 
 	private function getConstraint( $name, $columns ) {
@@ -177,12 +245,8 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		}
 	}
 
-	private function getIndex( $index ){
-		$cols = array();
-		foreach( explode( ',', $index->columns ) as $col ){
-			$cols[ $col ] = 0;
-		}
-		return new IndexDefinition( $index->name, $cols , IndexDefinition::TYPE_INDEX );
+	private function getIndex( $name, $columns ) {
+		return new IndexDefinition( $name, $columns , IndexDefinition::TYPE_INDEX );
 	}
 
 	/**
@@ -195,12 +259,19 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function doConstraintsQuery( $tableName ) {
 		return $this->queryInterface->select(
-			'INFORMATION_SCHEMA.KEY_COLUMN_USAGE',
+			array( 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE', 'INFORMATION_SCHEMA.STATISTICS' ),
 			array(
-				'name' => 'CONSTRAINT_NAME',
-				'columnName' => 'COLUMN_NAME'
+				'name' => 'KEY_COLUMN_USAGE.CONSTRAINT_NAME',
+				'columnName' => 'KEY_COLUMN_USAGE.COLUMN_NAME',
+				'subPart' => 'STATISTICS.SUB_PART',
 			),
-			$this->tableNameIs( $tableName )
+			array_merge(
+				$this->tableNameIs( $tableName, 'KEY_COLUMN_USAGE.TABLE_NAME' ),
+				array(
+					'KEY_COLUMN_USAGE.COLUMN_NAME = STATISTICS.COLUMN_NAME',
+					'STATISTICS.INDEX_NAME = KEY_COLUMN_USAGE.CONSTRAINT_NAME',
+				)
+			)
 		);
 	}
 
@@ -216,18 +287,23 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		return $this->queryInterface->select(
 			'INFORMATION_SCHEMA.STATISTICS',
 			array(
-				'COLUMN_NAME',
-				'SEQ_IN_INDEX',
-				'name' => 'INDEX_NAME',
-				'columns' => 'GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX)' ),
-			$this->tableNameIs( $tableName ),
-			array( 'GROUP BY' => 'name' )
+				'colName' => 'COLUMN_NAME',
+				'indexName' => 'INDEX_NAME',
+				'subPart' => 'SUB_PART',
+			),
+			$this->tableNameIs( $tableName )
 		);
 	}
 
-	protected function tableNameIs( $tableName ) {
+	/**
+	 * @param string $tableName table name value we are looking for
+	 * @param string $sourceTable table name of the table col we are querying
+	 *
+	 * @return array
+	 */
+	protected function tableNameIs( $tableName, $sourceTable = 'TABLE_NAME' ) {
 		return array(
-			'TABLE_NAME' => $this->tableNameFormatter->formatTableName( $tableName )
+			$sourceTable => $this->tableNameFormatter->formatTableName( $tableName )
 		);
 	}
 

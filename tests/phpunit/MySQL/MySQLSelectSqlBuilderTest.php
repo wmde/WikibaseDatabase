@@ -67,6 +67,22 @@ class MySQLSelectSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testSelectMultipleFieldsFromMultipleTablesWithoutConditions() {
+		$sql = $this->selectBuilder->getSelectSql(
+			array( 'table1', 'table2' ),
+			array(
+				'table1.a',
+				'table2.b',
+			),
+			array()
+		);
+
+		$this->assertEquals(
+			'SELECT ~table1.a~, ~table2.b~ FROM ~table1~, ~table2~',
+			$sql
+		);
+	}
+
 	public function testSelectWithSomeConditions() {
 		$sql = $this->selectBuilder->getSelectSql(
 			'some_table',

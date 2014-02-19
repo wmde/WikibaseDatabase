@@ -7,6 +7,7 @@ use Wikibase\Database\MySQL\MySQLTableDefinitionReader;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
 /**
@@ -58,7 +59,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 	public function testReadDefinition( $results, TableDefinition $expectedDefinition ) {
 		$reader = $this->newInstance( $results );
 		$definition = $reader->readDefinition( 'dbNametableName' );
-		$this->assertEquals( $definition, $expectedDefinition );
+		$this->assertEquals( $expectedDefinition, $definition );
 	}
 
 	public function sqlAndDefinitionProvider() {
@@ -70,49 +71,63 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					(object)array( 'name' => 'primaryField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'textField', 'type' => 'BLOB', 'cannull' => 'YES', 'defaultvalue' => 'foo', 'extra' => '' ),
 					(object)array( 'name' => 'intField', 'type' => 'INT', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
-					(object)array( 'name' => 'boolField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'decimalField', 'type' => 'DECIMAL', 'cannull' => 'NO', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'tinyintField', 'type' => 'TINYINT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 					(object)array( 'name' => 'floatField', 'type' => 'FLOAT', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
+					(object)array( 'name' => 'varcharField', 'type' => 'VARCHAR(255)', 'cannull' => 'YES', 'defaultvalue' => null, 'extra' => '' ),
 				),
 				array(
-					(object)array( 'name' => 'PRIMARY', 'columnName' => 'intField' ),
-					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'floatField' ),
-					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'boolField' ),
+					(object)array( 'name' => 'PRIMARY', 'columnName' => 'intField', 'subPart' => null ),
+					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'floatField', 'subPart' => null ),
+					(object)array( 'name' => 'uniqueIndexName', 'columnName' => 'tinyintField', 'subPart' => null ),
 				),
-				array( (object)array( 'name' => 'indexName', 'columns' => 'intField,textField' ) )
+				array(
+					(object)array( 'indexName' => 'indexName', 'colName' => 'intField', 'subPart' => null ),
+					(object)array( 'indexName' => 'indexName', 'colName' => 'textField', 'subPart' => 10 ),
+				)
 			),
 			new TableDefinition(
 				'dbNametableName',
 				array(
 					new FieldDefinition(
 						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL,
 						FieldDefinition::NO_DEFAULT
 					),
 					new FieldDefinition(
 						'textField',
-						FieldDefinition::TYPE_TEXT,
+						new TypeDefinition( TypeDefinition::TYPE_BLOB ),
 						FieldDefinition::NULL,
 						'foo'
 					),
 					new FieldDefinition(
 						'intField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL
 					),
 					new FieldDefinition(
-						'boolField',
-						FieldDefinition::TYPE_BOOLEAN
+						'decimalField',
+						new TypeDefinition( TypeDefinition::TYPE_DECIMAL ),
+						FieldDefinition::NOT_NULL
+					),
+					new FieldDefinition(
+						'tinyintField',
+						new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 					),
 					new FieldDefinition(
 						'floatField',
-						FieldDefinition::TYPE_FLOAT
+						new TypeDefinition( TypeDefinition::TYPE_FLOAT )
+					),
+					new FieldDefinition(
+						'varcharField',
+						new TypeDefinition( TypeDefinition::TYPE_VARCHAR, 255 )
 					)
 				),
 				array(
 					new IndexDefinition(
 						'uniqueIndexName',
-						array( 'floatField' => 0, 'boolField' => 0 ),
+						array( 'floatField' => 0, 'tinyintField' => 0 ),
 						IndexDefinition::TYPE_UNIQUE
 					),
 					new IndexDefinition(
@@ -122,7 +137,7 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 					),
 					new IndexDefinition(
 						'indexName',
-						array( 'intField' => 0, 'textField' => 0 ),
+						array( 'intField' => 0, 'textField' => 10 ),
 						IndexDefinition::TYPE_INDEX
 					),
 				)

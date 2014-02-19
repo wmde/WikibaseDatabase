@@ -5,6 +5,7 @@ namespace Wikibase\Database\MySQL;
 use RuntimeException;
 use Wikibase\Database\Escaper;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\FieldSqlBuilder;
 
 /**
@@ -59,28 +60,51 @@ class MySQLFieldSqlBuilder extends FieldSqlBuilder {
 	}
 
 	/**
-	 * Returns the MySQL field type for a given FieldDefinition type constant.
+	 * Returns the MySQL field type for a given TypeDefinition
 	 *
-	 * @param string $fieldType
+	 * @param TypeDefinition $fieldType
 	 *
 	 * @return string
 	 * @throws RuntimeException
 	 */
-	protected function getFieldType( $fieldType ) {
-		switch ( $fieldType ) {
+	protected function getFieldType( TypeDefinition $fieldType ) {
+		$fieldTypeName = $fieldType->getName();
+		switch ( $fieldTypeName ) {
 			// No datatype for short strings, i.e. VARCHAR? TEXT or BLOB fields should not be used for that.
-			case FieldDefinition::TYPE_INTEGER:
+			case TypeDefinition::TYPE_INTEGER:
 				return 'INT';
-			case FieldDefinition::TYPE_FLOAT:
-				return 'FLOAT'; // No support for Decimal? Won't we need that?
-			//todo define max length of text fields?
-			case FieldDefinition::TYPE_TEXT:
-				return 'BLOB'; // This is 64k max. And: MySQL also has a TEXT type.
-			case FieldDefinition::TYPE_BOOLEAN:
+			case TypeDefinition::TYPE_DECIMAL:
+				return 'DECIMAL';
+			case TypeDefinition::TYPE_BIGINT:
+				return 'BIGINT';
+			case TypeDefinition::TYPE_FLOAT:
+				return 'FLOAT';
+			//todo define max length of blob fields?
+			case TypeDefinition::TYPE_BLOB:
+				return 'BLOB'; // This is 64k max.
+			case TypeDefinition::TYPE_TINYINT:
 				return 'TINYINT';
+			case TypeDefinition::TYPE_VARCHAR:
+				return 'VARCHAR' . $this->getFieldSize( $fieldType );
 			default:
-				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldType );
+				throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $fieldTypeName );
 		}
+	}
+
+	/**
+	 * Returns the MySQL field type size for a given TypeDefinition
+	 *
+	 * @param TypeDefinition $fieldType
+	 *
+	 * @return string
+	 * @throws RuntimeException
+	 */
+	private function getFieldSize( TypeDefinition $fieldType ) {
+		$size = $fieldType->getSize();
+		if( $size === null ) {
+			throw new RuntimeException( __CLASS__ . ' requires fieldType of  ' . $fieldType->getName() . ' to have a size defined' );
+		}
+		return "({$size})";
 	}
 
 }

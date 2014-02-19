@@ -9,6 +9,7 @@ use Wikibase\Database\MediaWiki\MWTableDefinitionReaderBuilder;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 
 /**
  * @since 0.1
@@ -78,15 +79,15 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		$tables = array();
 
 		$tables[] = new TableDefinition( 'different_field_types', array(
-				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
-				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
-				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
-				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
+				new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) ),
+				new FieldDefinition( 'floatfield', new TypeDefinition( TypeDefinition::TYPE_FLOAT ) ),
+				new FieldDefinition( 'textfield', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+				new FieldDefinition( 'tinyintfield', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ),
 			)
 		);
 
 		$tables[] = new TableDefinition( 'autoinc_field', array(
-				new FieldDefinition( 'autoinc', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::NO_ATTRIB, FieldDefinition::AUTOINCREMENT ),
+				new FieldDefinition( 'autoinc', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::AUTOINCREMENT ),
 			),
 			array(
 				new IndexDefinition( 'PRIMARY', array( 'autoinc' => 0 ), IndexDefinition::TYPE_PRIMARY ),
@@ -94,16 +95,16 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$tables[] = new TableDefinition( 'not_null_fields', array(
-				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 42 ),
-				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 42 ),
+				new FieldDefinition( 'textfield', new TypeDefinition( TypeDefinition::TYPE_BLOB ), FieldDefinition::NOT_NULL ),
 			)
 		);
 
 		$tables[] = new TableDefinition( 'default_field_values_and_indexes', array(
-				new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, FieldDefinition::NOT_NULL ),
-				new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, FieldDefinition::NOT_NULL, 3 ),
-				new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT, FieldDefinition::NULL ),
-				new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN, FieldDefinition::NOT_NULL, true ),
+				new FieldDefinition( 'textfield', new TypeDefinition( TypeDefinition::TYPE_BLOB ), FieldDefinition::NOT_NULL ),
+				new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 3 ),
+				new FieldDefinition( 'floatfield', new TypeDefinition( TypeDefinition::TYPE_FLOAT ), FieldDefinition::NULL ),
+				new FieldDefinition( 'tinyintfield', new TypeDefinition( TypeDefinition::TYPE_TINYINT ), FieldDefinition::NOT_NULL, 1 ),
 			),
 			array(
 				new IndexDefinition( 'PRIMARY', array( 'intfield' => 0 ), IndexDefinition::TYPE_PRIMARY ),
@@ -142,7 +143,6 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$tableReader = $this->newTableReader();
-
 		$this->assertEquals(
 			$table,
 			$tableReader->readDefinition( $table->getName() )

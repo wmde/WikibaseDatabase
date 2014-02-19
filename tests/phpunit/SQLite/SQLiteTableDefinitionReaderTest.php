@@ -6,6 +6,7 @@ use ArrayIterator;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\SQLite\SQLiteTableDefinitionReader;
 use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
 
@@ -87,7 +88,10 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 			new TableDefinition(
 				'underscore_name',
 				array(
-					new FieldDefinition( 'startField', FieldDefinition::TYPE_TEXT )
+					new FieldDefinition(
+						'startField',
+						new TypeDefinition( TypeDefinition::TYPE_BLOB )
+					)
 				)
 			),
 		);
@@ -95,7 +99,7 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			array(
 				//create sql
-				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName ("primaryField" INT NOT NULL, "textField" BLOB NULL, "intField" INT DEFAULT 42 NOT NULL, PRIMARY KEY ("textField", "primaryField"))' ) ),
+				array( (object)array( 'sql' => 'CREATE TABLE dbNametableName ("primaryField" INT NOT NULL, "textField" BLOB NULL, "decimalField" DECIMAL NULL, "bigintField" BIGINT NULL, "intField" INT DEFAULT 42 NOT NULL, "varcharField" VARCHAR(255) NULL, PRIMARY KEY ("textField", "primaryField"))' ) ),
 				//indexes sql
 				array(
 					(object)array( 'sql' => 'CREATE UNIQUE INDEX "uniqueName" ON dbNametableName ("textField")' ),
@@ -109,19 +113,30 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				array(
 					new FieldDefinition(
 						'primaryField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL,
-						FieldDefinition::NO_DEFAULT,
-						FieldDefinition::NO_ATTRIB
+						FieldDefinition::NO_DEFAULT
 					),
 					new FieldDefinition(
 						'textField',
-						FieldDefinition::TYPE_TEXT
+						new TypeDefinition( TypeDefinition::TYPE_BLOB )
+					),
+					new FieldDefinition(
+						'decimalField',
+						new TypeDefinition( TypeDefinition::TYPE_DECIMAL )
+					),
+					new FieldDefinition(
+						'bigintField',
+						new TypeDefinition( TypeDefinition::TYPE_BIGINT )
 					),
 					new FieldDefinition(
 						'intField',
-						FieldDefinition::TYPE_INTEGER,
+						new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 						FieldDefinition::NOT_NULL, 42
+					),
+					new FieldDefinition(
+						'varcharField',
+						new TypeDefinition( TypeDefinition::TYPE_VARCHAR, 255 )
 					),
 				),
 				array(

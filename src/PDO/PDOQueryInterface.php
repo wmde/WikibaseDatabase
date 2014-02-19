@@ -115,7 +115,7 @@ class PDOQueryInterface implements QueryInterface {
 	 *
 	 * @since 0.2
 	 *
-	 * @param string $tableName
+	 * @param string|string[] $tableName
 	 * @param array $fields
 	 * @param array $conditions
 	 * @param array $options

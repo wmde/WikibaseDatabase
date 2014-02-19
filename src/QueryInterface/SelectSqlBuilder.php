@@ -10,7 +10,7 @@ namespace Wikibase\Database\QueryInterface;
 interface SelectSqlBuilder {
 
 	/**
-	 * @param string $tableName
+	 * @param string|string[] $tableName
 	 * @param string[] $fieldNames
 	 * @param array $conditions The array keys are the field names
 	 * @param array $options

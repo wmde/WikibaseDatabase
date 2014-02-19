@@ -23,7 +23,7 @@ class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 	/**
 	 * @see SelectSqlBuilder::getSelectSql
 	 *
-	 * @param string $tableName
+	 * @param string|string[] $tableName
 	 * @param string[] $fieldNames
 	 * @param array $conditions The array keys are the field names
 	 * @param array $options
@@ -52,6 +52,13 @@ class MySQLSelectSqlBuilder implements SelectSqlBuilder {
 	}
 
 	private function getFromClause( $tableName ) {
+		if( is_array( $tableName ) ) {
+			$tableNames = array();
+			foreach( $tableName as $name ) {
+				$tableNames[] = $this->identifierEscaper->getEscapedIdentifier( $name );
+			}
+			return ' FROM ' . implode( ', ', $tableNames );
+		}
 		return ' FROM ' . $this->identifierEscaper->getEscapedIdentifier( $tableName );
 	}
 

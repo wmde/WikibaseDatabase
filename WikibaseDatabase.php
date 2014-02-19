@@ -10,7 +10,7 @@
  */
 
 if ( !defined( 'WIKIBASE_DATABASE_VERSION' ) ) {
-	define( 'WIKIBASE_DATABASE_VERSION', '0.2 alpha' );
+	define( 'WIKIBASE_DATABASE_VERSION', '0.3 alpha' );
 
 	if ( defined( 'MEDIAWIKI' ) ) {
 		call_user_func( function() {

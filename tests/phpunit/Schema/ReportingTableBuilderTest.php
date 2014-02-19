@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\Schema;
 
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\Schema\ReportingTableBuilder;
 
 /**
@@ -44,19 +45,25 @@ class ReportingTableBuilderTest extends \PHPUnit_Framework_TestCase {
 		$tables = array();
 
 		$tables[] = new TableDefinition( 'differentfieldtypes', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER ),
-			new FieldDefinition( 'floatfield', FieldDefinition::TYPE_FLOAT ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT ),
-			new FieldDefinition( 'boolfield', FieldDefinition::TYPE_BOOLEAN ),
+			new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) ),
+			new FieldDefinition( 'floatfield', new TypeDefinition( TypeDefinition::TYPE_FLOAT ) ),
+			new FieldDefinition( 'textfield', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
+			new FieldDefinition( 'tinyintfield', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ),
 		) );
 
 		$tables[] = new TableDefinition( 'defaultfieldvalues', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, true, 42 ),
+			new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), true, 42 ),
+		) );
+
+		$tables[] = new TableDefinition( 'defaultfieldvalues', array(
+			new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), true, 42 ),
+			new FieldDefinition( 'bigintfield', new TypeDefinition( TypeDefinition::TYPE_BIGINT ), true, 42 ),
+			new FieldDefinition( 'decimalfield', new TypeDefinition( TypeDefinition::TYPE_DECIMAL ) ),
 		) );
 
 		$tables[] = new TableDefinition( 'notnullfields', array(
-			new FieldDefinition( 'intfield', FieldDefinition::TYPE_INTEGER, false ),
-			new FieldDefinition( 'textfield', FieldDefinition::TYPE_TEXT, false ),
+			new FieldDefinition( 'intfield', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), false ),
+			new FieldDefinition( 'textfield', new TypeDefinition( TypeDefinition::TYPE_BLOB ), false ),
 		) );
 
 		$argLists = array();

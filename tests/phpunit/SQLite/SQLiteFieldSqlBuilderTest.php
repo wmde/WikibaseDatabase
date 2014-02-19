@@ -3,6 +3,7 @@
 namespace Wikibase\Database\Tests\SQLite;
 
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 use Wikibase\Database\SQLite\SQLiteFieldSqlBuilder;
 
 /**
@@ -24,7 +25,15 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testGetCreateTableSql( FieldDefinition $field, $expectedSQL ) {
 		$mockEscaper = $this->getMock( 'Wikibase\Database\Escaper' );
 
-		$mockEscaper->expects( $this->exactly( $field->getDefault() === null ? 0 : 1 ) )
+		//Dont expect quoted Ints!
+		$fieldTypeName = $field->getType()->getName();
+		if( $fieldTypeName === TypeDefinition::TYPE_INTEGER || $fieldTypeName === TypeDefinition::TYPE_BIGINT || $fieldTypeName === TypeDefinition::TYPE_TINYINT ){
+			$expectedEscapedValue = 0;
+		} else {
+			$expectedEscapedValue = $field->getDefault() === null ? 0 : 1;
+		}
+
+		$mockEscaper->expects( $this->exactly( $expectedEscapedValue ) )
 			->method( 'getEscapedValue' )
 			->will( $this->returnCallback( function( $value ) {
 				return '|' . $value . '|';
@@ -48,7 +57,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_BOOLEAN
+				new TypeDefinition( TypeDefinition::TYPE_TINYINT )
 			),
 			'-fieldName- TINYINT NULL'
 		);
@@ -56,10 +65,9 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new FieldDefinition(
 				'autoInc',
-				FieldDefinition::TYPE_INTEGER,
+				new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 				FieldDefinition::NOT_NULL,
 				FieldDefinition::NO_DEFAULT,
-				FieldDefinition::NO_ATTRIB,
 				FieldDefinition::AUTOINCREMENT
 
 			),
@@ -68,22 +76,44 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		$argLists[] = array(
 			new FieldDefinition(
-				'fieldName',
-				FieldDefinition::TYPE_BOOLEAN,
+				'autoInc',
+				new TypeDefinition( TypeDefinition::TYPE_BIGINT ),
 				FieldDefinition::NOT_NULL,
-				'1'
+				FieldDefinition::NO_DEFAULT,
+				FieldDefinition::AUTOINCREMENT
+
 			),
-			'-fieldName- TINYINT DEFAULT |1| NOT NULL'
+			'-autoInc- BIGINT NOT NULL PRIMARY KEY AUTOINCREMENT'
 		);
 
 		$argLists[] = array(
 			new FieldDefinition(
 				'fieldName',
-				FieldDefinition::TYPE_TEXT,
+				new TypeDefinition( TypeDefinition::TYPE_TINYINT ),
+				FieldDefinition::NOT_NULL,
+				'1'
+			),
+			'-fieldName- TINYINT DEFAULT 1 NOT NULL'
+		);
+
+		$argLists[] = array(
+			new FieldDefinition(
+				'fieldName',
+				new TypeDefinition( TypeDefinition::TYPE_BLOB ),
 				FieldDefinition::NOT_NULL,
 				'foo'
 			),
 			'-fieldName- BLOB DEFAULT |foo| NOT NULL'
+		);
+
+		$argLists[] = array(
+			new FieldDefinition(
+				'fieldName',
+				new TypeDefinition( TypeDefinition::TYPE_VARCHAR, 255 ),
+				FieldDefinition::NOT_NULL,
+				'foo'
+			),
+			'-fieldName- VARCHAR(255) DEFAULT |foo| NOT NULL'
 		);
 
 		return $argLists;
@@ -92,7 +122,7 @@ class SQLiteFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testUnsupportedType() {
 		$this->setExpectedException( 'RuntimeException', 'does not support db fields of type' );
 		$sqlBuilder = new SQLiteFieldSqlBuilder( $this->getMock( 'Wikibase\Database\Escaper' ) );
-		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', 'foobar' ) );
+		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', new TypeDefinition( 'sdfgsdfgsdfg' ) ) );
 	}
 
 }

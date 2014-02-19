@@ -4,6 +4,7 @@ namespace Wikibase\Database\Tests\Schema\Definition;
 
 use ReflectionClass;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
+use Wikibase\Database\Schema\Definitions\TypeDefinition;
 
 /**
  * @covers Wikibase\Database\Schema\Definitions\FieldDefinition
@@ -21,36 +22,33 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 		$constructorArgs[] = array(
 			'names',
-			FieldDefinition::TYPE_TEXT
+			new TypeDefinition( TypeDefinition::TYPE_BLOB )
 		);
 
 		$constructorArgs[] = array(
-			'numbers',
-			FieldDefinition::TYPE_FLOAT
+			'names',
+			TypeDefinition::TYPE_BLOB
 		);
 
 		$constructorArgs[] = array(
 			'stuffs',
-			FieldDefinition::TYPE_INTEGER,
+			new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 			FieldDefinition::NOT_NULL,
-			42,
-			FieldDefinition::ATTRIB_UNSIGNED
+			42
 		);
 
 		$constructorArgs[] = array(
 			'stuffs',
-			FieldDefinition::TYPE_INTEGER,
+			new TypeDefinition( TypeDefinition::TYPE_DECIMAL ),
 			FieldDefinition::NULL,
-			FieldDefinition::NO_DEFAULT,
-			FieldDefinition::NO_ATTRIB
+			FieldDefinition::NO_DEFAULT
 		);
 
 		$constructorArgs[] = array(
 			'stuffs',
-			FieldDefinition::TYPE_INTEGER,
+			new TypeDefinition( TypeDefinition::TYPE_BIGINT ),
 			FieldDefinition::NULL,
 			FieldDefinition::NO_DEFAULT,
-			FieldDefinition::NO_ATTRIB,
 			FieldDefinition::AUTOINCREMENT
 		);
 
@@ -69,6 +67,10 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 	public function testConstructorSetsValues( array $constructorArgs ) {
 		$class = new ReflectionClass( 'Wikibase\Database\Schema\Definitions\FieldDefinition' );
 		$field = $class->newInstanceArgs( $constructorArgs );
+
+		if( is_string( $constructorArgs[1] ) ) {
+			$constructorArgs[1] = new TypeDefinition( $constructorArgs[1] );
+		}
 
 		$this->assertEquals(
 			$constructorArgs[0],
@@ -95,13 +97,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$this->assertEquals(
-			array_key_exists( 4, $constructorArgs ) ? $constructorArgs[4] : FieldDefinition::NO_ATTRIB,
-			$field->getAttributes(),
-			'The FieldDefinition attributes are set and obtained correctly'
-		);
-
-		$this->assertEquals(
-			array_key_exists( 5, $constructorArgs ) ? $constructorArgs[5] : FieldDefinition::NO_AUTOINCREMENT,
+			array_key_exists( 4, $constructorArgs ) ? $constructorArgs[4] : FieldDefinition::NO_AUTOINCREMENT,
 			$field->hasAutoIncrement(),
 			'The FieldDefinition autoIncrement is set and obtained correctly'
 		);
@@ -122,7 +118,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testInvalidName( $name ) {
 		$this->setExpectedException( 'InvalidArgumentException' );
-		new FieldDefinition( $name, FieldDefinition::TYPE_INTEGER );
+		new FieldDefinition( $name, new TypeDefinition( TypeDefinition::TYPE_INTEGER ) );
 	}
 
 	public static function invalidTypeProvider(){
@@ -157,7 +153,7 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testInvalidNull( $null ) {
 		$this->setExpectedException( 'InvalidArgumentException' );
-		new FieldDefinition( 'name', FieldDefinition::TYPE_INTEGER, $null );
+		new FieldDefinition( 'name', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), $null );
 	}
 
 	/**
@@ -167,10 +163,9 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 		$this->setExpectedException( 'InvalidArgumentException' );
 		new FieldDefinition(
 			'name',
-			FieldDefinition::TYPE_INTEGER,
+			new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 			FieldDefinition::NULL,
 			FieldDefinition::NO_DEFAULT,
-			FieldDefinition::NO_ATTRIB,
 			$autoinc
 		);
 	}
