@@ -3,6 +3,7 @@
 namespace Wikibase\Database\MediaWiki;
 
 use DatabaseBase;
+use InvalidArgumentException;
 use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
 use Wikibase\Database\Schema\TableBuilder;
