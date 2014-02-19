@@ -331,4 +331,19 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 		return $args;
 	}
 
+	public function testGivenIndexesWithTheSameName_setIndexesThrowsException() {
+		$this->setExpectedException( 'InvalidArgumentException' );
+		new TableDefinition(
+			'foo',
+			array(
+				new FieldDefinition( 'bar', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ),
+			),
+			array(
+				new IndexDefinition( 'some_name', array( 'bar' => 1 ), IndexDefinition::TYPE_INDEX ),
+				new IndexDefinition( 'another_name', array( 'baz' => 1 ), IndexDefinition::TYPE_INDEX ),
+				new IndexDefinition( 'some_name', array( 'bah' => 1 ), IndexDefinition::TYPE_INDEX ),
+			)
+		);
+	}
+
 }
