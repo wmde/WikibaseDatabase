@@ -95,6 +95,10 @@ class TableDefinition {
 				throw new InvalidArgumentException( 'All table indexes should be of type IndexDefinition' );
 			}
 
+			if ( array_key_exists( $index->getName(), $this->indexes ) ) {
+				throw new InvalidArgumentException( 'A table cannot have two indexes with the same name' );
+			}
+
 			$this->indexes[$index->getName()] = $index;
 		}
 	}
