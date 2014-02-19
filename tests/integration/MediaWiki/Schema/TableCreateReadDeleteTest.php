@@ -113,6 +113,94 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 
+		$tables[] = new TableDefinition( 'this_fucking_sqlite_is_weird',
+			array(
+				new FieldDefinition(
+					'row_id',
+					new TypeDefinition(
+						TypeDefinition::TYPE_INTEGER
+					),
+					FieldDefinition::NOT_NULL,
+					FieldDefinition::NO_DEFAULT,
+					FieldDefinition::AUTOINCREMENT
+				),
+
+				new FieldDefinition(
+					'entity_type',
+					new TypeDefinition(
+						TypeDefinition::TYPE_VARCHAR,
+						8
+					),
+					FieldDefinition::NOT_NULL
+				),
+
+				new FieldDefinition(
+					'entity_id',
+					new TypeDefinition(
+						TypeDefinition::TYPE_VARCHAR,
+						16
+					),
+					FieldDefinition::NOT_NULL
+				),
+
+				new FieldDefinition(
+					'property_id',
+					new TypeDefinition(
+						TypeDefinition::TYPE_VARCHAR,
+						16
+					),
+					FieldDefinition::NOT_NULL
+				),
+
+				new FieldDefinition(
+					'statement_rank',
+					new TypeDefinition(
+						TypeDefinition::TYPE_TINYINT
+					),
+					FieldDefinition::NOT_NULL
+				),
+
+				new FieldDefinition(
+					'value',
+					new TypeDefinition( TypeDefinition::TYPE_DECIMAL ),
+					FieldDefinition::NOT_NULL
+				),
+			),
+			array(
+				new IndexDefinition(
+					'PRIMARY',
+					array( 'row_id' => 0 ),
+					IndexDefinition::TYPE_PRIMARY
+				),
+				new IndexDefinition(
+					'entity_id_index',
+					array( 'entity_id' => 16, ),
+					IndexDefinition::TYPE_INDEX
+				),
+
+				new IndexDefinition(
+					'property_id_index',
+					array( 'property_id' => 16, ),
+					IndexDefinition::TYPE_INDEX
+				),
+
+				new IndexDefinition(
+					'value_property',
+					array(
+						'value' => 0,
+						'property_id' => 16,
+						'entity_id' => 16,
+					),
+					IndexDefinition::TYPE_UNIQUE
+				),
+
+				new IndexDefinition(
+					'value',
+					array( 'value' => 0 )
+				),
+			)
+		);
+
 		$argLists = array();
 
 		foreach ( $tables as $table ) {
