@@ -86,7 +86,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		foreach( $results as $result ){
 			$sql = preg_replace( '/, PRIMARY KEY \([^\)]+\)/', '', $result->sql );
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
-			$matchedCreate = preg_match( '/CREATE TABLE ([^ ]+) \(([^\)]+)\)/', $sql, $createParts );
+			$matchedCreate = preg_match( '/CREATE TABLE ([^ ]+) \((.+)\)$/', $sql, $createParts );
 			if( $matchedCreate !== 1 ){
 				throw new SchemaReadingException( "Failed to match CREATE TABLE regex with sql string: " . $sql );
 			}
@@ -267,11 +267,12 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	private function getIndex( $sql ){
 		preg_match( '/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
 		$parsedColumns = explode( ',', $createParts[4] );
+
 		$columns = array();
 		foreach( $parsedColumns as $columnName ){
-			//default unrestricted index size limit
-			$columns[ $this->unEscaper->getUnEscapedIdentifier( $columnName ) ] = 0;
+			$columns[] = $this->unEscaper->getUnEscapedIdentifier( $columnName );
 		}
+
 		$name = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
 		$type = $this->getIndexType( $createParts[1] );
 		return new IndexDefinition( $name, $columns , $type );
@@ -332,11 +333,12 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getPrimaryKeyForFields( $fieldNames ) {
 		$parsedColumns = explode( ',', $fieldNames );
+
 		$columns = array();
-		foreach( $parsedColumns as $columnName ){
-			//default unrestricted index size limit
-			$columns[ trim( $this->unEscaper->getUnEscapedIdentifier( $columnName ) ) ] = 0;
+		foreach( $parsedColumns as $columnName ) {
+			$columns[] = trim( $this->unEscaper->getUnEscapedIdentifier( $columnName ) );
 		}
+
 		return new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
 	}
 
@@ -346,7 +348,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getPrimaryKeyForField( $fieldName ) {
 		$fieldName = $this->unEscaper->getUnEscapedIdentifier( $fieldName );
-		return new IndexDefinition( 'PRIMARY', array( $fieldName => 0 ) , IndexDefinition::TYPE_PRIMARY );
+		return new IndexDefinition( 'PRIMARY', array( $fieldName ) , IndexDefinition::TYPE_PRIMARY );
 	}
 
 	/**

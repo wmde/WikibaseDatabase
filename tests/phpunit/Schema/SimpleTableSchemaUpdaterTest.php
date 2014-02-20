@@ -90,14 +90,14 @@ class SimpleTableSchemaUpdaterTest extends \PHPUnit_Framework_TestCase {
 				new IndexDefinition(
 					'some_index',
 					array(
-						'int' => 0,
-						'text' => 10,
+						'int',
+						'text',
 					)
 				),
 				new IndexDefinition(
 					'other_index',
 					array(
-						'text' => 0,
+						'text',
 					),
 					IndexDefinition::TYPE_UNIQUE
 				)

@@ -9,8 +9,10 @@ use InvalidArgumentException;
  *
  * @since 0.1
  * @licence GNU GPL v2+
+ *
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Denny Vrandecic < vrandecic@gmail.com >
+ * @author Adam Shorland
  */
 class IndexDefinition {
 
@@ -20,13 +22,22 @@ class IndexDefinition {
 	const TYPE_SPATIAL = 'spatial';
 	const TYPE_FULLTEXT = 'fulltext';
 
+	/**
+	 * @var string
+	 */
 	protected $name;
+	/**
+	 * @var string[]
+	 */
 	protected $columns;
+	/**
+	 * @var string of const self::TYPE_*
+	 */
 	protected $type;
 
 	/**
 	 * @param string $name
-	 * @param int[] $columns array with string column names => int size, 0 for unrestricted size
+	 * @param string[] $columns array of column names
 	 * @param string $type Element of the IndexDefinition::TYPE_ enum.
 	 *
 	 * @throws InvalidArgumentException
@@ -92,12 +103,12 @@ class IndexDefinition {
 			throw new InvalidArgumentException( 'The list of columns cannot be empty' );
 		}
 
-		foreach ( $columns as $columnName => $indexSize ) {
+		foreach ( $columns as $columnName ) {
 			$this->assertIsValidColumnName( $columnName );
+		}
 
-			if ( !is_int( $indexSize ) || ( $indexSize < 0 ) ) {
-				throw new InvalidArgumentException( 'All index sizes need to be positive integers' );
-			}
+		if( array_unique( $columns ) !== $columns ) {
+			throw new InvalidArgumentException( 'The list of columns cannot contain duplicates' );
 		}
 	}
 
@@ -109,7 +120,7 @@ class IndexDefinition {
 	}
 
 	/**
-	 * @return int[] array with string column names => int size, 0 for unrestricted size
+	 * @return string[] array of column names
 	 */
 	public function getColumns() {
 		return $this->columns;

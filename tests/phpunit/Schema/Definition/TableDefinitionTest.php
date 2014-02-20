@@ -47,7 +47,7 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'i', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, 42 ),
 			),
 			array(
-				new IndexDefinition( 'o', array( 'o' => 0 ) ),
+				new IndexDefinition( 'o', array( 'o' ) ),
 			)
 		);
 
@@ -57,9 +57,9 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'o', new TypeDefinition( TypeDefinition::TYPE_BLOB ) ),
 			),
 			array(
-				new IndexDefinition( 'o', array( 'o' => 0 ) ),
-				new IndexDefinition( 'h', array( 'h' => 42 ) ),
-				new IndexDefinition( 'foo', array( 'bar' => 5, 'baz' => 0 ) ),
+				new IndexDefinition( 'o', array( 'o') ),
+				new IndexDefinition( 'h', array( 'h') ),
+				new IndexDefinition( 'foo', array( 'bar', 'baz') ),
 			)
 		);
 
@@ -305,26 +305,26 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 					'spam',
 					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
 					array(
-						new IndexDefinition( 'o', array( 'a' => 1 ), IndexDefinition::TYPE_INDEX ),
-						new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ),
+						new IndexDefinition( 'o', array( 'a' ), IndexDefinition::TYPE_INDEX ),
+						new IndexDefinition( 'h', array( 'b' ), IndexDefinition::TYPE_PRIMARY ),
 					)
 				),
 				new TableDefinition(
 					'spam',
 					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
-					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
+					array( new IndexDefinition( 'h', array( 'b' ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 			),
 			array( 'o',
 				new TableDefinition(
 					'spam',
 					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
-					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
+					array( new IndexDefinition( 'h', array( 'b' ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 				new TableDefinition(
 					'spam',
 					array( new FieldDefinition( 'foo', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ) ),
-					array( new IndexDefinition( 'h', array( 'b' => 2 ), IndexDefinition::TYPE_PRIMARY ) )
+					array( new IndexDefinition( 'h', array( 'b' ), IndexDefinition::TYPE_PRIMARY ) )
 				),
 			),
 		);
@@ -339,9 +339,9 @@ class TableDefinitionTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'bar', new TypeDefinition( TypeDefinition::TYPE_TINYINT ) ),
 			),
 			array(
-				new IndexDefinition( 'some_name', array( 'bar' => 1 ), IndexDefinition::TYPE_INDEX ),
-				new IndexDefinition( 'another_name', array( 'baz' => 1 ), IndexDefinition::TYPE_INDEX ),
-				new IndexDefinition( 'some_name', array( 'bah' => 1 ), IndexDefinition::TYPE_INDEX ),
+				new IndexDefinition( 'some_name', array( 'bar' ), IndexDefinition::TYPE_INDEX ),
+				new IndexDefinition( 'another_name', array( 'baz' ), IndexDefinition::TYPE_INDEX ),
+				new IndexDefinition( 'some_name', array( 'bah' ), IndexDefinition::TYPE_INDEX ),
 			)
 		);
 	}

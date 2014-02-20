@@ -48,7 +48,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return new SQLiteSchemaSqlBuilder( $mockEscaper, $tableNameFormatter, $mockQueryInterface );
 	}
 
-	public function testGetRemoveFieldSql(){
+	public function testGetRemoveFieldSql() {
 		$existingDefinition = new TableDefinition( 'tableName',
 			array(
 				new FieldDefinition( 'primaryField',
@@ -66,7 +66,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			),
 			array(
 				new IndexDefinition( 'INDEX',
-					array( 'intField' => 0, 'primaryField' => 0 ),
+					array( 'intField', 'primaryField' ),
 					IndexDefinition::TYPE_INDEX
 				),
 			)
@@ -83,13 +83,13 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 			$sql );
 	}
 
-	public function testGetAddFieldSql(){
+	public function testGetAddFieldSql() {
 		$instance = $this->newInstance( );
 		$sql = $instance->getAddFieldSql( 'tableName', new FieldDefinition( 'intField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) ) );
 		$this->assertEquals( "ALTER TABLE -prefix_tableName- ADD COLUMN -intField- INTEGER NULL", $sql );
 	}
 
-	public function testGetRemoveIndexSql(){
+	public function testGetRemoveIndexSql() {
 		$instance = $this->newInstance( );
 		$sql = $instance->getRemoveIndexSql( 'tableName', 'textField' );
 		$this->assertEquals( "DROP INDEX IF EXISTS -textField-", $sql );
@@ -97,7 +97,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetAddIndexSql(){
 		$instance = $this->newInstance( );
-		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'name', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
+		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'name', array( 'a' , 'b' ), IndexDefinition::TYPE_INDEX ) );
 		$this->assertEquals( "CREATE INDEX -name- ON -prefix_tableName- (-a-,-b-);", $sql );
 	}
 

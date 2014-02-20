@@ -46,7 +46,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new IndexDefinition(
 				'indexName',
-				array( 'intField' => 0, 'textField' => 0 ),
+				array( 'intField', 'textField' ),
 				IndexDefinition::TYPE_INDEX
 			),
 			'CREATE INDEX -indexName- ON -prefix_tableName- (-intField-,-textField-)'
@@ -55,7 +55,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new IndexDefinition(
 				'indexName',
-				array( 'intField' => 0, 'textField' => 0 ),
+				array( 'intField', 'textField' ),
 				IndexDefinition::TYPE_UNIQUE
 			),
 			'CREATE UNIQUE INDEX -indexName- ON -prefix_tableName- (-intField-,-textField-)'
@@ -64,7 +64,7 @@ class MySQLIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$argLists[] = array(
 			new IndexDefinition(
 				'indexName',
-				array( 'intField' => 0, 'textField' => 0 ),
+				array( 'intField', 'textField' ),
 				IndexDefinition::TYPE_PRIMARY
 			),
 			'CREATE PRIMARY KEY ON -prefix_tableName- (-intField-,-textField-)'

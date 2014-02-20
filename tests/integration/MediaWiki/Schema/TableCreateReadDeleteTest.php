@@ -18,6 +18,7 @@ use Wikibase\Database\Schema\Definitions\TypeDefinition;
  * @group WikibaseDatabase
  * @group Integration
  * @group Database
+ * @group foobar
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
@@ -90,7 +91,7 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'autoinc', new TypeDefinition( TypeDefinition::TYPE_INTEGER ), FieldDefinition::NOT_NULL, FieldDefinition::NO_DEFAULT, FieldDefinition::AUTOINCREMENT ),
 			),
 			array(
-				new IndexDefinition( 'PRIMARY', array( 'autoinc' => 0 ), IndexDefinition::TYPE_PRIMARY ),
+				new IndexDefinition( 'PRIMARY', array( 'autoinc' ), IndexDefinition::TYPE_PRIMARY ),
 			)
 		);
 
@@ -107,16 +108,15 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'tinyintfield', new TypeDefinition( TypeDefinition::TYPE_TINYINT ), FieldDefinition::NOT_NULL, 1 ),
 			),
 			array(
-				new IndexDefinition( 'PRIMARY', array( 'intfield' => 0 ), IndexDefinition::TYPE_PRIMARY ),
-				new IndexDefinition( 'uniqueIndexName', array( 'floatfield' => 0 ), IndexDefinition::TYPE_UNIQUE ),
-				new IndexDefinition( 'somename', array( 'intfield' => 0, 'floatfield' => 0 ) ),
+				new IndexDefinition( 'PRIMARY', array( 'intfield' ), IndexDefinition::TYPE_PRIMARY ),
+				new IndexDefinition( 'uniqueIndexName', array( 'floatfield' ), IndexDefinition::TYPE_UNIQUE ),
+				new IndexDefinition( 'somename', array( 'intfield', 'floatfield' ) ),
 			)
 		);
 
 		$tables[] = new TableDefinition( 'this_fucking_sqlite_is_weird',
 			array(
-				new FieldDefinition(
-					'row_id',
+				new FieldDefinition('row_id',
 					new TypeDefinition(
 						TypeDefinition::TYPE_INTEGER
 					),
@@ -169,34 +169,34 @@ class TableCreateReadDeleteTest extends \PHPUnit_Framework_TestCase {
 			array(
 				new IndexDefinition(
 					'PRIMARY',
-					array( 'row_id' => 0 ),
+					array( 'row_id' ),
 					IndexDefinition::TYPE_PRIMARY
 				),
 				new IndexDefinition(
 					'entity_id_index',
-					array( 'entity_id' => 16, ),
+					array( 'entity_id', ),
 					IndexDefinition::TYPE_INDEX
 				),
 
 				new IndexDefinition(
 					'property_id_index',
-					array( 'property_id' => 16, ),
+					array( 'property_id', ),
 					IndexDefinition::TYPE_INDEX
 				),
 
 				new IndexDefinition(
 					'value_property',
 					array(
-						'value' => 0,
-						'property_id' => 16,
-						'entity_id' => 16,
+						'value',
+						'property_id',
+						'entity_id',
 					),
 					IndexDefinition::TYPE_UNIQUE
 				),
 
 				new IndexDefinition(
 					'value',
-					array( 'value' => 0 )
+					array( 'value' )
 				),
 			)
 		);

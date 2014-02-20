@@ -102,7 +102,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 		);
 		$this->setupTestTable( $table );
 
-		$newIndex = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
+		$newIndex = new IndexDefinition( 'indexName', array( 'startField' ) );
 		$this->newSchemaModifier()->addIndex( $table->getName(), $newIndex );
 		$table = $table->mutateIndexes( array_merge( $table->getIndexes(), array( $newIndex ) ) );
 		$this->assertTableExistsAsDefined( $table, 'assert index added' );
@@ -131,12 +131,12 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 				new FieldDefinition( 'startField', new TypeDefinition( TypeDefinition::TYPE_INTEGER ) )
 			),
 			array(
-				new IndexDefinition( 'indexName', array( 'startField' => 0 ) )
+				new IndexDefinition( 'indexName', array( 'startField' ) )
 			)
 		);
 		$this->setupTestTable( $table );
 
-		$removeIndex = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
+		$removeIndex = new IndexDefinition( 'indexName', array( 'startField' ) );
 		$this->newSchemaModifier()->removeIndex( $table->getName(), $removeIndex->getName() );
 		$table = $table->mutateIndexAway( $removeIndex->getName() );
 		$this->assertTableExistsAsDefined( $table, 'assert index removed' );
@@ -168,7 +168,7 @@ class TableCreateModifyDeleteTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 		$this->setupTestTable( $startTable );
-		$index = new IndexDefinition( 'indexName', array( 'startField' => 0 ) );
+		$index = new IndexDefinition( 'indexName', array( 'startField' ) );
 
 		$this->newSchemaModifier()->addIndex( $startTable->getName(), $index );
 		$newTable = $startTable->mutateIndexes( array_merge( $startTable->getIndexes(), array( $index ) ) );

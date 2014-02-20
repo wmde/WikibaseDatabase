@@ -20,7 +20,7 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider validNameProvider
 	 */
 	public function testCanGetName( $indexName ) {
-		$index = new IndexDefinition( $indexName, array( 'a' => 0 ) );
+		$index = new IndexDefinition( $indexName, array( 'a' ) );
 
 		$this->assertEquals( $indexName, $index->getName() );
 	}
@@ -40,7 +40,7 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testCannotSetInvalidName( $invalidName ) {
 		$this->setExpectedException( 'InvalidArgumentException' );
-		new IndexDefinition( $invalidName, array( 'a' => 0 ) );
+		new IndexDefinition( $invalidName, array( 'a' ) );
 	}
 
 	public function invalidNameProvider() {
@@ -64,7 +64,7 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 	public function testCanGetColumns() {
 		$indexName = 'foo_bar';
 		$columns = array(
-			'foo' => 10
+			'foo'
 		);
 
 		$index = new IndexDefinition( $indexName, $columns );
@@ -90,9 +90,6 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 			array( (object)array( 'foo' => 'bar' ) ),
 			array( '' ),
 			array( '"foo"' ),
-			array( array( 'name' ) ),
-			array( array( 0 => 'name' ) ),
-			array( array( 'name' => 'name' ) ),
 			array( array( 'name' => 4.2 ) ),
 			array( array( 'name' => -1 ) ),
 			array( array( 'name' => -1337 ) ),
@@ -100,7 +97,7 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testDefaultIndexTypeIsSet() {
-		$index = new IndexDefinition( 'foo_bar', array( 'a' => 0 ) );
+		$index = new IndexDefinition( 'foo_bar', array( 'a' ) );
 
 		$this->assertEquals( IndexDefinition::TYPE_INDEX, $index->getType() );
 	}
@@ -108,7 +105,7 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 	public function testGetSetIndexType() {
 		$indexType = IndexDefinition::TYPE_FULLTEXT;
 
-		$index = new IndexDefinition( 'foo_bar', array( 'a' => 0 ), $indexType );
+		$index = new IndexDefinition( 'foo_bar', array( 'a' ), $indexType );
 
 		$this->assertEquals( $indexType, $index->getType() );
 	}
@@ -118,7 +115,7 @@ class IndexDefinitionTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testCannotSetInvalidIndexType( $notAnIndexType ) {
 		$this->setExpectedException( 'InvalidArgumentException' );
-		new IndexDefinition( 'foo_bar', array( 'a' => 0 ), $notAnIndexType );
+		new IndexDefinition( 'foo_bar', array( 'a' ), $notAnIndexType );
 	}
 
 	public function invalidIndexTypeProvider() {

@@ -40,7 +40,7 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 			);
 
 		$columnNames = array();
-		foreach( $index->getColumns() as $columnName => $intSize ){
+		foreach( $index->getColumns() as $columnName ){
 			$columnNames[] = $this->escaper->getEscapedIdentifier( $columnName );
 		}
 

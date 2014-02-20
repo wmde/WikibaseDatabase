@@ -108,7 +108,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	 * @param IndexDefinition $index
 	 *
 	 * @return string
-	 * @todo use a MySQLIndexSqlBuilder (although this creates indexes in a seperate query)
+	 * @todo use a MySQLIndexSqlBuilder (although this creates indexes in a separate query)
 	 */
 	protected function getIndexSQL( IndexDefinition $index ) {
 		$sql = $this->getIndexType( $index->getType() );
@@ -118,12 +118,8 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 		}
 
 		$cols = array();
-		foreach( $index->getColumns() as $columnName => $intSize ){
-			$colName =  $this->escaper->getEscapedIdentifier( $columnName );
-			if( $intSize !== 0 ) {
-				$colName .= "({$intSize})";
-			}
-			$cols[] = $colName;
+		foreach( $index->getColumns() as $columnName ) {
+			$cols[] = $this->escaper->getEscapedIdentifier( $columnName );
 		}
 
 		$sql .= ' (' . implode( ',', $cols ) . ')';
@@ -138,7 +134,7 @@ class MySQLTableSqlBuilder extends TableSqlBuilder {
 	 *
 	 * @return string
 	 * @throws RuntimeException
-	 * @todo use a MySQLIndexSqlBuilder (although this creates indexes in a seperate query)
+	 * @todo use a MySQLIndexSqlBuilder (although this creates indexes in a separate query)
 	 */
 	protected function getIndexType( $indexType ) {
 		switch ( $indexType ) {
