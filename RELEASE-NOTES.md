@@ -13,6 +13,7 @@ is thus responsible for autoloading.
 * FieldDefinition::TYPE_TEXT has been changed to TypeDefinition::TYPE_BLOB
 * FieldDefinition constructor now takes a TypeDefinition object for param 2 $type.
 * FieldDefinition constructor no longer accepts $attributes, this should be passed to a TypeDefinition object
+* IndexDefinitions no longer care about index size, $columns in the constructor is now an array of strings
 
 ### Additions
 

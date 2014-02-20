@@ -18,7 +18,6 @@ use Wikibase\Database\Schema\Definitions\TypeDefinition;
  * @group WikibaseDatabase
  * @group Integration
  * @group Database
- * @group foobar
  *
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
