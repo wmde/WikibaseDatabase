@@ -127,17 +127,17 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				array(
 					new IndexDefinition(
 						'uniqueIndexName',
-						array( 'floatField' => 0, 'tinyintField' => 0 ),
+						array( 'floatField' , 'tinyintField' ),
 						IndexDefinition::TYPE_UNIQUE
 					),
 					new IndexDefinition(
 						'PRIMARY',
-						array( 'intField' => 0 ),
+						array( 'intField' ),
 						IndexDefinition::TYPE_PRIMARY
 					),
 					new IndexDefinition(
 						'indexName',
-						array( 'intField' => 0, 'textField' => 10 ),
+						array( 'intField' , 'textField' ),
 						IndexDefinition::TYPE_INDEX
 					),
 				)

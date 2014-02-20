@@ -103,7 +103,7 @@ class SQLiteTableSqlBuilder extends TableSqlBuilder {
 		if( $index instanceof IndexDefinition ){
 
 			$cols = array();
-			foreach( $index->getColumns() as $col => $length ){
+			foreach( $index->getColumns() as $col ){
 				$cols[] = $this->escaper->getEscapedIdentifier( $col );
 			}
 

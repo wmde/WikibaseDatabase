@@ -98,15 +98,8 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 		$argLists = array();
 
 		$argLists[] = array( 'foo', array() );
-
-		$argLists[] = array( 'bar', array(
-			'intfield' => 42,
-		) );
-
-		$argLists[] = array( 'baz', array(
-			'intfield' => 42,
-			'textfield' => '~=[,,_,,]:3',
-		) );
+		$argLists[] = array( 'bar', array( 'intfield', ) );
+		$argLists[] = array( 'baz', array( 'intfield', 'textfield', ) );
 
 		return $argLists;
 	}
@@ -165,35 +158,21 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
 		$argLists[] = array(
 			'foo',
-			array(
-				'intfield' => 42,
-				'textfield' => 'foobar baz',
-			),
+			array( 'intfield', 'textfield', ),
 			array(
 			)
 		);
 
 		$argLists[] = array(
 			'foo',
-			array(
-				'textfield' => '~=[,,_,,]:3',
-			),
-			array(
-				'intfield' => 0
-			)
+			array( 'textfield', ),
+			array( 'intfield' )
 		);
 
 		$argLists[] = array(
 			'foo',
-			array(
-				'textfield' => '~=[,,_,,]:3',
-				'intfield' => 0,
-				'floatfield' => 4.2,
-			),
-			array(
-				'textfield' => '~[,,_,,]:3',
-				'floatfield' => 9000.1,
-			)
+			array( 'textfield', 'intfield', 'floatfield', ),
+			array( 'textfield', 'floatfield', )
 		);
 
 		return $argLists;

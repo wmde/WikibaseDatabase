@@ -106,7 +106,7 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ) ),
 				array(
 					new IndexDefinition(
-						'indexName', array( 'textField' => 0, 'intField' => 0 ), IndexDefinition::TYPE_INDEX
+						'indexName', array( 'textField', 'intField' ), IndexDefinition::TYPE_INDEX
 					),
 				)
 			),
@@ -119,10 +119,10 @@ class MySQLTableSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( $this->newMockField( 'foo' ), $this->newMockField( 'bar' ), $this->newMockField( 'baz' ) ),
 				array(
 					new IndexDefinition(
-						'indexName', array( 'intField' => 0 ), IndexDefinition::TYPE_INDEX
+						'indexName', array( 'intField' ), IndexDefinition::TYPE_INDEX
 					),
 					new IndexDefinition(
-						'uniqueIndexName', array( 'textField2' => 0 ), IndexDefinition::TYPE_UNIQUE
+						'uniqueIndexName', array( 'textField2' ), IndexDefinition::TYPE_UNIQUE
 					),
 				)
 			),

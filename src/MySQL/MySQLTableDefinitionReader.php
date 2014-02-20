@@ -56,7 +56,6 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 
 		$fields = array();
 		foreach( $fieldResults as $field ){
-
 			$type = $this->getTypeDefinition( $field->type );
 
 			$fields[] = new FieldDefinition(
@@ -84,7 +83,7 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 			array(
 				'name' => 'COLUMN_NAME',
 				'cannull' => 'IS_NULLABLE',
-				'type' => 'DATA_TYPE',
+				'type' => 'COLUMN_TYPE',
 				'defaultvalue' => 'COLUMN_DEFAULT',
 				'extra' => 'EXTRA'
 			),
@@ -98,9 +97,10 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return TypeDefinition
 	 */
 	private function getTypeDefinition( $type ) {
+		$typeName = $this->getTypeName( $type );
 		return new TypeDefinition(
-			$this->getTypeName( $type ),
-			$this->getTypeSize( $type ),
+			$typeName,
+			$this->getTypeSize( $type, $typeName ),
 			TypeDefinition::NO_ATTRIB //todo READ ATTRIBUTES
 		);
 	}
@@ -115,20 +115,23 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getTypeName( $type ) {
 		list( $typePart ) = explode( '(', $type );
-		switch( strtolower( $typePart ) ) {
-			case 'blob':
+		switch( strtoupper( $typePart ) ) {
+			case 'BLOB':
 				return TypeDefinition::TYPE_BLOB;
-			case 'tinyint':
+			case 'TINYINT':
 				return TypeDefinition::TYPE_TINYINT;
-			case 'int':
+			case 'INT':
 				return TypeDefinition::TYPE_INTEGER;
-			case 'decimal':
+			case 'DECIMAL':
 				return TypeDefinition::TYPE_DECIMAL;
-			case 'bigint':
+			case 'BIGINT':
 				return TypeDefinition::TYPE_BIGINT;
-			case 'float':
+			case 'FLOAT':
 				return TypeDefinition::TYPE_FLOAT;
-			case 'varchar':
+			//FIXME: as MySqlTableSqlBuilder have binary hardcoded in getTableOptionSql() if we try to write
+			//       a VARCHAR it will write a VARBINARY instead, therefor we need to read this back as VARCHAR
+			case 'VARBINARY':
+			case 'VARCHAR':
 				return TypeDefinition::TYPE_VARCHAR;
 		}
 		throw new RuntimeException( __CLASS__ . ' does not support db fields of type ' . $type );
@@ -138,11 +141,15 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * Gets the size from a type
 	 *
 	 * @param string $type
+	 * @param string $typeName
 	 *
 	 * @return int|null
 	 */
-	private function getTypeSize( $type ) {
-		if( preg_match( '/^\w+\((\d+)\)$/', $type, $matches ) ) {
+	private function getTypeSize( $type, $typeName ) {
+		if( $typeName !== TypeDefinition::TYPE_VARCHAR ) {
+			return TypeDefinition::NO_SIZE;
+		}
+		if( preg_match( '/^\w+\((\d+)\)?$/', $type, $matches ) ) {
 			return intval( $matches[1] );
 		}
 		return TypeDefinition::NO_SIZE;
@@ -194,17 +201,11 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @TODO support currently don't notice FULLTEXT or SPATIAL indexes
 	 */
 	private function getIndexes( $tableName ) {
-		$resultingIndexes = array();
-
 		$constraintsResult =  $this->doConstraintsQuery( $tableName );
 		$constraintsArray = array();
 
 		foreach( $constraintsResult as $constraint ) {
-			$constraintsArray[ $constraint->name ][ $constraint->columnName ] = $this->getIndexSizeFromSubPart( $constraint->subPart );
-		}
-
-		foreach( $constraintsArray as $name => $cols ){
-			$resultingIndexes[] = $this->getConstraint( $name, $cols );
+			$constraintsArray[ $constraint->name ][] = $constraint->columnName;
 		}
 
 		$indexesResult = $this->doIndexesQuery( $tableName );
@@ -213,28 +214,19 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 		foreach( $indexesResult as $index ) {
 			// Ignore any Indexes we already have (primary and unique).
 			if( !array_key_exists( $index->indexName, $constraintsArray ) ){
-				$indexesArray[ $index->indexName ][ $index->colName ] = $this->getIndexSizeFromSubPart( $index->subPart );
+				$indexesArray[ $index->indexName ][] = $index->colName;
 			}
 		}
 
+		$resultingIndexes = array();
 		foreach( $indexesArray as $name => $cols ){
 			$resultingIndexes[] = $this->getIndex( $name, $cols );
 		}
+		foreach( $constraintsArray as $name => $cols ){
+			$resultingIndexes[] = $this->getConstraint( $name, array_unique( $cols ) );
+		}
 
 		return $resultingIndexes;
-	}
-
-	/**
-	 * @param string $subPart value of STATISTICS.SUB_PART
-	 *
-	 * @return int
-	 */
-	private function getIndexSizeFromSubPart( $subPart ) {
-		if( is_null( $subPart ) ) {
-			return 0;
-		} else {
-			return intval( $subPart );
-		}
 	}
 
 	private function getConstraint( $name, $columns ) {

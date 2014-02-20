@@ -80,7 +80,7 @@ class MySQLIndexSqlBuilder extends IndexSqlBuilder {
 	protected function getEscapedColumnNames() {
 		$columnNames = array();
 
-		foreach( $this->index->getColumns() as $columnName => $intSize ) {
+		foreach( $this->index->getColumns() as $columnName ) {
 			$columnNames[] =  $this->escaper->getEscapedIdentifier( $columnName );
 		}
 

@@ -142,17 +142,17 @@ class SQLiteTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 				array(
 					new IndexDefinition(
 						'indexName',
-						array( 'intField' => 0, 'textField' => 0 ),
+						array( 'intField', 'textField'),
 						IndexDefinition::TYPE_INDEX
 					),
 					new IndexDefinition(
 						'uniqueName',
-						array( 'textField' => 0 ),
+						array( 'textField' ),
 						IndexDefinition::TYPE_UNIQUE
 					),
 					new IndexDefinition(
 						'PRIMARY',
-						array( 'textField' => 0, 'primaryField' => 0 ),
+						array( 'textField', 'primaryField' ),
 						IndexDefinition::TYPE_PRIMARY
 					),
 				)

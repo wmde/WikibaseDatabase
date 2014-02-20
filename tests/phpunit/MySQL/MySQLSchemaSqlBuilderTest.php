@@ -62,7 +62,7 @@ class MySQLSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetAddIndexSql(){
 		$instance = $this->newInstance();
-		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'indexName', array( 'a' => 0, 'b' => 0 ), IndexDefinition::TYPE_INDEX ) );
+		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'indexName', array( 'a', 'b' ), IndexDefinition::TYPE_INDEX ) );
 		$this->assertEquals( "CREATE INDEX -indexName- ON -prefix_tableName- (-a-,-b-)", $sql );
 	}
 
