@@ -34,7 +34,7 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
 		$formattedTableName = $this->tableNameFormatter->formatTableName( $tableName );
-		$sql .= $this->escaper->getEscapedIdentifier( $formattedTableName . '-' . $index->getName() ) . ' ';
+		$sql .= $this->escaper->getEscapedIdentifier( $formattedTableName . '_' . $index->getName() ) . ' ';
 
 		$sql .= 'ON ' . $this->escaper->getEscapedIdentifier(
 				$formattedTableName

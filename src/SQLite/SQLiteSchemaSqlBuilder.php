@@ -136,7 +136,7 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){
 		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
-		$indexName = $this->escaper->getEscapedIdentifier( $tableName . '-' . $indexName );
+		$indexName = $this->escaper->getEscapedIdentifier( $tableName . '_' . $indexName );
 		return "DROP INDEX IF EXISTS {$indexName}";
 	}
 

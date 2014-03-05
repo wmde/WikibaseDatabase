@@ -77,7 +77,7 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(
 			'ALTER TABLE -prefix_tableName- RENAME TO -prefix_tableName_tmp-;' . PHP_EOL
 			. 'CREATE TABLE -prefix_tableName- (-primaryField- INTEGER NOT NULL, -intField- INTEGER DEFAULT 42 NOT NULL);' . PHP_EOL
-			. 'CREATE INDEX -prefix_tableName-INDEX- ON -prefix_tableName- (-intField-,-primaryField-);' . PHP_EOL
+			. 'CREATE INDEX -prefix_tableName_INDEX- ON -prefix_tableName- (-intField-,-primaryField-);' . PHP_EOL
 			. 'INSERT INTO -prefix_tableName-(-primaryField-, -intField-) SELECT -primaryField-, -intField- FROM -prefix_tableName_tmp-;' . PHP_EOL
 			. 'DROP TABLE -prefix_tableName_tmp-;' ,
 			$sql );
@@ -92,13 +92,13 @@ class SQLiteSchemaSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 	public function testGetRemoveIndexSql() {
 		$instance = $this->newInstance( );
 		$sql = $instance->getRemoveIndexSql( 'tableName', 'textField' );
-		$this->assertEquals( "DROP INDEX IF EXISTS -prefix_tableName-textField-", $sql );
+		$this->assertEquals( "DROP INDEX IF EXISTS -prefix_tableName_textField-", $sql );
 	}
 
 	public function testGetAddIndexSql(){
 		$instance = $this->newInstance( );
 		$sql = $instance->getAddIndexSql( 'tableName', new IndexDefinition( 'name', array( 'a' , 'b' ), IndexDefinition::TYPE_INDEX ) );
-		$this->assertEquals( "CREATE INDEX -prefix_tableName-name- ON -prefix_tableName- (-a-,-b-);", $sql );
+		$this->assertEquals( "CREATE INDEX -prefix_tableName_name- ON -prefix_tableName- (-a-,-b-);", $sql );
 	}
 
 }

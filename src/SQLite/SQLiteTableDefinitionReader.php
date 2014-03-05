@@ -275,7 +275,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		}
 
 		$name = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
-		$name = preg_replace( '/^' . $tableName . '\-/', '', $name );
+		$name = preg_replace( '/^' . preg_quote( $tableName ) . '_/', '', $name );
 		$type = $this->getIndexType( $createParts[1] );
 		return new IndexDefinition( $name, $columns , $type );
 	}
