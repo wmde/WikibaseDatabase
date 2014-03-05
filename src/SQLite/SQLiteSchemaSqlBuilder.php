@@ -135,8 +135,8 @@ class SQLiteSchemaSqlBuilder implements SchemaModificationSqlBuilder {
 	 * @return string
 	 */
 	public function getRemoveIndexSql( $tableName, $indexName ){
-		$tableName = $this->tableNameFormatter->formatTableName( $tableName );
-		$indexName = $this->escaper->getEscapedIdentifier( $tableName . '_' . $indexName );
+		$formattedTableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$indexName = $this->escaper->getEscapedIdentifier( $formattedTableName . '_' . $indexName );
 		return "DROP INDEX IF EXISTS {$indexName}";
 	}
 
