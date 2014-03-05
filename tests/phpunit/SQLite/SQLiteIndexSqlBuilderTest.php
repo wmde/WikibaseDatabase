@@ -46,7 +46,7 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField', 'textField' ),
 				IndexDefinition::TYPE_INDEX
 			),
-			'CREATE INDEX -indexName- ON -prefix_tableName- (-intField-,-textField-);'
+			'CREATE INDEX -prefix_tableName-indexName- ON -prefix_tableName- (-intField-,-textField-);'
 		);
 
 
@@ -56,7 +56,7 @@ class SQLiteIndexSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 				array( 'intField', 'textField' ),
 				IndexDefinition::TYPE_UNIQUE
 			),
-			'CREATE UNIQUE INDEX -indexName- ON -prefix_tableName- (-intField-,-textField-);'
+			'CREATE UNIQUE INDEX -prefix_tableName-indexName- ON -prefix_tableName- (-intField-,-textField-);'
 		);
 
 		return $argLists;

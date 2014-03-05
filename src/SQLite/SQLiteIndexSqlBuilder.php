@@ -33,10 +33,11 @@ class SQLiteIndexSqlBuilder extends IndexSqlBuilder {
 	public function getIndexSQL( IndexDefinition $index, $tableName ){
 		$sql = 'CREATE ';
 		$sql .= $this->getIndexType( $index->getType() ) . ' ';
-		$sql .= $this->escaper->getEscapedIdentifier( $index->getName() ) . ' ';
+		$formattedTableName = $this->tableNameFormatter->formatTableName( $tableName );
+		$sql .= $this->escaper->getEscapedIdentifier( $formattedTableName . '-' . $index->getName() ) . ' ';
 
 		$sql .= 'ON ' . $this->escaper->getEscapedIdentifier(
-				$this->tableNameFormatter->formatTableName( $tableName )
+				$formattedTableName
 			);
 
 		$columnNames = array();

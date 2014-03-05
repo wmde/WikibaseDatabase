@@ -253,7 +253,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$indexes = array();
 
 		foreach( $results as $result ){
-			$indexes[] = $this->getIndex( $result->sql );
+			$indexes[] = $this->getIndex( $result->sql, $tableName );
 		}
 
 		return $indexes;
@@ -261,10 +261,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * @param string $sql
+	 * @param string $tableName
 	 *
 	 * @return IndexDefinition
 	 */
-	private function getIndex( $sql ){
+	private function getIndex( $sql, $tableName ){
 		preg_match( '/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
 		$parsedColumns = explode( ',', $createParts[4] );
 
@@ -274,6 +275,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		}
 
 		$name = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
+		$name = preg_replace( '/^' . $tableName . '\-/', '', $name );
 		$type = $this->getIndexType( $createParts[1] );
 		return new IndexDefinition( $name, $columns , $type );
 	}
