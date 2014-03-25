@@ -31,6 +31,7 @@ readability and consistency.
 * Added support for VARCHARs in both Mysql and Sqlite
 * Added support for reading back Index size limits in Mysql
 * Various select interfaces now allow accept an array of table names
+* Added NullTableNameFormatter and PrefixingTableNameFormatter
 
 ### Improvements
 
