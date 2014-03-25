@@ -32,10 +32,6 @@ class PDOValueEscaperTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->dummyQuoteValue( $input ), $actual );
 	}
 
-	public function inputProvider() {
-
-	}
-
 	public function dummyQuoteValue( $input ) {
 		return '|' . $input . '|';
 	}

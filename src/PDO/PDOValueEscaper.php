@@ -6,7 +6,7 @@ use PDO;
 use Wikibase\Database\ValueEscaper;
 
 /**
- * Service for escaping values and identifiers.
+ * Service for escaping values.
  *
  * @since 0.2
  * @licence GNU GPL v2+
@@ -21,7 +21,7 @@ class PDOValueEscaper implements ValueEscaper {
 	}
 
 	/**
-	 * @see Escaper::getEscapedValue
+	 * @see ValueEscaper::getEscapedValue
 	 *
 	 * @param mixed $value
 	 *
