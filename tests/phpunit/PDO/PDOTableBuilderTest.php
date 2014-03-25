@@ -26,7 +26,7 @@ class PDOTableBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		$sqlBuilder = $this->newMockSqlBuilder( $table, $stubSql );
 
-		$tableBuilder = new PDOTableBuilder( $pdo, $sqlBuilder );
+		$tableBuilder = $this->newTableBuilderFromPdoAndSqlBuilder( $pdo, $sqlBuilder );
 		$tableBuilder->createTable( $table );
 	}
 
@@ -52,6 +52,15 @@ class PDOTableBuilderTest extends \PHPUnit_Framework_TestCase {
 		return $sqlBuilder;
 	}
 
+	private function newTableBuilderFromPdoAndSqlBuilder( $pdo, $sqlBuilder ) {
+		return new PDOTableBuilder(
+			$pdo,
+			$sqlBuilder,
+			$this->getMock( 'Wikibase\Database\TableNameFormatter' ),
+			$this->getMock( 'Wikibase\Database\IdentifierEscaper' )
+		);
+	}
+
 	public function testCreateTableThrowsExceptionWhenQueryFails() {
 		$stubSql = 'foo bar baz';
 
@@ -62,7 +71,7 @@ class PDOTableBuilderTest extends \PHPUnit_Framework_TestCase {
 
 		$sqlBuilder = $this->newMockSqlBuilder( $table, $stubSql );
 
-		$tableBuilder = new PDOTableBuilder( $pdo, $sqlBuilder );
+		$tableBuilder = $this->newTableBuilderFromPdoAndSqlBuilder( $pdo, $sqlBuilder );
 
 		$this->setExpectedException( 'Wikibase\Database\Schema\TableCreationFailedException' );
 		$tableBuilder->createTable( $table );
