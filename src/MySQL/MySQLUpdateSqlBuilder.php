@@ -17,10 +17,10 @@ class MySQLUpdateSqlBuilder implements UpdateSqlBuilder {
 	private $tableNameFormatter;
 	private $conditionBuilder;
 
-	public function __construct( Escaper $identifierEscaper, TableNameFormatter $tableNameFormatter,
+	public function __construct( Escaper $escaper, TableNameFormatter $tableNameFormatter,
 		MySQLConditionSqlBuilder $conditionBuilder ) {
 
-		$this->escaper = $identifierEscaper;
+		$this->escaper = $escaper;
 		$this->tableNameFormatter = $tableNameFormatter;
 		$this->conditionBuilder = $conditionBuilder;
 	}
