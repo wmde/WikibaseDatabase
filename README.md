@@ -221,5 +221,5 @@ Contributions where also made by [several others](https://www.ohloh.net/p/wikiba
 * [Wikibase Database on Packagist](https://packagist.org/packages/wikibase/database)
 * [Wikibase Database on Ohloh](https://www.ohloh.net/p/wikibasedatabase)
 * [Wikibase Database on MediaWiki.org](https://www.mediawiki.org/wiki/Extension:Wikibase_Database)
-* [TravisCI build status](https://travis-ci.org/wmde/WikibaseDatabase)
-* [Latest version of the readme file](https://github.com/wmde/WikibaseDatabase/blob/master/README.md)
+* [Wikibase Database on TravisCI](https://travis-ci.org/wmde/WikibaseDatabase)
+* [Wikibase Database on ScrutinizerCI](https://scrutinizer-ci.com/g/wmde/WikibaseDatabase/)
