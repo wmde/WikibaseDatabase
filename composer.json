@@ -31,10 +31,7 @@
 	"autoload": {
 		"psr-4": {
 			"Wikibase\\Database\\": "src/"
-		},
-		"files" : [
-			"WikibaseDatabase.php"
-		]
+		}
 	},
 	"extra": {
 		"branch-alias": {
