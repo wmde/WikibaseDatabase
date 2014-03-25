@@ -23,7 +23,7 @@
 	],
 	"support": {
 		"issues": "https://github.com/wmde/WikibaseDatabase/issues",
-		"irc": "irc://irc.freenode.net/wikimedia-wikidata"
+		"irc": "irc://irc.freenode.net/wikidata"
 	},
 	"require": {
 		"php": ">=5.3.2"
