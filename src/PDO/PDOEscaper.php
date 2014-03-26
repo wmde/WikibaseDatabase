@@ -4,8 +4,6 @@ namespace Wikibase\Database\PDO;
 
 use PDO;
 use Wikibase\Database\Escaper;
-use Wikibase\Database\IdentifierEscaper;
-use Wikibase\Database\ValueEscaper;
 
 /**
  * Service for escaping values and identifiers.
@@ -14,21 +12,10 @@ use Wikibase\Database\ValueEscaper;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class PDOEscaper extends PDOValueEscaper implements Escaper {
-
-	/**
-	 * @var ValueEscaper
-	 */
-	protected $valueEscaper;
-
-	/**
-	 * @var IdentifierEscaper
-	 */
-	protected $idEscaper;
+class PDOEscaper implements Escaper {
 
 	public function __construct( PDO $pdo ) {
-		$this->valueEscaper = new PDOValueEscaper( $pdo );
-		$this->idEscaper = new PDOIdentifierEscaper();
+		$this->pdo = $pdo;
 	}
 
 	/**
@@ -39,7 +26,7 @@ class PDOEscaper extends PDOValueEscaper implements Escaper {
 	 * @return string The escaped value
 	 */
 	public function getEscapedValue( $value ) {
-		return $this->valueEscaper->getEscapedValue( $value );
+		return $this->pdo->quote( $value );
 	}
 
 	/**
@@ -50,7 +37,7 @@ class PDOEscaper extends PDOValueEscaper implements Escaper {
 	 * @return string The escaped identifier
 	 */
 	public function getEscapedIdentifier( $identifier ) {
-		return $this->idEscaper->getEscapedIdentifier( $identifier );
+		return '`' . str_replace( '`', '``', $identifier ) . '`';
 	}
 
 }
