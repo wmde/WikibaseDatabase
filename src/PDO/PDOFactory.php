@@ -5,11 +5,17 @@ namespace Wikibase\Database\PDO;
 use PDO;
 use Wikibase\Database\MySQL\MySQLConditionSqlBuilder;
 use Wikibase\Database\MySQL\MySQLDeleteSqlBuilder;
+use Wikibase\Database\MySQL\MySQLFieldSqlBuilder;
 use Wikibase\Database\MySQL\MySQLInsertSqlBuilder;
 use Wikibase\Database\MySQL\MySQLSelectSqlBuilder;
+use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
 use Wikibase\Database\MySQL\MySQLUpdateSqlBuilder;
 use Wikibase\Database\NullTableNameFormatter;
 use Wikibase\Database\QueryInterface\QueryInterface;
+use Wikibase\Database\Schema\TableBuilder;
+use Wikibase\Database\SQLite\SQLiteFieldSqlBuilder;
+use Wikibase\Database\SQLite\SQLiteIndexSqlBuilder;
+use Wikibase\Database\SQLite\SQLiteTableSqlBuilder;
 
 /**
  * @since 0.2
@@ -39,6 +45,47 @@ class PDOFactory {
 			new MySQLUpdateSqlBuilder( $escaper, $tableNameFormatter, $conditionBuilder ),
 			new MySQLDeleteSqlBuilder( $escaper, $conditionBuilder ),
 			new MySQLSelectSqlBuilder( $escaper, $conditionBuilder )
+		);
+	}
+
+	/**
+	 * @param string $dbName
+	 * @return TableBuilder
+	 */
+	public function newMySQLTableBuilder( $dbName ) {
+		$escaper = new PDOEscaper( $this->pdo );
+		$tableNameFormatter = new NullTableNameFormatter();
+
+		return new PDOTableBuilder(
+			$this->pdo,
+			new MySQLTableSqlBuilder(
+				$dbName,
+				$escaper,
+				$tableNameFormatter,
+				new MySQLFieldSqlBuilder( $escaper )
+			),
+			$tableNameFormatter,
+			$escaper
+		);
+	}
+
+	/**
+	 * @return TableBuilder
+	 */
+	public function newSQLiteTableBuilder() {
+		$escaper = new PDOEscaper( $this->pdo );
+		$tableNameFormatter = new NullTableNameFormatter();
+
+		return new PDOTableBuilder(
+			$this->pdo,
+			new SQLiteTableSqlBuilder(
+				$escaper,
+				$tableNameFormatter,
+				new SQLiteFieldSqlBuilder( $escaper ),
+				new SQLiteIndexSqlBuilder( $escaper, $tableNameFormatter )
+			),
+			$tableNameFormatter,
+			$escaper
 		);
 	}
 

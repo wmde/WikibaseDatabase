@@ -16,12 +16,34 @@ use Wikibase\Database\PDO\PDOFactory;
  */
 class PDOFactoryTest extends \PHPUnit_Framework_TestCase {
 
+	/**
+	 * @var PDOFactory
+	 */
+	private $factory;
+
+	public function setUp() {
+		$this->factory = new PDOFactory( $this->getMock( 'Wikibase\Database\Tests\PDO\PDOStub' ) );
+	}
+
 	public function testNewMySQLQueryInterface_returnsQueryInterface() {
-		$factory = new PDOFactory( $this->getMock( 'Wikibase\Database\Tests\PDO\PDOStub' ) );
+		$this->assertInstanceOf(
+			'Wikibase\Database\QueryInterface\QueryInterface',
+			$this->factory->newMySQLQueryInterface()
+		);
+	}
 
-		$queryInterface = $factory->newMySQLQueryInterface();
+	public function testNewMySQLTableBuilder_returnsTableBuilder() {
+		$this->assertInstanceOf(
+			'Wikibase\Database\Schema\TableBuilder',
+			$this->factory->newMySQLTableBuilder( 'foo' )
+		);
+	}
 
-		$this->assertInstanceOf( 'Wikibase\Database\QueryInterface\QueryInterface', $queryInterface );
+	public function testNewSQLiteTableBuilder_returnsTableBuilder() {
+		$this->assertInstanceOf(
+			'Wikibase\Database\Schema\TableBuilder',
+			$this->factory->newSQLiteTableBuilder()
+		);
 	}
 
 }
