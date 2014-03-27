@@ -19,18 +19,20 @@ is thus responsible for autoloading.
 
 * Added PDOQueryInterface, which is an adapter for QueryInterface and a facade delegating
 SQL building responsibilities to various SQL builders, which output is then fed to PDO.
+* Added PDOTableBuilder
+* Added PDOFactory for PDO specific service construction
 * Added InsertSqlBuilder interface and MySQLInsertSqlBuilder implementation.
 * Added UpdateSqlBuilder interface and MySQLUpdateSqlBuilder implementation.
 * Added DeleteSqlBuilder interface and MySQLDeleteSqlBuilder implementation.
 * Added SelectSqlBuilder interface and MySQLSelectSqlBuilder implementation.
-* Added trivial fake escapes and table name formatter in the namespace to improve test
+* Added trivial fake escaper and table name formatter in the namespace to improve test
 readability and consistency.
 * Added support for BIGINTs in both Mysql and Sqlite
 * Added support for DECIMAL in both Mysql and Sqlite
-* Added support for specifying maz sizes of fields in TypeDefinition s
+* Added support for specifying maz sizes of fields in TypeDefinitions
 * Added support for VARCHARs in both Mysql and Sqlite
 * Added support for reading back Index size limits in Mysql
-* Various select interfaces now allow accept an array of table names
+* Various select interfaces now accept an array of table names
 * Added NullTableNameFormatter and PrefixingTableNameFormatter
 
 ### Improvements
