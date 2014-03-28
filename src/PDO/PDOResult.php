@@ -2,6 +2,7 @@
 
 namespace Wikibase\Database\PDO;
 
+use Iterator;
 use PDOStatement;
 
 /**
@@ -11,7 +12,7 @@ use PDOStatement;
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class PDOResult implements \Iterator {
+class PDOResult implements Iterator {
 
 	protected $iterator;
 
@@ -28,51 +29,48 @@ class PDOResult implements \Iterator {
 	}
 
 	/**
-	 * Return the current element
+	 * Returns the current database row.
+	 * The row is returned as an object that
 	 *
-	 * @link http://php.net/manual/en/iterator.current.php
-	 * @return mixed Can return any type.
+	 * @see Iterator::current
+	 *
+	 * @return object
 	 */
 	public function current() {
-		return $this->iterator->current();
+		return (object)$this->iterator->current();
 	}
 
 	/**
-	 * Move forward to next element
-	 *
-	 * @link http://php.net/manual/en/iterator.next.php
-	 * @return void Any returned value is ignored.
+	 * Move forward to next element.
+	 * @see Iterator::next
 	 */
 	public function next() {
 		$this->iterator->next();
 	}
 
 	/**
-	 * Return the key of the current element
+	 * Return the key of the current element.
+	 * @see Iterator::key
 	 *
-	 * @link http://php.net/manual/en/iterator.key.php
-	 * @return mixed scalar on success, or null on failure.
+	 * @return int
 	 */
 	public function key() {
 		return $this->iterator->key();
 	}
 
 	/**
-	 * Checks if current position is valid
+	 * Checks if current position is valid.
+	 * @see Iterator::valid
 	 *
-	 * @link http://php.net/manual/en/iterator.valid.php
-	 * @return boolean The return value will be casted to boolean and then evaluated.
-	 * Returns true on success or false on failure.
+	 * @return boolean
 	 */
 	public function valid() {
 		return $this->iterator->current();
 	}
 
 	/**
-	 * Rewind the Iterator to the first element
-	 *
-	 * @link http://php.net/manual/en/iterator.rewind.php
-	 * @return void Any returned value is ignored.
+	 * Rewind the Iterator to the first element.
+	 * @see Iterator::rewind
 	 */
 	public function rewind() {
 		$this->iterator->rewind();
