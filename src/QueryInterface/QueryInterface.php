@@ -76,6 +76,9 @@ interface QueryInterface {
 	 * Options are specified by using the key as the options and the value as the value
 	 * Boolean options are specified by including them in the array as a string value with a numeric key.
 	 *
+	 * The returned iterator has an object per result row. Each field can be accessed as
+	 * public property on the object.
+	 *
 	 * @since 0.1
 	 *
 	 * @param string|string[] $tableName
