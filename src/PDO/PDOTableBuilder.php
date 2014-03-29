@@ -43,8 +43,18 @@ class PDOTableBuilder implements TableBuilder {
 		$result = $this->pdo->query( $this->tableSqlBuilder->getCreateTableSql( $table ) );
 
 		if ( $result === false ) {
-			throw new TableCreationFailedException( $table );
+			throw new TableCreationFailedException( $table, $this->getErrorMessage() );
 		}
+	}
+
+	private function getErrorMessage() {
+		$errorInfo = $this->pdo->errorInfo();
+
+		if ( is_array( $errorInfo ) ) {
+			return $errorInfo[2];
+		}
+
+		return '';
 	}
 
 	/**
@@ -60,7 +70,7 @@ class PDOTableBuilder implements TableBuilder {
 		$result = $this->pdo->query( 'DROP TABLE ' . $tableName . ';' );
 
 		if ( $result === false ) {
-			throw new TableDeletionFailedException( $tableName );
+			throw new TableDeletionFailedException( $tableName, $this->getErrorMessage() );
 		}
 	}
 
