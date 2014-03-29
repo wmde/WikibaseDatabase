@@ -69,8 +69,18 @@ class PDOQueryInterface implements QueryInterface {
 		$result = $this->pdo->query( $this->insertBuilder->getInsertSql( $tableName, $values ) );
 
 		if ( $result === false ) {
-			throw new InsertFailedException( $tableName, $values );
+			throw new InsertFailedException( $tableName, $values, $this->getErrorMessage() );
 		}
+	}
+
+	private function getErrorMessage() {
+		$errorInfo = $this->pdo->errorInfo();
+
+		if ( is_array( $errorInfo ) ) {
+			return $errorInfo[2];
+		}
+
+		return '';
 	}
 
 	/**
@@ -88,7 +98,7 @@ class PDOQueryInterface implements QueryInterface {
 		$result = $this->pdo->query( $this->updateBuilder->getUpdateSql( $tableName, $values, $conditions ) );
 
 		if ( $result === false ) {
-			throw new UpdateFailedException( $tableName, $values, $conditions );
+			throw new UpdateFailedException( $tableName, $values, $conditions, $this->getErrorMessage() );
 		}
 	}
 
@@ -106,7 +116,7 @@ class PDOQueryInterface implements QueryInterface {
 		$result = $this->pdo->query( $this->deleteBuilder->getDeleteSql( $tableName, $conditions ) );
 
 		if ( $result === false ) {
-			throw new DeleteFailedException( $tableName, $conditions );
+			throw new DeleteFailedException( $tableName, $conditions, $this->getErrorMessage() );
 		}
 	}
 
@@ -127,7 +137,7 @@ class PDOQueryInterface implements QueryInterface {
 		$result = $this->pdo->query( $this->selectBuilder->getSelectSql( $tableName, $fields, $conditions ) );
 
 		if ( $result === false ) {
-			throw new SelectFailedException( $tableName, $fields, $conditions );
+			throw new SelectFailedException( $tableName, $fields, $conditions, $this->getErrorMessage() );
 		}
 
 		return new PDOResult( $result );
