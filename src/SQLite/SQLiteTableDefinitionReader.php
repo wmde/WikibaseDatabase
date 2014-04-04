@@ -88,14 +88,22 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 			$matchedCreate = preg_match( '/CREATE TABLE ([^ ]+) \((.+)\)$/', $sql, $createParts );
 			if( $matchedCreate !== 1 ){
-				throw new SchemaReadingException( "Failed to match CREATE TABLE regex with sql string: " . $sql );
+				throw new SchemaReadingException(
+					"Failed to match CREATE TABLE regex with sql string: " . $sql
+				);
 			}
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
-				$matchedParts = preg_match( '/([^\s]+) ([^\s]+)( DEFAULT ([^\s]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/', $fieldSql, $fieldParts );
+				$matchedParts = preg_match(
+					'/([^\s]+) ([^\s]+)( DEFAULT ([^\s]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/',
+					$fieldSql,
+					$fieldParts
+				);
 				if( $matchedParts !== 1 ){
-					throw new SchemaReadingException( "Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql );
-				} else if( $fieldParts[0] !== 'PRIMARY KEY' ) {
+					throw new SchemaReadingException(
+						"Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql
+					);
+				} elseif( $fieldParts[0] !== 'PRIMARY KEY' ) {
 					$fields[] = $this->getField( $fieldParts );
 				}
 			}
@@ -108,7 +116,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 * @param string $tableName
 	 * @return Iterator
 	 */
-	private function doCreateQuery( $tableName ){
+	private function doCreateQuery( $tableName ) {
 		return $this->queryInterface->select(
 			'sqlite_master',
 			array( 'sql' ),
@@ -182,7 +190,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 				return TypeDefinition::TYPE_FLOAT;
 		}
 
-		if( strpos( $type , 'VARCHAR' ) === 0 ) {
+		if( strpos( $type, 'VARCHAR' ) === 0 ) {
 			return TypeDefinition::TYPE_VARCHAR;
 		}
 
@@ -288,7 +296,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$name = $this->unEscaper->getUnEscapedIdentifier( $createParts[2] );
 		$name = preg_replace( '/^' . preg_quote( $tableName ) . '_/', '', $name );
 		$type = $this->getIndexType( $createParts[1] );
-		return new IndexDefinition( $name, $columns , $type );
+		return new IndexDefinition( $name, $columns, $type );
 	}
 
 	/**
@@ -296,7 +304,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 * @param string $tableName
 	 * @return Iterator
 	 */
-	private function doIndexQuery( $tableName ){
+	private function doIndexQuery( $tableName ) {
 		return $this->queryInterface->select(
 			'sqlite_master',
 			array( 'sql' ),
@@ -331,7 +339,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		return $keys;
 	}
 
-	private function getPrimaryKey( $sql ){
+	private function getPrimaryKey( $sql ) {
 		if( preg_match( '/PRIMARY KEY \(([^\)]+)\)/', $sql, $createParts ) ) {
 			return $this->getPrimaryKeyForFields( $createParts[1] );
 		} else if( preg_match( '/(\(|,| )+([^ ]+)[a-z0-9 _]+PRIMARY KEY AUTOINCREMENT/i', $sql, $fieldParts ) ) {
@@ -352,7 +360,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			$columns[] = trim( $this->unEscaper->getUnEscapedIdentifier( $columnName ) );
 		}
 
-		return new IndexDefinition( 'PRIMARY', $columns , IndexDefinition::TYPE_PRIMARY );
+		return new IndexDefinition( 'PRIMARY', $columns, IndexDefinition::TYPE_PRIMARY );
 	}
 
 	/**
@@ -361,7 +369,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getPrimaryKeyForField( $fieldName ) {
 		$fieldName = $this->unEscaper->getUnEscapedIdentifier( $fieldName );
-		return new IndexDefinition( 'PRIMARY', array( $fieldName ) , IndexDefinition::TYPE_PRIMARY );
+		return new IndexDefinition( 'PRIMARY', array( $fieldName ), IndexDefinition::TYPE_PRIMARY );
 	}
 
 	/**
