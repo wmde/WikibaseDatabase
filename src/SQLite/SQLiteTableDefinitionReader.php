@@ -263,10 +263,21 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 * @param string $sql
 	 * @param string $tableName
 	 *
+	 * @throws SchemaReadingException
 	 * @return IndexDefinition
 	 */
-	private function getIndex( $sql, $tableName ){
-		preg_match( '/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/', $sql, $createParts );
+	private function getIndex( $sql, $tableName ) {
+		$matchResult = preg_match(
+			'/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/',
+			$sql,
+			$createParts
+		);
+		if( $matchResult !== 1 ) {
+			throw new SchemaReadingException(
+				"Failed to match Index SQL, result was '{$matchResult}' from: $sql"
+			);
+		}
+
 		$parsedColumns = explode( ',', $createParts[4] );
 
 		$columns = array();
