@@ -130,7 +130,7 @@ class TypeDefinitionTest extends \PHPUnit_Framework_TestCase {
 		new TypeDefinition( $name );
 	}
 
-	public static function invalidSizeProvider(){
+	public static function invalidSizeProvider() {
 		return array(
 			array( array() ),
 			array( true ),
@@ -145,6 +145,11 @@ class TypeDefinitionTest extends \PHPUnit_Framework_TestCase {
 	public function testInvalidType( $size ) {
 		$this->setExpectedException( 'InvalidArgumentException' );
 		new TypeDefinition( TypeDefinition::TYPE_BLOB, $size );
+	}
+
+	public function testInvalidTypeName() {
+		$this->setExpectedException( 'InvalidArgumentException' );
+		new TypeDefinition( 'fasuihfjkahsjkhfasa' );
 	}
 
 }

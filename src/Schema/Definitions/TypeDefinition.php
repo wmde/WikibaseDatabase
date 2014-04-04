@@ -68,7 +68,17 @@ class TypeDefinition {
 		if ( !is_string( $name ) ) {
 			throw new InvalidArgumentException( 'The field $name needs to be a string' );
 		}
-		//TODO: check against known type names
+		if( !in_array( $name, array(
+			self::TYPE_TINYINT,
+			self::TYPE_BLOB,
+			self::TYPE_INTEGER,
+			self::TYPE_DECIMAL,
+			self::TYPE_BIGINT,
+			self::TYPE_FLOAT,
+			self::TYPE_VARCHAR,
+		) ) ) {
+			throw new InvalidArgumentException( '$name specifies an unknown type name: ' . $name );
+		}
 	}
 
 	private function assertIsValidSize( $size ) {
