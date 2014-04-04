@@ -8,15 +8,13 @@ matrix:
     - env: DBTYPE=mysql; TESTSUITE=Standalone
       php: 5.3
     - env: DBTYPE=sqlite; TESTSUITE=Standalone
-      php: 5.5
+      php: 5.6
     - env: DBTYPE=mysql; TESTSUITE=MediaWiki; MW=master
       php: 5.5
     - env: DBTYPE=sqlite; TESTSUITE=MediaWiki; MW=1.22.0
       php: 5.3
     - env: DBTYPE=mysql; TESTSUITE=PDO
-      php: 5.5
-    - env: DBTYPE=mysql; TESTSUITE=PDO
-      php: 5.6
+      php: 5.4
     - env: DBTYPE=mysql; TESTSUITE=PDO
       php: hhvm
   exclude:
