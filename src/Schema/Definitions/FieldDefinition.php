@@ -89,7 +89,9 @@ class FieldDefinition {
 		if ( !is_string( $name ) ) {
 			throw new InvalidArgumentException( 'The field $name needs to be a string' );
 		}
-		//TODO: fail on crazy names (containing e.g. spaces) even if the DB supports that.
+		if( preg_match( '/\s/', $name ) ) {
+			throw new InvalidArgumentException( 'The field $name can not contain characters matching \s' );
+		}
 	}
 
 	private function assertIsValidType( $type ) {

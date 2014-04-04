@@ -97,6 +97,9 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 	public static function invalidNameProvider() {
 		return array(
+			array( 'foo    bar' ),
+			array( 'foo bar' ),
+			array( 'foobar    ' ),
 			array( 12 ),
 			array( array() ),
 			array( null ),
