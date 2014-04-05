@@ -84,9 +84,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$fields = array();
 
 		foreach( $results as $result ){
-			$sql = preg_replace( '/, PRIMARY KEY \([^\)]+\)/i', '', $result->sql );
+			$sql = preg_replace( '/,\s*PRIMARY\s+KEY\s*\([^\)]+\)/i', '', $result->sql );
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
-			$matchedCreate = preg_match( '/CREATE TABLE (\S+) \((.+)\)$/i', $sql, $createParts );
+			$matchedCreate = preg_match( '/CREATE\s+TABLE\s+(\S+)\s*\((.+)\)$/i', $sql, $createParts );
 			if( $matchedCreate !== 1 ){
 				throw new SchemaReadingException(
 					"Failed to match CREATE TABLE regex with sql string: " . $sql
@@ -95,7 +95,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
 				$matchedParts = preg_match(
-					'/(\S+) (\S+)( DEFAULT (\S+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/i',
+					'/(\S+)\s+(\S+)(\s+DEFAULT\s+(\S+))?(\s+((NOT\s+)?NULL))?(\s+(PRIMARY\s+KEY\s+AUTOINCREMENT))?/i',
 					$fieldSql,
 					$fieldParts
 				);
@@ -276,7 +276,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getIndex( $sql, $tableName ) {
 		$matchResult = preg_match(
-			'/CREATE (INDEX|UNIQUE INDEX) (\S+) ON (\S+) \((.+)\)\z/i',
+			'/CREATE\s+(INDEX|UNIQUE\s+INDEX)\s+(\S+)\s+ON\s+(\S+)\s*\((.+)\)\z/i',
 			$sql,
 			$createParts
 		);
@@ -340,9 +340,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	private function getPrimaryKey( $sql ) {
-		if( preg_match( '/PRIMARY KEY \(([^)]+)\)/i', $sql, $createParts ) ) {
+		if( preg_match( '/PRIMARY\s+KEY\s*\(([^)]+)\)/i', $sql, $createParts ) ) {
 			return $this->getPrimaryKeyForFields( $createParts[1] );
-		} else if( preg_match( '/[(, ]+(\S+)[\w ]+PRIMARY KEY AUTOINCREMENT/i', $sql, $fieldParts ) ) {
+		} else if( preg_match( '/[(,\s]+(\S+)[\w\s]+PRIMARY\s+KEY\s+AUTOINCREMENT/i', $sql, $fieldParts ) ) {
 			return $this->getPrimaryKeyForField( $fieldParts[1] );
 		}
 		throw new RuntimeException( __CLASS__ . " can not read primary ky from sql '{$sql}'" );
