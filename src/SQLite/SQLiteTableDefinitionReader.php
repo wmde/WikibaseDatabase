@@ -84,9 +84,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$fields = array();
 
 		foreach( $results as $result ){
-			$sql = preg_replace( '/, PRIMARY KEY \([^\)]+\)/i', '', $result->sql );
+			$sql = preg_replace( '/,\s*PRIMARY\s+KEY\s*\([^\)]+\)/i', '', $result->sql );
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
-			$matchedCreate = preg_match( '/CREATE TABLE ([^ ]+) \((.+)\)$/i', $sql, $createParts );
+			$matchedCreate = preg_match( '/CREATE\s+TABLE\s+(\S+)\s*\((.+)\)$/i', $sql, $createParts );
 			if( $matchedCreate !== 1 ){
 				throw new SchemaReadingException(
 					"Failed to match CREATE TABLE regex with sql string: " . $sql
@@ -95,7 +95,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
 				$matchedParts = preg_match(
-					'/([^\s]+) ([^\s]+)( DEFAULT ([^\s]+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/i',
+					'/(\S+)\s+(\S+)(?:\s+DEFAULT\s+(\S+))?(?:\s+((?:NOT\s+)?NULL))?(?:\s+(PRIMARY\s+KEY\s+AUTOINCREMENT))?/i',
 					$fieldSql,
 					$fieldParts
 				);
@@ -113,7 +113,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * Performs a request to get the SQL needed to create the given table
+	 *
 	 * @param string $tableName
+	 *
 	 * @return Iterator
 	 */
 	private function doCreateQuery( $tableName ) {
@@ -123,25 +125,30 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			array( 'type' => 'table', 'tbl_name' => $tableName ) );
 	}
 
+	/**
+	 * @param string[] $fieldParts Expects array indices 1 and 2 to be set, 3, 4 and 5 optional.
+	 *
+	 * @return FieldDefinition
+	 */
 	private function getField( $fieldParts ) {
 		$name = $this->unEscaper->getUnEscapedIdentifier( $fieldParts[1] );
 		$type = $this->getTypeDefinition( $fieldParts[2] );
 
-		if( !array_key_exists( 4, $fieldParts ) ) {
+		if( !array_key_exists( 3, $fieldParts ) ) {
 			$default = $this->getFieldDefault( '' );
 		} else {
-			$default = $this->getFieldDefault( $fieldParts[4] );
+			$default = $this->getFieldDefault( $fieldParts[3] );
 			$default = $this->getDefaultForTypeName( $default, $type->getName() );
 		}
 
-		if( !array_key_exists( 6, $fieldParts ) ) {
+		if( !array_key_exists( 4, $fieldParts ) ) {
 			$null = $this->getFieldCanNull( '' );
 		} else {
-			$null = $this->getFieldCanNull( $fieldParts[6] );
+			$null = $this->getFieldCanNull( $fieldParts[4] );
 		}
 
-		if( array_key_exists( 9, $fieldParts ) ){
-			$autoInc = $this->getAutoInc( $fieldParts[9] );
+		if( array_key_exists( 5, $fieldParts ) ){
+			$autoInc = $this->getAutoInc( $fieldParts[5] );
 		} else {
 			$autoInc = FieldDefinition::NO_AUTOINCREMENT;
 		}
@@ -276,7 +283,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 */
 	private function getIndex( $sql, $tableName ) {
 		$matchResult = preg_match(
-			'/CREATE (INDEX|UNIQUE INDEX) ([^ ]+) ON ([^ ]+) \((.+)\)\z/i',
+			'/CREATE\s+(INDEX|UNIQUE\s+INDEX)\s+(\S+)\s+ON\s+(\S+)\s*\((.+)\)\z/i',
 			$sql,
 			$createParts
 		);
@@ -340,10 +347,10 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	private function getPrimaryKey( $sql ) {
-		if( preg_match( '/PRIMARY KEY \(([^\)]+)\)/i', $sql, $createParts ) ) {
+		if( preg_match( '/PRIMARY\s+KEY\s*\(([^)]+)\)/i', $sql, $createParts ) ) {
 			return $this->getPrimaryKeyForFields( $createParts[1] );
-		} else if( preg_match( '/(\(|,| )+([^ ]+)[a-z0-9 _]+PRIMARY KEY AUTOINCREMENT/i', $sql, $fieldParts ) ) {
-			return $this->getPrimaryKeyForField( $fieldParts[2] );
+		} else if( preg_match( '/[(,\s]+(\S+)[\w\s]+PRIMARY\s+KEY\s+AUTOINCREMENT/i', $sql, $fieldParts ) ) {
+			return $this->getPrimaryKeyForField( $fieldParts[1] );
 		}
 		throw new RuntimeException( __CLASS__ . " can not read primary ky from sql '{$sql}'" );
 	}
