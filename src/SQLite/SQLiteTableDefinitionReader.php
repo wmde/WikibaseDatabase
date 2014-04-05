@@ -95,7 +95,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
 				$matchedParts = preg_match(
-					'/(\S+)\s+(\S+)(\s+DEFAULT\s+(\S+))?(\s+((NOT\s+)?NULL))?(\s+(PRIMARY\s+KEY\s+AUTOINCREMENT))?/i',
+					'/(\S+)\s+(\S+)(?:\s+DEFAULT\s+(\S+))?(?:\s+((?:NOT\s+)?NULL))?(?:\s+(PRIMARY\s+KEY\s+AUTOINCREMENT))?/i',
 					$fieldSql,
 					$fieldParts
 				);
@@ -113,7 +113,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 
 	/**
 	 * Performs a request to get the SQL needed to create the given table
+	 *
 	 * @param string $tableName
+	 *
 	 * @return Iterator
 	 */
 	private function doCreateQuery( $tableName ) {
@@ -123,25 +125,30 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			array( 'type' => 'table', 'tbl_name' => $tableName ) );
 	}
 
+	/**
+	 * @param string[] $fieldParts Expects array indices 1 and 2 to be set, 3, 4 and 5 optional.
+	 *
+	 * @return FieldDefinition
+	 */
 	private function getField( $fieldParts ) {
 		$name = $this->unEscaper->getUnEscapedIdentifier( $fieldParts[1] );
 		$type = $this->getTypeDefinition( $fieldParts[2] );
 
-		if( !array_key_exists( 4, $fieldParts ) ) {
+		if( !array_key_exists( 3, $fieldParts ) ) {
 			$default = $this->getFieldDefault( '' );
 		} else {
-			$default = $this->getFieldDefault( $fieldParts[4] );
+			$default = $this->getFieldDefault( $fieldParts[3] );
 			$default = $this->getDefaultForTypeName( $default, $type->getName() );
 		}
 
-		if( !array_key_exists( 6, $fieldParts ) ) {
+		if( !array_key_exists( 4, $fieldParts ) ) {
 			$null = $this->getFieldCanNull( '' );
 		} else {
-			$null = $this->getFieldCanNull( $fieldParts[6] );
+			$null = $this->getFieldCanNull( $fieldParts[4] );
 		}
 
-		if( array_key_exists( 9, $fieldParts ) ){
-			$autoInc = $this->getAutoInc( $fieldParts[9] );
+		if( array_key_exists( 5, $fieldParts ) ){
+			$autoInc = $this->getAutoInc( $fieldParts[5] );
 		} else {
 			$autoInc = FieldDefinition::NO_AUTOINCREMENT;
 		}
