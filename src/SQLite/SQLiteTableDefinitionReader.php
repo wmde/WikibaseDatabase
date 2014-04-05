@@ -49,7 +49,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	 * @return TableDefinition
 	 */
 	public function readDefinition( $tableName ) {
-		if( !$this->queryInterface->tableExists( $tableName ) ){
+		if( !$this->queryInterface->tableExists( $tableName ) ) {
 			throw new SchemaReadingException( "Unknown table {$tableName}" );
 		}
 
@@ -83,11 +83,11 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		}
 		$fields = array();
 
-		foreach( $results as $result ){
+		foreach( $results as $result ) {
 			$sql = preg_replace( '/, PRIMARY KEY \([^\)]+\)/i', '', $result->sql );
 			/** $createParts,  1 => tableName, 2 => fieldParts (fields, keys, etc.) */
 			$matchedCreate = preg_match( '/CREATE TABLE (\S+) \((.+)\)$/i', $sql, $createParts );
-			if( $matchedCreate !== 1 ){
+			if( $matchedCreate !== 1 ) {
 				throw new SchemaReadingException(
 					"Failed to match CREATE TABLE regex with sql string: " . $sql
 				);
@@ -99,7 +99,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 					$fieldSql,
 					$fieldParts
 				);
-				if( $matchedParts !== 1 ){
+				if( $matchedParts !== 1 ) {
 					throw new SchemaReadingException(
 						"Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql
 					);
@@ -140,7 +140,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			$null = $this->getFieldCanNull( $fieldParts[6] );
 		}
 
-		if( array_key_exists( 9, $fieldParts ) ){
+		if( array_key_exists( 9, $fieldParts ) ) {
 			$autoInc = $this->getAutoInc( $fieldParts[9] );
 		} else {
 			$autoInc = FieldDefinition::NO_AUTOINCREMENT;
@@ -212,7 +212,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	private function getFieldDefault( $default ) {
-		if( !empty( $default ) ){
+		if( !empty( $default ) ) {
 			return $default;
 		} else {
 			return FieldDefinition::NO_DEFAULT;
@@ -237,15 +237,15 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 	}
 
 	private function getFieldCanNull( $canNull ) {
-		if( $canNull === 'NOT NULL' ){
+		if( $canNull === 'NOT NULL' ) {
 			return FieldDefinition::NOT_NULL;
 		} else {
 			return FieldDefinition::NULL;
 		}
 	}
 
-	private function getAutoInc( $autoInc ){
-		if( $autoInc === 'PRIMARY KEY AUTOINCREMENT' ){
+	private function getAutoInc( $autoInc ) {
+		if( $autoInc === 'PRIMARY KEY AUTOINCREMENT' ) {
 			return FieldDefinition::AUTOINCREMENT;
 		}
 		return FieldDefinition::NO_AUTOINCREMENT;
@@ -260,7 +260,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$results = $this->doIndexQuery( $tableName );
 		$indexes = array();
 
-		foreach( $results as $result ){
+		foreach( $results as $result ) {
 			$indexes[] = $this->getIndex( $result->sql, $tableName );
 		}
 
@@ -290,7 +290,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$parsedColumns = explode( ',', $createParts[4] );
 
 		$columns = array();
-		foreach( $parsedColumns as $columnName ){
+		foreach( $parsedColumns as $columnName ) {
 			$columns[] = $this->unEscaper->getUnEscapedIdentifier( $columnName );
 		}
 
@@ -333,7 +333,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$keys = array();
 		$results = $this->doPrimaryKeyQuery( $tableName );
 
-		foreach( $results as $result ){
+		foreach( $results as $result ) {
 			$keys[] = $this->getPrimaryKey( $result->sql );
 		}
 
