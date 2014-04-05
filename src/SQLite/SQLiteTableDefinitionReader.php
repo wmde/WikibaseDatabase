@@ -261,7 +261,9 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		$indexes = array();
 
 		foreach( $results as $result ) {
-			$indexes[] = $this->getIndex( $result->sql, $tableName );
+			if ( $result->sql !== null ) {
+				$indexes[] = $this->getIndex( $result->sql, $tableName );
+			}
 		}
 
 		return $indexes;
