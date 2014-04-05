@@ -280,9 +280,10 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			$sql,
 			$createParts
 		);
+
 		if( $matchResult !== 1 ) {
 			throw new SchemaReadingException(
-				"Failed to match Index SQL, result was '{$matchResult}' from: $sql"
+				"Failed to match Index SQL for table '{$tableName}', result was '{$matchResult}' from: $sql"
 			);
 		}
 
