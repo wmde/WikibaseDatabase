@@ -94,17 +94,10 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			}
 
 			foreach( explode( ',', $createParts[2] ) as $fieldSql ) {
-				$matchedParts = preg_match(
-					'/(\S+) (\S+)( DEFAULT (\S+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/i',
-					$fieldSql,
-					$fieldParts
-				);
-				if( $matchedParts !== 1 ) {
-					throw new SchemaReadingException(
-						"Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql
-					);
-				} elseif( $fieldParts[0] !== 'PRIMARY KEY' ) {
-					$fields[] = $this->getField( $fieldParts );
+				$field = $this->getFieldFromSql( $fieldSql, $sql );
+
+				if ( $field !== false ) {
+					$fields[] = $field;
 				}
 			}
 		}
@@ -123,7 +116,27 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 			array( 'type' => 'table', 'tbl_name' => $tableName ) );
 	}
 
-	private function getField( $fieldParts ) {
+	private function getFieldFromSql( $fieldSql, $sql ) {
+		$matchedParts = preg_match(
+			'/(\S+) (\S+)( DEFAULT (\S+))?( ((NOT )?NULL))?( (PRIMARY KEY AUTOINCREMENT))?/i',
+			$fieldSql,
+			$fieldParts
+		);
+
+		if( $matchedParts !== 1 ) {
+			throw new SchemaReadingException(
+				"Failed to match CREATE TABLE \$fieldSql regex with sql string: " . $fieldSql . " - parsed from : ". $sql
+			);
+		}
+
+		if( $fieldParts[0] === 'PRIMARY KEY' ) {
+			return false;
+		}
+
+		return $this->getFieldFromParts( $fieldParts );
+	}
+
+	private function getFieldFromParts( array $fieldParts ) {
 		$name = $this->unEscaper->getUnEscapedIdentifier( $fieldParts[1] );
 		$type = $this->getTypeDefinition( $fieldParts[2] );
 
