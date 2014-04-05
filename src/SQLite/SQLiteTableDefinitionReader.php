@@ -343,7 +343,7 @@ class SQLiteTableDefinitionReader implements TableDefinitionReader {
 		if( preg_match( '/PRIMARY KEY \(([^)]+)\)/i', $sql, $createParts ) ) {
 			return $this->getPrimaryKeyForFields( $createParts[1] );
 		} else if( preg_match( '/[(, ]+(\S+)[\w ]+PRIMARY KEY AUTOINCREMENT/i', $sql, $fieldParts ) ) {
-			return $this->getPrimaryKeyForField( $fieldParts[2] );
+			return $this->getPrimaryKeyForField( $fieldParts[1] );
 		}
 		throw new RuntimeException( __CLASS__ . " can not read primary ky from sql '{$sql}'" );
 	}
