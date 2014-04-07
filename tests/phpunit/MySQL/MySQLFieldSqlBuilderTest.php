@@ -116,10 +116,4 @@ class MySQLFieldSqlBuilderTest extends \PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
-	public function testUnsupportedType() {
-		$this->setExpectedException( 'RuntimeException', 'does not support db fields of type' );
-		$sqlBuilder = new MySQLFieldSqlBuilder( $this->getMock( 'Wikibase\Database\Escaper' ) );
-		$sqlBuilder->getFieldSQL( new FieldDefinition( 'fieldName', new TypeDefinition( 'foobar' ) ) );
-	}
-
 }

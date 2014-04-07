@@ -14,6 +14,7 @@ is thus responsible for autoloading.
 * FieldDefinition constructor now takes a TypeDefinition object for param 2 $type.
 * FieldDefinition constructor no longer accepts $attributes, this should be passed to a TypeDefinition object
 * IndexDefinitions no longer care about index size, $columns in the constructor is now an array of strings
+* FileDefinitions can no longer have space characters (matched with regex /\s/) in their name
 
 ### Additions
 

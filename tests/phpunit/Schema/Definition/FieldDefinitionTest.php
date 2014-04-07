@@ -97,6 +97,9 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 
 	public static function invalidNameProvider() {
 		return array(
+			array( 'foo    bar' ),
+			array( 'foo bar' ),
+			array( 'foobar    ' ),
 			array( 12 ),
 			array( array() ),
 			array( null ),
@@ -163,10 +166,10 @@ class FieldDefinitionTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testWhenConstructorJustGivenTypeName_getTypeReturnsTypeObject() {
-		$field = new FieldDefinition( 'fieldName', 'someType' );
+		$field = new FieldDefinition( 'fieldName', TypeDefinition::TYPE_INTEGER );
 
 		$this->assertEquals(
-			new TypeDefinition( 'someType' ),
+			new TypeDefinition( TypeDefinition::TYPE_INTEGER ),
 			$field->getType()
 		);
 	}
