@@ -64,6 +64,8 @@ function runStandaloneSuite {
 
 originalDirectory=$(pwd)
 
+mysql --user root < tests/createTestDB.sql
+
 if [ "$TESTSUITE" == "MediaWiki" ]
 then
 	runMediaWikiSuite

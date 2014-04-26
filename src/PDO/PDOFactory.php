@@ -7,11 +7,13 @@ use Wikibase\Database\MySQL\MySQLConditionSqlBuilder;
 use Wikibase\Database\MySQL\MySQLDeleteSqlBuilder;
 use Wikibase\Database\MySQL\MySQLFieldSqlBuilder;
 use Wikibase\Database\MySQL\MySQLInsertSqlBuilder;
+use Wikibase\Database\MySQL\MySQLSchemaSqlBuilder;
 use Wikibase\Database\MySQL\MySQLSelectSqlBuilder;
 use Wikibase\Database\MySQL\MySQLTableSqlBuilder;
 use Wikibase\Database\MySQL\MySQLUpdateSqlBuilder;
 use Wikibase\Database\NullTableNameFormatter;
 use Wikibase\Database\QueryInterface\QueryInterface;
+use Wikibase\Database\Schema\SchemaModifier;
 use Wikibase\Database\Schema\TableBuilder;
 use Wikibase\Database\SQLite\SQLiteFieldSqlBuilder;
 use Wikibase\Database\SQLite\SQLiteIndexSqlBuilder;
@@ -86,6 +88,19 @@ class PDOFactory {
 			),
 			$tableNameFormatter,
 			$escaper
+		);
+	}
+
+	/**
+	 * @return SchemaModifier
+	 */
+	public function newMySQLSchemaModifier() {
+		$escaper = new PDOEscaper( $this->pdo );
+		$tableNameFormatter = new NullTableNameFormatter();
+
+		return new PDOSchemaModifier(
+			$this->pdo,
+			new MySQLSchemaSqlBuilder( $escaper, $tableNameFormatter )
 		);
 	}
 

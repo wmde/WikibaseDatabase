@@ -44,11 +44,13 @@ dependency on `wikibase/database` to your project's `composer.json` file.
 Here is a minimal example of a `composer.json` file that just defines a dependency on
 Wikibase Database 0.1:
 
-    {
-        "require": {
-            "wikibase/database": "0.1.*"
-        }
-    }
+```json
+{
+	"require": {
+		"wikibase/database": "0.1.*"
+	}
+}
+```
 
 ### Manual
 
@@ -56,6 +58,46 @@ Get the Wikibase Database code, either via git, or some other means. Also get al
 You can find a list of the dependencies in the "require" section of the composer.json file.
 Load all dependencies and the load the Wikibase Database library by including its entry point:
 WikibaseDatabase.php.
+
+## Tests
+
+This library comes with a set up PHPUnit tests that cover all non-trivial code. You can run these
+tests using the PHPUnit configuration file found in the root directory. The tests can also be run
+via TravisCI, as a TravisCI configuration file is also provided in the root directory.
+
+### Running the tests
+
+The tests in `tests/phpunit` can be run without any setup
+(with the exception of `tests/phpunit/MediaWiki`). You can run these with:
+
+```sh
+phpunit --testsuite=WikibaseDatabaseUnit
+```
+
+To include the PDO based integration tests, first setup the test database (if not already done so):
+
+```bash
+mysql --user root -p < tests/createTestDB.sql
+```
+
+Then run:
+
+```bash
+phpunit --testsuite=WikibaseDatabaseStandalone
+```
+
+The test database can be removed with:
+
+```bash
+mysql --user root -p < tests/dropTestDB.sql
+```
+
+To also run the MediaWiki based tests, create a MediaWiki install, and include Wikibase Database
+as an extension to it. Then run
+
+```bash
+phpunit
+```
 
 ## Using the abstraction layer
 
@@ -201,12 +243,6 @@ fit in any of the more specific packages.
 Currently it contains DBConnectionProvider and LazyDBConnectionProvider which both depend
 on MediaWiki. This is due to legacy reasons, and should not be relied upon, as these
 will be moved.
-
-## Tests
-
-This library comes with a set up PHPUnit tests that cover all non-trivial code. You can run these
-tests using the PHPUnit configuration file found in the root directory. The tests can also be run
-via TravisCI, as a TravisCI configuration file is also provided in the root directory.
 
 ## Authors
 
