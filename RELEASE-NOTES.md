@@ -20,6 +20,7 @@ is thus responsible for autoloading.
 * Added PDOQueryInterface, which is an adapter for QueryInterface and a facade delegating
 SQL building responsibilities to various SQL builders, which output is then fed to PDO.
 * Added PDOTableBuilder
+* Added PDOSchemaModifier
 * Added PDOFactory for PDO specific service construction
 * Added InsertSqlBuilder interface and MySQLInsertSqlBuilder implementation.
 * Added UpdateSqlBuilder interface and MySQLUpdateSqlBuilder implementation.

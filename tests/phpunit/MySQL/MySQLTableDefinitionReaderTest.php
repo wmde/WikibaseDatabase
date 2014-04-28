@@ -23,33 +23,20 @@ use Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter;
  */
 class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 
-	public function testCanConstruct() {
-		$this->newInstance();
-		$this->assertTrue( true );
-	}
-
-	protected function newInstance( $results = array(), $tableExists = true ) {
-		$queryInterface = $this
-			->getMock( 'Wikibase\Database\QueryInterface\QueryInterface' );
+	public function testReadNonExistentTable(){
+		$queryInterface = $this->getMock( 'Wikibase\Database\QueryInterface\QueryInterface' );
 
 		$queryInterface->expects( $this->any() )
-			->method( 'tableExists' )
-			->will( $this->returnValue( $tableExists ) );
-
-		foreach( $results as $key => $result ){
-			$queryInterface->expects( $this->at( $key + 1 ) )
-				->method( 'select' )
-				->will( $this->returnValue( new ArrayIterator( $result ) ) );
-		}
+			->method( 'select' )
+			->will( $this->throwException(
+				$this->getMockBuilder( 'Wikibase\Database\QueryInterface\SelectFailedException' )
+					->disableOriginalConstructor()->getMock()
+			) );
 
 		$tableNameFormatter = new FakeTableNameFormatter();
+		$reader = new MySQLTableDefinitionReader( $queryInterface, $tableNameFormatter );
 
-		return new MySQLTableDefinitionReader( $queryInterface, $tableNameFormatter );
-	}
-
-	public function testReadNonExistentTable(){
 		$this->setExpectedException( 'Wikibase\Database\Schema\SchemaReadingException' );
-		$reader = $this->newInstance( array(), false );
 		$reader->readDefinition( 'dbNametableName' );
 	}
 
@@ -60,6 +47,21 @@ class MySQLTableDefinitionReaderTest extends \PHPUnit_Framework_TestCase {
 		$reader = $this->newInstance( $results );
 		$definition = $reader->readDefinition( 'dbNametableName' );
 		$this->assertEquals( $expectedDefinition, $definition );
+	}
+
+	private function newInstance( $results = array() ) {
+		$queryInterface = $this
+			->getMock( 'Wikibase\Database\QueryInterface\QueryInterface' );
+
+		foreach( $results as $key => $result ){
+			$queryInterface->expects( $this->at( $key ) )
+				->method( 'select' )
+				->will( $this->returnValue( new ArrayIterator( $result ) ) );
+		}
+
+		$tableNameFormatter = new FakeTableNameFormatter();
+
+		return new MySQLTableDefinitionReader( $queryInterface, $tableNameFormatter );
 	}
 
 	public function sqlAndDefinitionProvider() {

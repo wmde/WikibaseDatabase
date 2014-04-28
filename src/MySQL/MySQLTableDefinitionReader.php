@@ -5,6 +5,7 @@ namespace Wikibase\Database\MySQL;
 use Iterator;
 use RuntimeException;
 use Wikibase\Database\QueryInterface\QueryInterface;
+use Wikibase\Database\QueryInterface\SelectFailedException;
 use Wikibase\Database\Schema\Definitions\FieldDefinition;
 use Wikibase\Database\Schema\Definitions\IndexDefinition;
 use Wikibase\Database\Schema\Definitions\TableDefinition;
@@ -38,12 +39,14 @@ class MySQLTableDefinitionReader implements TableDefinitionReader {
 	 * @return TableDefinition
 	 */
 	public function readDefinition( $tableName ) {
-		if( !$this->queryInterface->tableExists( $tableName ) ) {
-			throw new SchemaReadingException( "Unknown table {$tableName}" );
+		try {
+			$fields = $this->getFields( $tableName );
+			$indexes = $this->getIndexes( $tableName );
+		}
+		catch ( SelectFailedException $ex ) {
+			throw new SchemaReadingException( "Unknown table $tableName", 0, $ex );
 		}
 
-		$fields = $this->getFields( $tableName );
-		$indexes = $this->getIndexes( $tableName );
 		return new TableDefinition( $tableName, $fields, $indexes );
 	}
 

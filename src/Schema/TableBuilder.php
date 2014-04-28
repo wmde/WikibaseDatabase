@@ -21,6 +21,8 @@ interface TableBuilder {
 	public function createTable( TableDefinition $table );
 
 	/**
+	 * If the table does not exist, an exception is thrown.
+	 *
 	 * @since 0.1
 	 *
 	 * @param string $tableName
@@ -35,6 +37,7 @@ interface TableBuilder {
 	 * @param string $tableName
 	 *
 	 * @return boolean
+	 * @throws SchemaModificationException
 	 */
 	public function tableExists( $tableName );
 
