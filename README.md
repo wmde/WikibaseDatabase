@@ -1,4 +1,4 @@
-**This component is deprecated!**
+# This component is deprecated!
 
 This component reinvents what [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html) already does well. See [this blog](http://www.bn2vs.com/blog/2014/05/06/wikibase-and-doctrine-dbal/) for more info.
 
