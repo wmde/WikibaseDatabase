@@ -13,10 +13,6 @@ matrix:
       php: 5.5
     - env: DBTYPE=sqlite; TESTSUITE=MediaWiki; MW=1.22.0
       php: 5.3
-    - env: DBTYPE=mysql; TESTSUITE=PDO
-      php: 5.4
-    - env: DBTYPE=mysql; TESTSUITE=PDO
-      php: hhvm
   exclude:
     - env: THENEEDFORTHIS=FAIL
 
