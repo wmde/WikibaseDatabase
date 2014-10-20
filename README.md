@@ -14,7 +14,6 @@ This component reinvents what [Doctrine DBAL](http://www.doctrine-project.org/pr
 
 [![Build Status](https://secure.travis-ci.org/wmde/WikibaseDatabase.png?branch=master)](http://travis-ci.org/wmde/WikibaseDatabase)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/wmde/WikibaseDatabase/badges/quality-score.png?s=9199e94150e3441712ce0c311941e4e1ea0b730a)](https://scrutinizer-ci.com/g/wmde/WikibaseDatabase/)
-[![Dependency Status](https://www.versioneye.com/user/projects/5273d1db632bac5377000001/badge.png)](https://www.versioneye.com/user/projects/5273d1db632bac5377000001)
 
 On Packagist:
 [![Latest Stable Version](https://poser.pugx.org/wikibase/database/version.png)](https://packagist.org/packages/wikibase/database)

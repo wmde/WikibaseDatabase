@@ -1,6 +1,14 @@
 These are the release notes for the [Wikibase Database library](README.md).
 
-## Version 0.2 (under development)
+## Version 0.3 (dev)
+
+### Compatibility changes
+
+* Removed all Schema code
+* Removed all SQL builders
+* Removed `PDOQueryInterface` and associated classes
+
+## Version 0.2 (2014-04-28)
 
 ### Compatibility changes
 
