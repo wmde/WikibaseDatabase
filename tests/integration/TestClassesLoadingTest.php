@@ -9,7 +9,7 @@ namespace Wikibase\Database\Tests;
 class TestClassesLoadingTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCanLoadFakes() {
-		$this->assertTrue( class_exists( 'Wikibase\Database\Tests\TestDoubles\Fakes\FakeIdentifierEscaper' ) );
+		$this->assertTrue( class_exists( 'Wikibase\Database\Tests\TestDoubles\Fakes\FakeTableNameFormatter' ) );
 	}
 
 }
