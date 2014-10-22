@@ -92,8 +92,6 @@ interface QueryInterface {
 	public function select( $tableName, array $fieldNames, array $conditions, array $options = array() );
 
 	/**
-	 * TODO: this seems out of place here, as it deals with the schema. Hopefully it can be removed.
-	 *
 	 * @since 0.1
 	 *
 	 * @param string $tableName
