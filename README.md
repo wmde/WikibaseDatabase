@@ -1,15 +1,3 @@
-# This component is deprecated!
-
-This component reinvents what [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html) already does well. See [this blog](http://www.bn2vs.com/blog/2014/05/06/wikibase-and-doctrine-dbal/) for more info.
-
-
-
-
-
-
-
-
-
 # Wikibase Database
 
 [![Build Status](https://secure.travis-ci.org/wmde/WikibaseDatabase.png?branch=master)](http://travis-ci.org/wmde/WikibaseDatabase)
@@ -19,8 +7,12 @@ On Packagist:
 [![Latest Stable Version](https://poser.pugx.org/wikibase/database/version.png)](https://packagist.org/packages/wikibase/database)
 [![Download count](https://poser.pugx.org/wikibase/database/d/total.png)](https://packagist.org/packages/wikibase/database)
 
-Wikibase Database is a simple database abstraction layer. It is inspired by the MediaWiki database
-abstraction layer and both improves and extends on it.
+Wikibase Database provides a simple interface for database interaction. This interface is inspired
+by the MediaWiki database abstraction layer.
+
+Wikibase Database does not do any of the hard work itself, but rather contains adapters to existing
+database abstraction layers, such as [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html)
+and the MediaWiki database abstraction layer.
 
 View the [release notes](RELEASE-NOTES.md) for recent changes to Wikibase Database.
 
@@ -28,19 +20,7 @@ View the [release notes](RELEASE-NOTES.md) for recent changes to Wikibase Databa
 
 * PHP 5.3 or later
 * When using the MediaWiki plugin: MediaWiki 1.21 or later
-* When using the MySQL plugin: MySql 5 or later
-* When using the SQLite plugin: SQLite 3 or later
-
-## Supported databases
-
-This component currently only comes with one concrete implementation, which is
-MediaWikiQueryInterface. This implementation depends on MediaWiki and currently
-only has support for MySQL and SQLite.
-
-The core of this component has no database specific things in it. You can thus
-create your own implementation of the interfaces as you see fit, and are generally
-encouraged to keep these either in your consuming component, or in a dedicated one
-in case you have multiple consumers.
+* When using the Doctrine DBAL plugin: DBAL 2.4 or later
 
 ## Installation
 
@@ -166,45 +146,10 @@ $db->insert(
 $db->getInsertId();
 ```
 
-TableBuilder:
-
-```php
-$tableDefinition = new TableDefinition( /* ... */ );
-$builder->createTable( $tableDefinition );
-```
-
-```php
-$builder->dropTable( 'tableName' );
-```
-
-```php
-$builder->tableExists( 'tableName' );
-```
-
-SchemaModifier:
-
-```php
-$field = new FieldDefinition( /* ... */ );
-$modifier->addField( 'tableName', $field );
-```
-
-```php
-$modifier->removeField( 'tableName', 'fieldName' );
-```
-
-```php
-$index = new IndexDefinition( /* ... */ );
-$modifier->addIndex( 'tableName', $index );
-```
-
-```php
-$modifier->removeIndex( 'tableName', 'indexName' );
-```
-
 ## Abstraction layer structure
 
-All classes of this component reside in the Wikibase\Database namespace, which is PSR-0 mapped
-onto the src/ directory. The component has several sub packages:
+All classes of this component reside in the `Wikibase\Database namespace`, which is PSR-0 mapped
+onto the `src/` directory. The component has several sub packages:
 
 ### QueryInterface
 
@@ -213,19 +158,6 @@ a database. These methods include insert, update, delete and select. When using 
 you will likely be passing around an instance of an implementation of this interface.
 
 This package is mostly abstract, fully public and has no dependencies outside of its own namespace.
-
-### Schema
-
-Contains various services that deal with the database schema in some way.
-
-This package defines both interfaces and implementations, is fully public, and has dependencies on
-other parts of Wikibase Database.
-
-### Schema/Definitions
-
-Consists of classes that define parts of a database schema, such as a table.
-
-This package is concrete, fully public and has no dependencies outside of its own namespace.
 
 ### Plugins
 
@@ -237,14 +169,6 @@ Plugins are typically both concrete and public.
 
 MediaWiki implementations of various interfaces. Most of these are adapters for
 MediaWikis DatabseBase interface that abstract away the bad design this one contains.
-
-#### Plugin: MySQL
-
-MySQL implementations of various interfaces.
-
-#### Plugin: SQLite
-
-SQLite implementations of various interfaces.
 
 ### Top level namespace
 
