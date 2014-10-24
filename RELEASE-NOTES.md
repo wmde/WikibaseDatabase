@@ -7,6 +7,7 @@ These are the release notes for the [Wikibase Database library](README.md).
 * Removed all Schema code
 * Removed all SQL builders
 * Removed `PDOQueryInterface` and associated classes
+* Removed all escaper interfaces and classes
 
 ## Version 0.2 (2014-04-28)
 
