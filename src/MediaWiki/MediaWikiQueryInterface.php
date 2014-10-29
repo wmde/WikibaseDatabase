@@ -5,11 +5,11 @@ namespace Wikibase\Database\MediaWiki;
 use DatabaseBase;
 use Iterator;
 use Wikibase\Database\DBConnectionProvider;
-use Wikibase\Database\QueryInterface\DeleteFailedException;
-use Wikibase\Database\QueryInterface\InsertFailedException;
-use Wikibase\Database\QueryInterface\QueryInterface;
-use Wikibase\Database\QueryInterface\SelectFailedException;
-use Wikibase\Database\QueryInterface\UpdateFailedException;
+use Wikibase\Database\Exception\DeleteFailedException;
+use Wikibase\Database\Exception\InsertFailedException;
+use Wikibase\Database\Exception;
+use Wikibase\Database\Exception\SelectFailedException;
+use Wikibase\Database\Exception\UpdateFailedException;
 
 /**
  * Implementation of the QueryInterface interface using the MediaWiki

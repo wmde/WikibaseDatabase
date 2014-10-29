@@ -1,8 +1,12 @@
 <?php
 
-namespace Wikibase\Database\QueryInterface;
+namespace Wikibase\Database;
 
 use Iterator;
+use Wikibase\Database\Exception\DeleteFailedException;
+use Wikibase\Database\Exception\InsertFailedException;
+use Wikibase\Database\Exception\SelectFailedException;
+use Wikibase\Database\Exception\UpdateFailedException;
 
 /**
  * Interface for objects that provide a database query service.

@@ -2,10 +2,10 @@
 
 namespace Wikibase\Database\Tests\QueryInterface;
 
-use Wikibase\Database\QueryInterface\InsertFailedException;
+use Wikibase\Database\Exception\InsertFailedException;
 
 /**
- * @covers Wikibase\Database\QueryInterface\InsertFailedException
+ * @covers Wikibase\Database\Exception\InsertFailedException
  *
  * @group Wikibase
  * @group WikibaseDatabase

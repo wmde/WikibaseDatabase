@@ -2,10 +2,10 @@
 
 namespace Wikibase\Database\Tests\QueryInterface;
 
-use Wikibase\Database\QueryInterface\DeleteFailedException;
+use Wikibase\Database\Exception\DeleteFailedException;
 
 /**
- * @covers Wikibase\Database\QueryInterface\DeleteFailedException
+ * @covers Wikibase\Database\Exception\DeleteFailedException
  *
  * @group Wikibase
  * @group WikibaseDatabase

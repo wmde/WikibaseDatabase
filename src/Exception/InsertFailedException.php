@@ -1,6 +1,6 @@
 <?php
 
-namespace Wikibase\Database\QueryInterface;
+namespace Wikibase\Database\Exception;
 
 /**
  * @since 0.1

@@ -1,22 +1,24 @@
 <?php
 
-namespace Wikibase\Database\QueryInterface;
+namespace Wikibase\Database\Exception;
 
 /**
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  */
-class DeleteFailedException extends QueryInterfaceException {
+class SelectFailedException extends QueryInterfaceException {
 
 	protected $tableName;
+	protected $fields;
 	protected $conditions;
 
-	public function __construct( $tableName, array $values, $message = '', \Exception $previous = null ) {
+	public function __construct( $tableName, array $fields, array $conditions, $message = '', \Exception $previous = null ) {
 		parent::__construct( $message, 0, $previous );
 
 		$this->tableName = $tableName;
-		$this->conditions = $values;
+		$this->conditions = $conditions;
+		$this->fields = $fields;
 	}
 
 	/**
@@ -31,6 +33,13 @@ class DeleteFailedException extends QueryInterfaceException {
 	 */
 	public function getConditions() {
 		return $this->conditions;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getFields() {
+		return $this->fields;
 	}
 
 }

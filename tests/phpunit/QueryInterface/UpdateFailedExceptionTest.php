@@ -2,10 +2,10 @@
 
 namespace Wikibase\Database\Tests\QueryInterface;
 
-use Wikibase\Database\QueryInterface\UpdateFailedException;
+use Wikibase\Database\Exception\UpdateFailedException;
 
 /**
- * @covers Wikibase\Database\QueryInterface\UpdateFailedException
+ * @covers Wikibase\Database\Exception\UpdateFailedException
  *
  * @group Wikibase
  * @group WikibaseDatabase
