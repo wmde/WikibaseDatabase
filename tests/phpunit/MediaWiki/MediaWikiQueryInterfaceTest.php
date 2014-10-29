@@ -3,7 +3,7 @@
 namespace Wikibase\Database\Tests\MediaWiki;
 
 use DatabaseBase;
-use Wikibase\Database\DBConnectionProvider;
+use Wikibase\Database\MediaWiki\DBConnectionProvider;
 use Wikibase\Database\MediaWiki\MediaWikiQueryInterface;
 
 /**

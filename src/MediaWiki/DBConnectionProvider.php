@@ -1,6 +1,6 @@
 <?php
 
-namespace Wikibase\Database;
+namespace Wikibase\Database\MediaWiki;
 
 use DatabaseBase;
 
