@@ -10,6 +10,7 @@ use Wikibase\Database\Exception\InsertFailedException;
 use Wikibase\Database\Exception;
 use Wikibase\Database\Exception\SelectFailedException;
 use Wikibase\Database\Exception\UpdateFailedException;
+use Wikibase\Database\QueryInterface;
 
 /**
  * Implementation of the QueryInterface interface using the MediaWiki
