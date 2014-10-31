@@ -213,7 +213,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 			->method( 'delete' )
 			->will( $this->returnValue( false ) );
 
-		$this->setExpectedException( '\Wikibase\Database\QueryInterface\DeleteFailedException' );
+		$this->setExpectedException( '\Wikibase\Database\Exception\DeleteFailedException' );
 
 		$queryInterface->delete( $tableName, $conditions );
 	}
@@ -319,7 +319,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testSelectFailure() {
-		$this->setExpectedException( 'Wikibase\Database\QueryInterface\SelectFailedException' );
+		$this->setExpectedException( 'Wikibase\Database\Exception\SelectFailedException' );
 		$connection = $this->getMockBuilder( 'DatabaseMysql' )->disableOriginalConstructor()->getMock();
 		$connection->expects( $this->once() )
 			->method( 'select' )

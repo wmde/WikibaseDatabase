@@ -2,10 +2,10 @@
 
 namespace Wikibase\Database\Tests\QueryInterface;
 
-use Wikibase\Database\QueryInterface\SelectFailedException;
+use Wikibase\Database\Exception\SelectFailedException;
 
 /**
- * @covers Wikibase\Database\QueryInterface\SelectFailedException
+ * @covers Wikibase\Database\Exception\SelectFailedException
  *
  * @group Wikibase
  * @group WikibaseDatabase
