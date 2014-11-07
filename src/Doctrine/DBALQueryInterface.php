@@ -139,14 +139,21 @@ class DBALQueryInterface implements QueryInterface {
 	 * @throws SelectFailedException
 	 */
 	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
-		$queryBuilder = new QueryBuilder( $this->connection );
+		$queryBuilder = $this->newQueryBuilderFor( $tableName, $fields );
+		$this->addConditionsToQueryBuilder( $queryBuilder, $conditions );
 
-		$wherePredicates = array();
+		// TODO: handle $options
 
-		foreach ( $conditions as $columnName => $columnValue ) {
-			$wherePredicates[] = 't.' . $columnName . ' = :' . $columnName;
-			$queryBuilder->setParameter( ':' . $columnName, $columnValue );
+		try {
+			return $queryBuilder->execute();
 		}
+		catch ( DBALException $ex ) {
+			throw new SelectFailedException( $tableName, $fields, $conditions, $ex->getMessage(), $ex );
+		}
+	}
+
+	private function newQueryBuilderFor( $tableName, array $fields ) {
+		$queryBuilder = new QueryBuilder( $this->connection );
 
 		$queryBuilder
 			->select( array_map(
@@ -157,17 +164,19 @@ class DBALQueryInterface implements QueryInterface {
 			) )
 			->from( $tableName, 't' );
 
+		return $queryBuilder;
+	}
+
+	private function addConditionsToQueryBuilder( QueryBuilder $queryBuilder, array $conditions ) {
+		$wherePredicates = array();
+
+		foreach ( $conditions as $columnName => $columnValue ) {
+			$wherePredicates[] = 't.' . $columnName . ' = :' . $columnName;
+			$queryBuilder->setParameter( ':' . $columnName, $columnValue );
+		}
+
 		if ( $wherePredicates !== array() ) {
 			$queryBuilder->where( implode( ' AND ', $wherePredicates ) );
-		}
-
-		// TODO: handle $options
-
-		try {
-			return $queryBuilder->execute();
-		}
-		catch ( DBALException $ex ) {
-			throw new SelectFailedException( $tableName, $fields, $conditions, $ex->getMessage(), $ex );
 		}
 	}
 
