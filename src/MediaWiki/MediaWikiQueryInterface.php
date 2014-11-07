@@ -4,7 +4,6 @@ namespace Wikibase\Database\MediaWiki;
 
 use DatabaseBase;
 use Iterator;
-use Wikibase\Database\DBConnectionProvider;
 use Wikibase\Database\Exception\DeleteFailedException;
 use Wikibase\Database\Exception\InsertFailedException;
 use Wikibase\Database\Exception\SelectFailedException;
