@@ -14,16 +14,16 @@
          verbose="true">
     <testsuites>
         <testsuite name="WikibaseDatabaseUnit">
-            <directory>tests/phpunit</directory>
-            <exclude>tests/phpunit/MediaWiki</exclude>
+            <directory>tests/unit</directory>
+            <exclude>tests/unit/MediaWiki</exclude>
         </testsuite>
         <testsuite name="WikibaseDatabaseStandalone">
             <directory>tests/</directory>
-            <exclude>tests/phpunit/MediaWiki</exclude>
+            <exclude>tests/unit/MediaWiki</exclude>
             <exclude>tests/integration/MediaWiki</exclude>
         </testsuite>
         <testsuite name="WikibaseDatabaseMediaWiki">
-            <directory>tests/phpunit/MediaWiki</directory>
+            <directory>tests/unit/MediaWiki</directory>
             <directory>tests/integration/MediaWiki</directory>
         </testsuite>
     </testsuites>

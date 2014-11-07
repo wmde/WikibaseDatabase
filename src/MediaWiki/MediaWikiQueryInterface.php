@@ -156,6 +156,7 @@ class MediaWikiQueryInterface implements QueryInterface {
 		);
 
 		if ( $selectionResult instanceof \ResultWrapper ) {
+			// TODO: change to return arrays instead of objects
 			return $selectionResult;
 		}
 
