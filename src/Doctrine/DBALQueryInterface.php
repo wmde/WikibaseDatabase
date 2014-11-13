@@ -4,7 +4,6 @@ namespace Wikibase\Database\Doctrine;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Iterator;
 use Wikibase\Database\Exception\DeleteFailedException;
