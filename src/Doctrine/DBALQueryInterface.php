@@ -43,7 +43,7 @@ class DBALQueryInterface implements QueryInterface {
 	 *
 	 * @param string $tableName
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function tableExists( $tableName ) {
 		return $this->connection->getSchemaManager()->tablesExist( array( $tableName ) );
@@ -112,8 +112,8 @@ class DBALQueryInterface implements QueryInterface {
 	 *
 	 * @since 0.1
 	 *
-	 * @return int
 	 * @throws QueryInterfaceException
+	 * @return int
 	 */
 	public function getInsertId() {
 		try {
@@ -130,15 +130,15 @@ class DBALQueryInterface implements QueryInterface {
 	 * @since 0.1
 	 *
 	 * @param string $tableName
-	 * @param array $fields
+	 * @param string[] $fieldNames
 	 * @param array $conditions
 	 * @param array $options
 	 *
-	 * @return Iterator
 	 * @throws SelectFailedException
+	 * @return Iterator
 	 */
-	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
-		$queryBuilder = $this->newQueryBuilderFor( $tableName, $fields );
+	public function select( $tableName, array $fieldNames, array $conditions, array $options = array() ) {
+		$queryBuilder = $this->newQueryBuilderFor( $tableName, $fieldNames );
 		$this->addConditionsToQueryBuilder( $queryBuilder, $conditions );
 
 		// TODO: handle $options
@@ -147,10 +147,16 @@ class DBALQueryInterface implements QueryInterface {
 			return $queryBuilder->execute();
 		}
 		catch ( DBALException $ex ) {
-			throw new SelectFailedException( $tableName, $fields, $conditions, $ex->getMessage(), $ex );
+			throw new SelectFailedException( $tableName, $fieldNames, $conditions, $ex->getMessage(), $ex );
 		}
 	}
 
+	/**
+	 * @param string $tableName
+	 * @param array $fields
+	 *
+	 * @return QueryBuilder
+	 */
 	private function newQueryBuilderFor( $tableName, array $fields ) {
 		$queryBuilder = new QueryBuilder( $this->connection );
 
@@ -166,19 +172,15 @@ class DBALQueryInterface implements QueryInterface {
 		return $queryBuilder;
 	}
 
+	/**
+	 * @param QueryBuilder $queryBuilder
+	 * @param array $conditions
+	 */
 	private function addConditionsToQueryBuilder( QueryBuilder $queryBuilder, array $conditions ) {
-		$wherePredicates = array();
-
-		foreach ( $conditions as $columnName => $columnValue ) {
-			$wherePredicates[] = 't.' . $columnName . ' = :' . $columnName;
-			$queryBuilder->setParameter( ':' . $columnName, $columnValue );
-		}
-
-		if ( $wherePredicates !== array() ) {
-			$queryBuilder->where( implode( ' AND ', $wherePredicates ) );
+		foreach ( $conditions as $columnName => $value ) {
+			$queryBuilder->andWhere( 't.' . $columnName . ' = :' . $columnName );
+			$queryBuilder->setParameter( ':' . $columnName, $value );
 		}
 	}
 
 }
-
-

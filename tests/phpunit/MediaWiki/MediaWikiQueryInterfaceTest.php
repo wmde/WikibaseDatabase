@@ -333,7 +333,7 @@ class MediaWikiQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 
 class DirectConnectionProvider implements DBConnectionProvider {
 
-	protected $connection;
+	private $connection;
 
 	public function __construct( DatabaseBase $connection ) {
 		$this->connection = $connection;
@@ -356,7 +356,6 @@ class DirectConnectionProvider implements DBConnectionProvider {
 	 * @since 0.1
 	 */
 	public function releaseConnection() {
-
 	}
 
 }

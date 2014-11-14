@@ -2,6 +2,8 @@
 
 namespace Wikibase\Database\Exception;
 
+use Exception;
+
 /**
  * @since 0.1
  * @licence GNU GPL v2+
@@ -9,16 +11,40 @@ namespace Wikibase\Database\Exception;
  */
 class SelectFailedException extends QueryInterfaceException {
 
-	protected $tableName;
-	protected $fields;
-	protected $conditions;
+	/**
+	 * @var string
+	 */
+	private $tableName;
 
-	public function __construct( $tableName, array $fields, array $conditions, $message = '', \Exception $previous = null ) {
+	/**
+	 * @var array
+	 */
+	private $fields;
+
+	/**
+	 * @var array
+	 */
+	private $conditions;
+
+	/**
+	 * @param string $tableName
+	 * @param array $fields
+	 * @param array $conditions
+	 * @param string $message
+	 * @param Exception $previous
+	 */
+	public function __construct(
+		$tableName,
+		array $fields,
+		array $conditions,
+		$message = '',
+		Exception $previous = null
+	) {
 		parent::__construct( $message, 0, $previous );
 
 		$this->tableName = $tableName;
-		$this->conditions = $conditions;
 		$this->fields = $fields;
+		$this->conditions = $conditions;
 	}
 
 	/**
@@ -31,15 +57,15 @@ class SelectFailedException extends QueryInterfaceException {
 	/**
 	 * @return array
 	 */
-	public function getConditions() {
-		return $this->conditions;
+	public function getFields() {
+		return $this->fields;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getFields() {
-		return $this->fields;
+	public function getConditions() {
+		return $this->conditions;
 	}
 
 }

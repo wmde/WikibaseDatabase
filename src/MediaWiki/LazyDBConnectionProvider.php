@@ -18,41 +18,35 @@ use DatabaseBase;
 class LazyDBConnectionProvider implements DBConnectionProvider {
 
 	/**
-	 * @since 0.1
+	 * @var int
+	 */
+	private $connectionId;
+
+	/**
+	 * Query group(s), or false for the generic reader
 	 *
+	 * @var array|string|bool
+	 */
+	private $groups;
+
+	/**
+	 * Wiki ID, or false for the current wiki
+	 *
+	 * @var string|bool
+	 */
+	private $wiki;
+
+	/**
 	 * @var DatabaseBase|null
 	 */
-	protected $connection = null;
+	private $connection = null;
 
 	/**
-	 * @since 0.1
-	 *
-	 * @var int|null
-	 */
-	protected $connectionId = null;
-
-	/**
-	 * @since 0.1
-	 *
-	 * @var string|array
-	 */
-	protected $groups;
-
-	/**
-	 * @since 0.1
-	 *
-	 * @var string|boolean $wiki
-	 */
-	protected $wiki;
-
-	/**
-	 * Constructor.
-	 *
 	 * @since 0.1
 	 *
 	 * @param int $connectionId
-	 * @param string|array $groups
-	 * @param string|boolean $wiki
+	 * @param array|string|bool $groups Query group(s), or false for the generic reader
+	 * @param string|bool $wiki Wiki ID, or false for the current wiki
 	 */
 	public function __construct( $connectionId, $groups = array(), $wiki = false ) {
 		$this->connectionId = $connectionId;

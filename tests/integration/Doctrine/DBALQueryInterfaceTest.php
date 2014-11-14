@@ -200,4 +200,3 @@ class DBALQueryInterfaceTest extends \PHPUnit_Framework_TestCase {
 //	}
 
 }
-
