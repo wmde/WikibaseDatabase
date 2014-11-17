@@ -2,6 +2,8 @@
 
 namespace Wikibase\Database\Exception;
 
+use Exception;
+
 /**
  * @since 0.1
  * @licence GNU GPL v2+
@@ -9,16 +11,40 @@ namespace Wikibase\Database\Exception;
  */
 class UpdateFailedException extends QueryInterfaceException {
 
-	protected $tableName;
-	protected $values;
-	protected $conditions;
+	/**
+	 * @var string
+	 */
+	private $tableName;
 
-	public function __construct( $tableName, array $values, array $conditions, $message = '', \Exception $previous = null ) {
+	/**
+	 * @var array
+	 */
+	private $values;
+
+	/**
+	 * @var array
+	 */
+	private $conditions;
+
+	/**
+	 * @param string $tableName
+	 * @param array $values
+	 * @param array $conditions
+	 * @param string $message
+	 * @param Exception $previous
+	 */
+	public function __construct(
+		$tableName,
+		array $values,
+		array $conditions,
+		$message = '',
+		Exception $previous = null
+	) {
 		parent::__construct( $message, 0, $previous );
 
 		$this->tableName = $tableName;
-		$this->conditions = $conditions;
 		$this->values = $values;
+		$this->conditions = $conditions;
 	}
 
 	/**
@@ -31,15 +57,15 @@ class UpdateFailedException extends QueryInterfaceException {
 	/**
 	 * @return array
 	 */
-	public function getConditions() {
-		return $this->conditions;
+	public function getValues() {
+		return $this->values;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getValues() {
-		return $this->values;
+	public function getConditions() {
+		return $this->conditions;
 	}
 
 }

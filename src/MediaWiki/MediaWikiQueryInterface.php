@@ -4,8 +4,10 @@ namespace Wikibase\Database\MediaWiki;
 
 use DatabaseBase;
 use Iterator;
+use MWException;
 use Wikibase\Database\Exception\DeleteFailedException;
 use Wikibase\Database\Exception\InsertFailedException;
+use Wikibase\Database\Exception\QueryInterfaceException;
 use Wikibase\Database\Exception\SelectFailedException;
 use Wikibase\Database\Exception\UpdateFailedException;
 use Wikibase\Database\QueryInterface;
@@ -17,6 +19,7 @@ use Wikibase\Database\QueryInterface;
  * @since 0.1
  * @licence GNU GPL v2+
  * @author Jeroen De Dauw < jeroendedauw@gmail.com >
+ * @author Thiemo Mättig
  */
 class MediaWikiQueryInterface implements QueryInterface {
 
@@ -48,7 +51,7 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 *
 	 * @param string $tableName
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function tableExists( $tableName ) {
 		return $this->getDB()->tableExists( $tableName, __METHOD__ );
@@ -65,14 +68,14 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws InsertFailedException
 	 */
 	public function insert( $tableName, array $values ) {
-		$success = $this->getDB()->insert(
-			$tableName,
-			$values,
-			__METHOD__
-		) !== false;
+		try {
+			$result = $this->getDB()->insert( $tableName, $values, __METHOD__ );
 
-		if ( !$success ) {
-			throw new InsertFailedException( $tableName, $values );
+			if ( $result === false ) {
+				throw new InsertFailedException( $tableName, $values );
+			}
+		} catch ( MWException $ex ) {
+			throw new InsertFailedException( $tableName, $values, $ex->getMessage(), $ex );
 		}
 	}
 
@@ -88,15 +91,14 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws UpdateFailedException
 	 */
 	public function update( $tableName, array $values, array $conditions ) {
-		$success = $this->getDB()->update(
-			$tableName,
-			$values,
-			$conditions,
-			__METHOD__
-		) !== false;
+		try {
+			$result = $this->getDB()->update( $tableName, $values, $conditions, __METHOD__ );
 
-		if ( !$success ) {
-			throw new UpdateFailedException( $tableName, $values, $conditions );
+			if ( $result === false ) {
+				throw new UpdateFailedException( $tableName, $values, $conditions );
+			}
+		} catch ( MWException $ex ) {
+			throw new UpdateFailedException( $tableName, $values, $conditions, $ex->getMessage(), $ex );
 		}
 	}
 
@@ -111,14 +113,14 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws DeleteFailedException
 	 */
 	public function delete( $tableName, array $conditions ) {
-		$success = $this->getDB()->delete(
-			$tableName,
-			$conditions,
-			__METHOD__
-		) !== false;
+		try {
+			$result = $this->getDB()->delete( $tableName, $conditions, __METHOD__ );
 
-		if ( !$success ) {
-			throw new DeleteFailedException( $tableName, $conditions );
+			if ( $result === false ) {
+				throw new DeleteFailedException( $tableName, $conditions );
+			}
+		} catch ( MWException $ex ) {
+			throw new DeleteFailedException( $tableName, $conditions, $ex->getMessage(), $ex );
 		}
 	}
 
@@ -127,10 +129,17 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 *
 	 * @since 0.1
 	 *
+	 * @throws QueryInterfaceException
 	 * @return int
 	 */
 	public function getInsertId() {
-		return $this->getDB()->insertId();
+		$databaseBase = $this->getDB();
+
+		if ( !method_exists( $databaseBase, 'insertId' ) ) {
+			throw new QueryInterfaceException( 'Connection does not support obtain the last inserted ID' );
+		}
+
+		return (int)$databaseBase->insertId();
 	}
 
 	/**
@@ -139,17 +148,17 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @since 0.1
 	 *
 	 * @param string $tableName
-	 * @param array $fields
+	 * @param string[] $fieldNames
 	 * @param array $conditions
 	 * @param array $options
 	 *
-	 * @return Iterator
 	 * @throws SelectFailedException
+	 * @return Iterator
 	 */
-	public function select( $tableName, array $fields, array $conditions, array $options = array() ) {
+	public function select( $tableName, array $fieldNames, array $conditions, array $options = array() ) {
 		$selectionResult = $this->getDB()->select(
 			$tableName,
-			$fields,
+			$fieldNames,
 			$conditions,
 			__METHOD__,
 			$options
@@ -160,9 +169,7 @@ class MediaWikiQueryInterface implements QueryInterface {
 			return $selectionResult;
 		}
 
-		throw new SelectFailedException( $tableName, $fields, $conditions );
+		throw new SelectFailedException( $tableName, $fieldNames, $conditions );
 	}
 
 }
-
-

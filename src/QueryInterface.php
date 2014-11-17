@@ -68,8 +68,8 @@ interface QueryInterface {
 	 *
 	 * @since 0.1
 	 *
-	 * @return int
 	 * @throws QueryInterfaceException
+	 * @return int
 	 */
 	public function getInsertId();
 
@@ -87,7 +87,7 @@ interface QueryInterface {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string|string[] $tableName
+	 * @param string $tableName
 	 * @param string[] $fieldNames
 	 * @param array $conditions
 	 * @param array $options
@@ -102,8 +102,8 @@ interface QueryInterface {
 	 *
 	 * @param string $tableName
 	 *
-	 * @return boolean
 	 * @throws QueryInterfaceException
+	 * @return bool
 	 */
 	public function tableExists( $tableName );
 
