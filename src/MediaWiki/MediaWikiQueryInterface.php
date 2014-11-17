@@ -68,15 +68,14 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws InsertFailedException
 	 */
 	public function insert( $tableName, array $values ) {
-		$result = false;
-
 		try {
 			$result = $this->getDB()->insert( $tableName, $values, __METHOD__ );
-		} catch ( MWException $ex ) {
-		}
 
-		if ( $result === false ) {
-			throw new InsertFailedException( $tableName, $values );
+			if ( $result === false ) {
+				throw new InsertFailedException( $tableName, $values );
+			}
+		} catch ( MWException $ex ) {
+			throw new InsertFailedException( $tableName, $values, $ex->getMessage(), $ex );
 		}
 	}
 
@@ -92,15 +91,14 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws UpdateFailedException
 	 */
 	public function update( $tableName, array $values, array $conditions ) {
-		$result = false;
-
 		try {
 			$result = $this->getDB()->update( $tableName, $values, $conditions, __METHOD__ );
-		} catch ( MWException $ex ) {
-		}
 
-		if ( $result === false ) {
-			throw new UpdateFailedException( $tableName, $values, $conditions );
+			if ( $result === false ) {
+				throw new UpdateFailedException( $tableName, $values, $conditions );
+			}
+		} catch ( MWException $ex ) {
+			throw new UpdateFailedException( $tableName, $values, $conditions, $ex->getMessage(), $ex );
 		}
 	}
 
@@ -115,15 +113,14 @@ class MediaWikiQueryInterface implements QueryInterface {
 	 * @throws DeleteFailedException
 	 */
 	public function delete( $tableName, array $conditions ) {
-		$result = false;
-
 		try {
 			$result = $this->getDB()->delete( $tableName, $conditions, __METHOD__ );
-		} catch ( MWException $ex ) {
-		}
 
-		if ( $result === false ) {
-			throw new DeleteFailedException( $tableName, $conditions );
+			if ( $result === false ) {
+				throw new DeleteFailedException( $tableName, $conditions );
+			}
+		} catch ( MWException $ex ) {
+			throw new DeleteFailedException( $tableName, $conditions, $ex->getMessage(), $ex );
 		}
 	}
 
