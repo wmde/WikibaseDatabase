@@ -40,8 +40,8 @@ function installWikibaseDatabaseAsExtension {
 
 	php maintenance/update.php --quick
 
-	cd extensions/WikibaseDatabase
-	runPhpUnit
+	cd tests/phpunit
+	php phpunit.php -c ../../extensions/WikibaseDatabase --testsuite=WikibaseDatabase$TESTSUITE
 }
 
 function runPhpUnit {
