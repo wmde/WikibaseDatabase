@@ -35,6 +35,7 @@ function installWikibaseDatabaseAsExtension {
 	echo '$wgShowExceptionDetails = true;' >> LocalSettings.php
 	echo '$wgDevelopmentWarnings = true;' >> LocalSettings.php
 	echo "putenv( 'MW_INSTALL_PATH=$(pwd)' );" >> LocalSettings.php
+	echo "require_once( __DIR__ . "/extensions/WikibaseDatabase/WikibaseDatabase.php" );" >> LocalSettings.php
 
 	doComposerInstall
 
