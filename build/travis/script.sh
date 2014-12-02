@@ -10,13 +10,14 @@ function runMediaWikiSuite {
 }
 
 function installMediaWiki {
-	cd ..
+    cd ..
 
-	wget https://github.com/wikimedia/mediawiki/archive/$MW.tar.gz
+    wget https://github.com/wikimedia/mediawiki/archive/$MW.tar.gz
     tar -zxf $MW.tar.gz
     mv mediawiki-$MW phase3
 
     cd phase3
+    doComposerInstall
 
     mysql -e 'create database its_a_mw;'
     php maintenance/install.php --dbtype $DBTYPE --dbuser root --dbname its_a_mw --dbpath $(pwd) --pass nyan TravisWiki admin
