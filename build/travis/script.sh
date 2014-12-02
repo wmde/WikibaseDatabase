@@ -28,7 +28,10 @@ function installWikibaseDatabaseAsExtension {
 
 	cp -r $originalDirectory WikibaseDatabase
 
-	cd ..
+	cd WikibaseDatabase
+	doComposerInstall
+
+	cd ../..
 
 	echo 'error_reporting(E_ALL| E_STRICT);' >> LocalSettings.php
 	echo 'ini_set("display_errors", 1);' >> LocalSettings.php
