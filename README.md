@@ -194,3 +194,7 @@ Contributions where also made by [several others](https://www.ohloh.net/p/wikiba
 * [Wikibase Database on MediaWiki.org](https://www.mediawiki.org/wiki/Extension:Wikibase_Database)
 * [Wikibase Database on TravisCI](https://travis-ci.org/wmde/WikibaseDatabase)
 * [Wikibase Database on ScrutinizerCI](https://scrutinizer-ci.com/g/wmde/WikibaseDatabase/)
+
+## Bugs on Phabricator
+
+https://phabricator.wikimedia.org/project/view/117/
