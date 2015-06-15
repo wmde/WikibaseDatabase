@@ -21,7 +21,7 @@ script: bash ./build/travis/script.sh
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#wikidata"
+      - "chat.freenode.net#wikidata-feed"
     on_success: change
     on_failure: always
     template:
